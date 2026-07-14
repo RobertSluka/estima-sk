@@ -1,0 +1,328 @@
+// Auto-generated from NBS residential property price exports
+// (real-estate-price-total / -by-region / -by-type .csv), NBS statistics:
+// https://nbs.sk/en/statistics/selected-macroeconomics-indicators/residential-property-prices/development-of-residential-property-prices-in-slovakia/
+// Series: annual points 2002-2004, then quarterly 1Q 2005 -> 1Q 2026.
+// Prices are EUR per m2. Do not hand-edit; regenerate from the source CSVs.
+
+export interface NationalPoint {
+  /** Period label, e.g. "2002" or "1Q 2026". */
+  period: string
+  year: number
+  /** Average price, EUR per m2. */
+  price: number
+  /** Price index, 2002 = 100. */
+  index: number
+  /** Year-on-year change, %. */
+  yoy: number
+}
+
+export interface RegionPoint {
+  period: string
+  SR: number
+  BA: number
+  TT: number
+  NR: number
+  TN: number
+  ZA: number
+  BB: number
+  KE: number
+  PO: number
+}
+
+export interface TypePoint {
+  period: string
+  flatsTotal: number
+  r1: number
+  r2: number
+  r3: number
+  r4: number
+  r5plus: number
+  housesTotal: number
+}
+
+export type RegionKey = "SR" | "BA" | "TT" | "NR" | "TN" | "ZA" | "BB" | "KE" | "PO"
+export type TypeKey =
+  | "flatsTotal"
+  | "r1"
+  | "r2"
+  | "r3"
+  | "r4"
+  | "r5plus"
+  | "housesTotal"
+
+/** Latest reported period across all datasets. */
+export const NBS_LATEST_PERIOD = "1Q 2026"
+export const NBS_BASE_PERIOD = "2002"
+
+export const NATIONAL: NationalPoint[] = [
+  { period: "2002", year: 2002, price: 591.9, index: 100.0, yoy: 0.0 },
+  { period: "2003", year: 2003, price: 826.6, index: 139.6, yoy: 39.6 },
+  { period: "2004", year: 2004, price: 954.2, index: 161.2, yoy: 15.4 },
+  { period: "1Q 2005", year: 2005, price: 829.8, index: 140.2, yoy: 0.0 },
+  { period: "2Q 2005", year: 2005, price: 830.4, index: 140.3, yoy: 0.0 },
+  { period: "3Q 2005", year: 2005, price: 871.9, index: 147.3, yoy: 0.0 },
+  { period: "4Q 2005", year: 2005, price: 895.3, index: 151.3, yoy: 0.0 },
+  { period: "1Q 2006", year: 2006, price: 944.7, index: 159.6, yoy: 13.8 },
+  { period: "2Q 2006", year: 2006, price: 980.1, index: 165.6, yoy: 18.0 },
+  { period: "3Q 2006", year: 2006, price: 1025.5, index: 173.3, yoy: 17.6 },
+  { period: "4Q 2006", year: 2006, price: 1049.7, index: 177.3, yoy: 17.2 },
+  { period: "1Q 2007", year: 2007, price: 1097.1, index: 185.3, yoy: 16.1 },
+  { period: "2Q 2007", year: 2007, price: 1180.1, index: 199.4, yoy: 20.4 },
+  { period: "3Q 2007", year: 2007, price: 1285.5, index: 217.2, yoy: 25.4 },
+  { period: "4Q 2007", year: 2007, price: 1390.6, index: 234.9, yoy: 32.5 },
+  { period: "1Q 2008", year: 2008, price: 1475.9, index: 249.3, yoy: 34.5 },
+  { period: "2Q 2008", year: 2008, price: 1548.8, index: 261.7, yoy: 31.2 },
+  { period: "3Q 2008", year: 2008, price: 1542.0, index: 260.5, yoy: 19.9 },
+  { period: "4Q 2008", year: 2008, price: 1478.9, index: 249.9, yoy: 6.4 },
+  { period: "1Q 2009", year: 2009, price: 1413.3, index: 238.8, yoy: -4.2 },
+  { period: "2Q 2009", year: 2009, price: 1342.0, index: 226.7, yoy: -13.4 },
+  { period: "3Q 2009", year: 2009, price: 1322.3, index: 223.4, yoy: -14.2 },
+  { period: "4Q 2009", year: 2009, price: 1296.6, index: 219.0, yoy: -12.3 },
+  { period: "1Q 2010", year: 2010, price: 1278.2, index: 215.9, yoy: -9.6 },
+  { period: "2Q 2010", year: 2010, price: 1272.8, index: 215.0, yoy: -5.2 },
+  { period: "3Q 2010", year: 2010, price: 1282.1, index: 216.6, yoy: -3.0 },
+  { period: "4Q 2010", year: 2010, price: 1267.3, index: 214.1, yoy: -2.3 },
+  { period: "1Q 2011", year: 2011, price: 1259.6, index: 212.8, yoy: -1.5 },
+  { period: "2Q 2011", year: 2011, price: 1251.2, index: 211.4, yoy: -1.7 },
+  { period: "3Q 2011", year: 2011, price: 1245.1, index: 210.4, yoy: -2.9 },
+  { period: "4Q 2011", year: 2011, price: 1236.2, index: 208.8, yoy: -2.5 },
+  { period: "1Q 2012", year: 2012, price: 1234.1, index: 208.5, yoy: -2.0 },
+  { period: "2Q 2012", year: 2012, price: 1224.1, index: 206.8, yoy: -2.2 },
+  { period: "3Q 2012", year: 2012, price: 1237.7, index: 209.1, yoy: -0.6 },
+  { period: "4Q 2012", year: 2012, price: 1242.6, index: 209.9, yoy: 0.5 },
+  { period: "1Q 2013", year: 2013, price: 1239.6, index: 209.4, yoy: 0.4 },
+  { period: "2Q 2013", year: 2013, price: 1231.5, index: 208.0, yoy: 0.6 },
+  { period: "3Q 2013", year: 2013, price: 1222.2, index: 206.5, yoy: -1.2 },
+  { period: "4Q 2013", year: 2013, price: 1215.3, index: 205.3, yoy: -2.2 },
+  { period: "1Q 2014", year: 2014, price: 1220.4, index: 206.2, yoy: -1.6 },
+  { period: "2Q 2014", year: 2014, price: 1214.7, index: 205.2, yoy: -1.4 },
+  { period: "3Q 2014", year: 2014, price: 1218.2, index: 205.8, yoy: -0.3 },
+  { period: "4Q 2014", year: 2014, price: 1222.5, index: 206.5, yoy: 0.6 },
+  { period: "1Q 2015", year: 2015, price: 1233.7, index: 208.4, yoy: 1.1 },
+  { period: "2Q 2015", year: 2015, price: 1232.4, index: 208.2, yoy: 1.5 },
+  { period: "3Q 2015", year: 2015, price: 1242.8, index: 210.0, yoy: 2.0 },
+  { period: "4Q 2015", year: 2015, price: 1249.7, index: 211.1, yoy: 2.2 },
+  { period: "1Q 2016", year: 2016, price: 1258.7, index: 212.6, yoy: 2.0 },
+  { period: "2Q 2016", year: 2016, price: 1296.6, index: 219.0, yoy: 5.2 },
+  { period: "3Q 2016", year: 2016, price: 1316.5, index: 222.4, yoy: 5.9 },
+  { period: "4Q 2016", year: 2016, price: 1331.3, index: 224.9, yoy: 6.5 },
+  { period: "1Q 2017", year: 2017, price: 1360.0, index: 229.8, yoy: 8.0 },
+  { period: "2Q 2017", year: 2017, price: 1391.8, index: 235.1, yoy: 7.3 },
+  { period: "3Q 2017", year: 2017, price: 1403.1, index: 237.0, yoy: 6.6 },
+  { period: "4Q 2017", year: 2017, price: 1395.4, index: 235.7, yoy: 4.8 },
+  { period: "1Q 2018", year: 2018, price: 1430.8, index: 241.7, yoy: 5.2 },
+  { period: "2Q 2018", year: 2018, price: 1462.8, index: 247.1, yoy: 5.1 },
+  { period: "3Q 2018", year: 2018, price: 1460.8, index: 246.8, yoy: 4.1 },
+  { period: "4Q 2018", year: 2018, price: 1501.7, index: 253.7, yoy: 7.6 },
+  { period: "1Q 2019", year: 2019, price: 1539.3, index: 260.1, yoy: 7.6 },
+  { period: "2Q 2019", year: 2019, price: 1556.3, index: 262.9, yoy: 6.4 },
+  { period: "3Q 2019", year: 2019, price: 1603.0, index: 270.8, yoy: 9.7 },
+  { period: "4Q 2019", year: 2019, price: 1597.1, index: 269.8, yoy: 6.4 },
+  { period: "1Q 2020", year: 2020, price: 1671.0, index: 282.3, yoy: 8.6 },
+  { period: "2Q 2020", year: 2020, price: 1731.3, index: 292.5, yoy: 11.2 },
+  { period: "3Q 2020", year: 2020, price: 1792.1, index: 302.8, yoy: 11.8 },
+  { period: "4Q 2020", year: 2020, price: 1852.6, index: 313.0, yoy: 16.0 },
+  { period: "1Q 2021", year: 2021, price: 2035.3, index: 343.9, yoy: 21.8 },
+  { period: "2Q 2021", year: 2021, price: 2128.4, index: 359.6, yoy: 22.9 },
+  { period: "3Q 2021", year: 2021, price: 2225.3, index: 375.9, yoy: 24.2 },
+  { period: "4Q 2021", year: 2021, price: 2314.4, index: 391.0, yoy: 24.9 },
+  { period: "1Q 2022", year: 2022, price: 2510.0, index: 424.1, yoy: 23.3 },
+  { period: "2Q 2022", year: 2022, price: 2671.3, index: 451.3, yoy: 25.5 },
+  { period: "3Q 2022", year: 2022, price: 2713.6, index: 458.4, yoy: 21.9 },
+  { period: "4Q 2022", year: 2022, price: 2660.8, index: 449.5, yoy: 15.0 },
+  { period: "1Q 2023", year: 2023, price: 2556.1, index: 431.8, yoy: 1.8 },
+  { period: "2Q 2023", year: 2023, price: 2493.8, index: 421.3, yoy: -6.6 },
+  { period: "3Q 2023", year: 2023, price: 2438.0, index: 411.9, yoy: -10.2 },
+  { period: "4Q 2023", year: 2023, price: 2433.0, index: 411.0, yoy: -8.6 },
+  { period: "1Q 2024", year: 2024, price: 2423.0, index: 409.3, yoy: -5.2 },
+  { period: "2Q 2024", year: 2024, price: 2461.6, index: 415.9, yoy: -1.3 },
+  { period: "3Q 2024", year: 2024, price: 2520.3, index: 425.8, yoy: 3.4 },
+  { period: "4Q 2024", year: 2024, price: 2596.1, index: 438.6, yoy: 6.7 },
+  { period: "1Q 2025", year: 2025, price: 2700.0, index: 456.1, yoy: 11.4 },
+  { period: "2Q 2025", year: 2025, price: 2777.3, index: 469.2, yoy: 12.8 },
+  { period: "3Q 2025", year: 2025, price: 2814.1, index: 475.4, yoy: 11.7 },
+  { period: "4Q 2025", year: 2025, price: 2906.4, index: 491.0, yoy: 12.0 },
+  { period: "1Q 2026", year: 2026, price: 3005.2, index: 507.7, yoy: 11.3 },
+]
+
+export const REGION_SERIES: RegionPoint[] = [
+  { period: "2002", SR: 591.9, BA: 778.6, TT: 369.8, NR: 361.0, TN: 456.6, ZA: 404.0, BB: 356.2, KE: 461.5, PO: 358.8 },
+  { period: "2003", SR: 826.6, BA: 1180.2, TT: 400.2, NR: 405.1, TN: 437.3, ZA: 504.0, BB: 471.7, KE: 490.0, PO: 464.9 },
+  { period: "2004", SR: 954.2, BA: 1284.7, TT: 658.7, NR: 572.5, TN: 630.2, ZA: 439.2, BB: 504.8, KE: 778.7, PO: 504.7 },
+  { period: "1Q 2005", SR: 829.8, BA: 1118.9, TT: 626.8, NR: 370.1, TN: 313.1, ZA: 430.6, BB: 381.3, KE: 507.6, PO: 579.9 },
+  { period: "2Q 2005", SR: 830.4, BA: 1107.5, TT: 635.0, NR: 375.2, TN: 345.3, ZA: 445.0, BB: 382.7, KE: 514.2, PO: 632.0 },
+  { period: "3Q 2005", SR: 871.9, BA: 1160.0, TT: 659.8, NR: 353.3, TN: 323.0, ZA: 463.9, BB: 452.2, KE: 540.1, PO: 569.4 },
+  { period: "4Q 2005", SR: 895.3, BA: 1206.9, TT: 672.7, NR: 363.2, TN: 399.8, ZA: 467.8, BB: 471.6, KE: 529.8, PO: 587.6 },
+  { period: "1Q 2006", SR: 944.7, BA: 1292.1, TT: 708.7, NR: 370.2, TN: 405.8, ZA: 487.8, BB: 490.0, KE: 535.6, PO: 624.7 },
+  { period: "2Q 2006", SR: 980.1, BA: 1349.5, TT: 707.5, NR: 371.5, TN: 484.4, ZA: 499.0, BB: 492.3, KE: 580.3, PO: 610.3 },
+  { period: "3Q 2006", SR: 1025.5, BA: 1414.5, TT: 718.9, NR: 392.6, TN: 479.8, ZA: 499.0, BB: 523.5, KE: 599.6, PO: 580.5 },
+  { period: "4Q 2006", SR: 1049.7, BA: 1449.3, TT: 713.9, NR: 412.8, TN: 521.5, ZA: 542.4, BB: 540.4, KE: 606.6, PO: 630.9 },
+  { period: "1Q 2007", SR: 1097.1, BA: 1497.8, TT: 742.6, NR: 436.0, TN: 549.6, ZA: 580.4, BB: 542.3, KE: 660.4, PO: 720.8 },
+  { period: "2Q 2007", SR: 1180.1, BA: 1586.9, TT: 794.2, NR: 474.9, TN: 582.8, ZA: 679.7, BB: 638.4, KE: 747.7, PO: 680.8 },
+  { period: "3Q 2007", SR: 1285.5, BA: 1719.6, TT: 801.3, NR: 550.6, TN: 627.2, ZA: 759.3, BB: 741.3, KE: 862.7, PO: 754.9 },
+  { period: "4Q 2007", SR: 1390.6, BA: 1859.5, TT: 858.3, NR: 607.3, TN: 689.7, ZA: 818.4, BB: 820.4, KE: 978.5, PO: 833.0 },
+  { period: "1Q 2008", SR: 1475.9, BA: 1967.9, TT: 914.6, NR: 648.4, TN: 736.3, ZA: 883.3, BB: 831.4, KE: 1093.4, PO: 959.9 },
+  { period: "2Q 2008", SR: 1548.8, BA: 2019.2, TT: 1018.6, NR: 750.9, TN: 863.3, ZA: 964.0, BB: 865.6, KE: 1186.1, PO: 1053.6 },
+  { period: "3Q 2008", SR: 1542.0, BA: 1990.7, TT: 1055.3, NR: 795.5, TN: 854.4, ZA: 972.9, BB: 852.8, KE: 1159.1, PO: 1157.3 },
+  { period: "4Q 2008", SR: 1478.9, BA: 1910.4, TT: 1036.1, NR: 781.1, TN: 867.2, ZA: 961.3, BB: 856.2, KE: 1107.8, PO: 1031.4 },
+  { period: "1Q 2009", SR: 1413.3, BA: 1828.3, TT: 992.4, NR: 755.0, TN: 817.8, ZA: 904.7, BB: 838.9, KE: 960.0, PO: 965.7 },
+  { period: "2Q 2009", SR: 1342.0, BA: 1731.5, TT: 940.8, NR: 726.9, TN: 777.0, ZA: 902.5, BB: 804.7, KE: 913.3, PO: 926.4 },
+  { period: "3Q 2009", SR: 1322.3, BA: 1719.9, TT: 935.5, NR: 703.8, TN: 737.4, ZA: 851.7, BB: 759.8, KE: 896.7, PO: 870.9 },
+  { period: "4Q 2009", SR: 1296.6, BA: 1714.6, TT: 879.3, NR: 651.7, TN: 705.7, ZA: 797.7, BB: 753.9, KE: 916.9, PO: 834.5 },
+  { period: "1Q 2010", SR: 1278.2, BA: 1727.7, TT: 861.1, NR: 643.2, TN: 691.4, ZA: 794.0, BB: 792.4, KE: 919.3, PO: 849.8 },
+  { period: "2Q 2010", SR: 1272.8, BA: 1725.5, TT: 832.4, NR: 627.5, TN: 680.0, ZA: 815.3, BB: 824.6, KE: 911.2, PO: 815.3 },
+  { period: "3Q 2010", SR: 1282.1, BA: 1740.2, TT: 844.4, NR: 633.4, TN: 662.1, ZA: 801.5, BB: 809.7, KE: 941.7, PO: 809.3 },
+  { period: "4Q 2010", SR: 1267.3, BA: 1712.5, TT: 863.6, NR: 576.2, TN: 706.2, ZA: 748.4, BB: 736.9, KE: 992.7, PO: 830.9 },
+  { period: "1Q 2011", SR: 1259.6, BA: 1693.5, TT: 845.7, NR: 602.0, TN: 712.1, ZA: 758.9, BB: 759.9, KE: 995.8, PO: 837.4 },
+  { period: "2Q 2011", SR: 1251.2, BA: 1682.3, TT: 831.7, NR: 618.4, TN: 692.8, ZA: 763.9, BB: 779.3, KE: 978.1, PO: 821.6 },
+  { period: "3Q 2011", SR: 1245.1, BA: 1671.4, TT: 833.2, NR: 640.9, TN: 690.0, ZA: 758.6, BB: 771.0, KE: 971.7, PO: 809.1 },
+  { period: "4Q 2011", SR: 1236.2, BA: 1661.9, TT: 824.1, NR: 634.4, TN: 684.3, ZA: 747.5, BB: 764.3, KE: 954.5, PO: 819.1 },
+  { period: "1Q 2012", SR: 1234.1, BA: 1657.6, TT: 827.2, NR: 620.0, TN: 681.9, ZA: 748.1, BB: 786.0, KE: 959.9, PO: 796.9 },
+  { period: "2Q 2012", SR: 1224.1, BA: 1644.0, TT: 817.9, NR: 626.5, TN: 657.9, ZA: 753.7, BB: 770.0, KE: 953.7, PO: 793.0 },
+  { period: "3Q 2012", SR: 1237.7, BA: 1662.3, TT: 830.5, NR: 602.0, TN: 650.7, ZA: 762.6, BB: 754.9, KE: 999.1, PO: 805.1 },
+  { period: "4Q 2012", SR: 1242.6, BA: 1679.0, TT: 819.5, NR: 599.6, TN: 638.5, ZA: 775.7, BB: 746.2, KE: 973.1, PO: 817.5 },
+  { period: "1Q 2013", SR: 1239.6, BA: 1669.7, TT: 843.0, NR: 587.9, TN: 644.7, ZA: 784.5, BB: 757.6, KE: 955.3, PO: 804.6 },
+  { period: "2Q 2013", SR: 1231.5, BA: 1667.3, TT: 826.6, NR: 587.4, TN: 639.5, ZA: 766.7, BB: 724.5, KE: 945.2, PO: 787.3 },
+  { period: "3Q 2013", SR: 1222.2, BA: 1653.9, TT: 818.0, NR: 586.1, TN: 642.4, ZA: 773.3, BB: 738.5, KE: 918.5, PO: 785.5 },
+  { period: "4Q 2013", SR: 1215.3, BA: 1648.1, TT: 815.1, NR: 578.4, TN: 642.1, ZA: 778.8, BB: 726.1, KE: 894.0, PO: 769.2 },
+  { period: "1Q 2014", SR: 1220.4, BA: 1651.5, TT: 827.1, NR: 584.2, TN: 636.2, ZA: 794.6, BB: 730.7, KE: 894.1, PO: 776.6 },
+  { period: "2Q 2014", SR: 1214.7, BA: 1637.5, TT: 819.2, NR: 579.0, TN: 626.3, ZA: 797.1, BB: 747.8, KE: 924.0, PO: 766.8 },
+  { period: "3Q 2014", SR: 1218.2, BA: 1642.3, TT: 823.0, NR: 581.5, TN: 628.0, ZA: 782.7, BB: 754.4, KE: 936.4, PO: 764.2 },
+  { period: "4Q 2014", SR: 1222.5, BA: 1661.9, TT: 822.7, NR: 573.7, TN: 625.5, ZA: 752.6, BB: 725.3, KE: 924.8, PO: 752.7 },
+  { period: "1Q 2015", SR: 1233.7, BA: 1682.2, TT: 829.0, NR: 571.8, TN: 635.1, ZA: 747.4, BB: 716.6, KE: 941.2, PO: 727.5 },
+  { period: "2Q 2015", SR: 1232.4, BA: 1679.8, TT: 822.4, NR: 564.2, TN: 627.0, ZA: 761.1, BB: 703.2, KE: 951.3, PO: 737.8 },
+  { period: "3Q 2015", SR: 1242.8, BA: 1694.9, TT: 831.8, NR: 555.6, TN: 631.6, ZA: 753.3, BB: 706.0, KE: 965.0, PO: 762.7 },
+  { period: "4Q 2015", SR: 1249.7, BA: 1716.2, TT: 835.1, NR: 532.7, TN: 637.1, ZA: 750.2, BB: 720.5, KE: 926.9, PO: 752.4 },
+  { period: "1Q 2016", SR: 1258.7, BA: 1725.0, TT: 839.0, NR: 551.0, TN: 647.5, ZA: 763.1, BB: 723.6, KE: 928.0, PO: 783.6 },
+  { period: "2Q 2016", SR: 1296.6, BA: 1785.1, TT: 860.1, NR: 580.6, TN: 641.6, ZA: 818.8, BB: 734.3, KE: 922.3, PO: 760.2 },
+  { period: "3Q 2016", SR: 1316.5, BA: 1817.9, TT: 871.1, NR: 599.0, TN: 653.3, ZA: 831.6, BB: 684.3, KE: 927.7, PO: 789.0 },
+  { period: "4Q 2016", SR: 1331.3, BA: 1831.7, TT: 882.6, NR: 617.3, TN: 670.5, ZA: 835.4, BB: 712.7, KE: 951.2, PO: 803.4 },
+  { period: "1Q 2017", SR: 1360.0, BA: 1873.1, TT: 912.2, NR: 644.0, TN: 705.2, ZA: 839.5, BB: 709.4, KE: 952.8, PO: 806.2 },
+  { period: "2Q 2017", SR: 1391.8, BA: 1903.9, TT: 936.9, NR: 667.7, TN: 743.8, ZA: 866.4, BB: 768.1, KE: 990.2, PO: 838.4 },
+  { period: "3Q 2017", SR: 1403.1, BA: 1900.5, TT: 945.4, NR: 680.5, TN: 771.4, ZA: 882.5, BB: 770.5, KE: 1066.7, PO: 881.3 },
+  { period: "4Q 2017", SR: 1395.4, BA: 1904.7, TT: 949.7, NR: 657.8, TN: 740.3, ZA: 868.0, BB: 731.4, KE: 1050.1, PO: 805.9 },
+  { period: "1Q 2018", SR: 1430.8, BA: 1944.7, TT: 1000.2, NR: 691.2, TN: 748.9, ZA: 882.8, BB: 769.5, KE: 1073.2, PO: 830.3 },
+  { period: "2Q 2018", SR: 1462.8, BA: 1981.3, TT: 1040.4, NR: 724.6, TN: 763.7, ZA: 916.1, BB: 789.4, KE: 1078.5, PO: 869.6 },
+  { period: "3Q 2018", SR: 1460.8, BA: 1950.2, TT: 1092.9, NR: 767.2, TN: 799.9, ZA: 953.9, BB: 770.6, KE: 1088.0, PO: 873.1 },
+  { period: "4Q 2018", SR: 1501.7, BA: 2016.2, TT: 1106.2, NR: 810.4, TN: 832.0, ZA: 989.6, BB: 779.5, KE: 1045.9, PO: 925.2 },
+  { period: "1Q 2019", SR: 1539.3, BA: 2053.1, TT: 1123.5, NR: 882.5, TN: 895.2, ZA: 1076.0, BB: 808.6, KE: 1035.1, PO: 988.4 },
+  { period: "2Q 2019", SR: 1556.3, BA: 2072.5, TT: 1146.3, NR: 857.1, TN: 948.3, ZA: 1099.3, BB: 842.6, KE: 1016.3, PO: 1024.5 },
+  { period: "3Q 2019", SR: 1603.0, BA: 2148.5, TT: 1142.9, NR: 888.4, TN: 944.1, ZA: 1151.1, BB: 825.4, KE: 1050.0, PO: 1045.8 },
+  { period: "4Q 2019", SR: 1597.1, BA: 2132.1, TT: 1140.1, NR: 881.3, TN: 988.7, ZA: 1164.1, BB: 823.4, KE: 1035.0, PO: 1085.1 },
+  { period: "1Q 2020", SR: 1671.0, BA: 2231.0, TT: 1182.7, NR: 900.0, TN: 1024.8, ZA: 1253.7, BB: 923.2, KE: 1092.4, PO: 1049.6 },
+  { period: "2Q 2020", SR: 1731.3, BA: 2272.8, TT: 1207.5, NR: 945.0, TN: 1037.6, ZA: 1330.0, BB: 911.3, KE: 1353.5, PO: 1153.1 },
+  { period: "3Q 2020", SR: 1792.1, BA: 2360.3, TT: 1197.8, NR: 987.9, TN: 1088.7, ZA: 1330.2, BB: 1030.1, KE: 1420.6, PO: 1162.5 },
+  { period: "4Q 2020", SR: 1852.6, BA: 2469.7, TT: 1194.2, NR: 971.1, TN: 1065.5, ZA: 1336.0, BB: 1092.2, KE: 1434.0, PO: 1226.4 },
+  { period: "1Q 2021", SR: 2035.3, BA: 2643.5, TT: 1367.8, NR: 1107.1, TN: 1182.9, ZA: 1499.3, BB: 1311.0, KE: 1680.6, PO: 1549.4 },
+  { period: "2Q 2021", SR: 2128.4, BA: 2774.1, TT: 1412.8, NR: 1136.8, TN: 1284.1, ZA: 1627.8, BB: 1335.6, KE: 1756.3, PO: 1467.8 },
+  { period: "3Q 2021", SR: 2225.3, BA: 2892.3, TT: 1523.7, NR: 1197.5, TN: 1330.9, ZA: 1683.8, BB: 1408.2, KE: 1809.6, PO: 1564.2 },
+  { period: "4Q 2021", SR: 2314.4, BA: 2992.8, TT: 1534.3, NR: 1247.1, TN: 1390.7, ZA: 1818.6, BB: 1462.5, KE: 1946.4, PO: 1715.2 },
+  { period: "1Q 2022", SR: 2510.0, BA: 3230.2, TT: 1706.1, NR: 1300.3, TN: 1513.6, ZA: 1827.6, BB: 1640.8, KE: 2244.1, PO: 1880.0 },
+  { period: "2Q 2022", SR: 2671.3, BA: 3403.3, TT: 1865.1, NR: 1409.3, TN: 1619.0, ZA: 2062.9, BB: 1806.4, KE: 2348.3, PO: 2038.1 },
+  { period: "3Q 2022", SR: 2713.6, BA: 3451.2, TT: 1859.1, NR: 1450.0, TN: 1697.8, ZA: 2134.1, BB: 1765.9, KE: 2384.9, PO: 2189.8 },
+  { period: "4Q 2022", SR: 2660.8, BA: 3342.1, TT: 1937.8, NR: 1446.0, TN: 1683.7, ZA: 2060.4, BB: 1816.3, KE: 2364.2, PO: 2141.5 },
+  { period: "1Q 2023", SR: 2556.1, BA: 3202.8, TT: 1868.8, NR: 1435.3, TN: 1654.4, ZA: 2034.6, BB: 1760.0, KE: 2219.6, PO: 2015.9 },
+  { period: "2Q 2023", SR: 2493.8, BA: 3146.3, TT: 1852.6, NR: 1431.9, TN: 1569.8, ZA: 1934.6, BB: 1686.9, KE: 2096.0, PO: 1886.9 },
+  { period: "3Q 2023", SR: 2438.0, BA: 3096.1, TT: 1799.3, NR: 1375.4, TN: 1540.9, ZA: 1891.2, BB: 1598.7, KE: 2016.1, PO: 1794.7 },
+  { period: "4Q 2023", SR: 2433.0, BA: 3077.1, TT: 1807.8, NR: 1358.1, TN: 1564.5, ZA: 1874.0, BB: 1589.4, KE: 2076.3, PO: 1785.8 },
+  { period: "1Q 2024", SR: 2423.0, BA: 3087.3, TT: 1795.2, NR: 1404.5, TN: 1549.4, ZA: 1826.9, BB: 1474.8, KE: 2011.4, PO: 1767.1 },
+  { period: "2Q 2024", SR: 2461.6, BA: 3127.0, TT: 1836.8, NR: 1392.8, TN: 1569.1, ZA: 1819.2, BB: 1562.4, KE: 2087.0, PO: 1817.9 },
+  { period: "3Q 2024", SR: 2520.3, BA: 3228.7, TT: 1859.4, NR: 1354.2, TN: 1579.5, ZA: 1891.2, BB: 1511.4, KE: 2087.1, PO: 1898.8 },
+  { period: "4Q 2024", SR: 2596.1, BA: 3316.4, TT: 1879.3, NR: 1403.5, TN: 1626.3, ZA: 1948.8, BB: 1604.3, KE: 2222.1, PO: 1955.6 },
+  { period: "1Q 2025", SR: 2700.0, BA: 3486.1, TT: 1920.1, NR: 1389.3, TN: 1658.8, ZA: 1929.9, BB: 1604.7, KE: 2348.9, PO: 1985.4 },
+  { period: "2Q 2025", SR: 2777.3, BA: 3548.7, TT: 1935.3, NR: 1502.8, TN: 1690.1, ZA: 2038.2, BB: 1714.3, KE: 2508.5, PO: 2177.5 },
+  { period: "3Q 2025", SR: 2814.1, BA: 3627.7, TT: 1943.6, NR: 1521.9, TN: 1743.4, ZA: 2046.5, BB: 1708.1, KE: 2410.6, PO: 2179.4 },
+  { period: "4Q 2025", SR: 2906.4, BA: 3730.7, TT: 1981.6, NR: 1589.0, TN: 1787.3, ZA: 2180.3, BB: 1744.2, KE: 2607.8, PO: 2171.9 },
+  { period: "1Q 2026", SR: 3005.2, BA: 3845.0, TT: 2014.5, NR: 1627.2, TN: 1878.2, ZA: 2282.5, BB: 1864.7, KE: 2682.3, PO: 2411.8 },
+]
+
+export const TYPE_SERIES: TypePoint[] = [
+  { period: "2002", flatsTotal: 601.9, r1: 585.4, r2: 653.8, r3: 604.6, r4: 564.8, r5plus: 619.1, housesTotal: 582.0 },
+  { period: "2003", flatsTotal: 814.5, r1: 886.9, r2: 876.7, r3: 778.0, r4: 768.4, r5plus: 716.3, housesTotal: 838.6 },
+  { period: "2004", flatsTotal: 931.8, r1: 1053.8, r2: 1008.3, r3: 888.2, r4: 831.0, r5plus: 727.0, housesTotal: 976.6 },
+  { period: "1Q 2005", flatsTotal: 815.4, r1: 837.2, r2: 827.5, r3: 807.5, r4: 777.9, r5plus: 927.4, housesTotal: 890.4 },
+  { period: "2Q 2005", flatsTotal: 814.2, r1: 836.6, r2: 829.1, r3: 797.8, r4: 772.7, r5plus: 1166.1, housesTotal: 900.8 },
+  { period: "3Q 2005", flatsTotal: 855.1, r1: 937.8, r2: 889.8, r3: 825.2, r4: 756.2, r5plus: 882.0, housesTotal: 931.7 },
+  { period: "4Q 2005", flatsTotal: 883.8, r1: 944.7, r2: 917.9, r3: 847.0, r4: 823.6, r5plus: 950.5, housesTotal: 937.6 },
+  { period: "1Q 2006", flatsTotal: 934.8, r1: 996.5, r2: 1005.4, r3: 885.0, r4: 868.1, r5plus: 1016.6, housesTotal: 980.5 },
+  { period: "2Q 2006", flatsTotal: 972.9, r1: 1035.9, r2: 1022.8, r3: 939.2, r4: 911.8, r5plus: 1033.8, housesTotal: 1000.7 },
+  { period: "3Q 2006", flatsTotal: 1029.7, r1: 1107.5, r2: 1082.4, r3: 996.6, r4: 965.9, r5plus: 1147.1, housesTotal: 1013.3 },
+  { period: "4Q 2006", flatsTotal: 1058.7, r1: 1153.7, r2: 1140.6, r3: 1011.9, r4: 967.4, r5plus: 1188.3, housesTotal: 1022.2 },
+  { period: "1Q 2007", flatsTotal: 1108.2, r1: 1218.6, r2: 1191.7, r3: 1060.0, r4: 987.4, r5plus: 1269.1, housesTotal: 1064.3 },
+  { period: "2Q 2007", flatsTotal: 1206.1, r1: 1368.1, r2: 1281.5, r3: 1128.6, r4: 1111.6, r5plus: 1290.0, housesTotal: 1098.4 },
+  { period: "3Q 2007", flatsTotal: 1332.4, r1: 1549.9, r2: 1404.8, r3: 1247.2, r4: 1208.3, r5plus: 1320.7, housesTotal: 1155.3 },
+  { period: "4Q 2007", flatsTotal: 1458.1, r1: 1674.5, r2: 1541.9, r3: 1375.5, r4: 1319.9, r5plus: 1345.7, housesTotal: 1203.9 },
+  { period: "1Q 2008", flatsTotal: 1555.0, r1: 1792.8, r2: 1655.2, r3: 1446.6, r4: 1396.1, r5plus: 1402.4, housesTotal: 1266.0 },
+  { period: "2Q 2008", flatsTotal: 1618.9, r1: 1873.2, r2: 1694.5, r3: 1492.5, r4: 1432.0, r5plus: 1433.8, housesTotal: 1292.1 },
+  { period: "3Q 2008", flatsTotal: 1600.5, r1: 1856.3, r2: 1671.8, r3: 1462.0, r4: 1439.0, r5plus: 1499.7, housesTotal: 1247.2 },
+  { period: "4Q 2008", flatsTotal: 1521.3, r1: 1700.8, r2: 1599.5, r3: 1407.8, r4: 1398.9, r5plus: 1552.5, housesTotal: 1276.3 },
+  { period: "1Q 2009", flatsTotal: 1447.2, r1: 1595.9, r2: 1507.7, r3: 1352.2, r4: 1356.0, r5plus: 1542.8, housesTotal: 1259.3 },
+  { period: "2Q 2009", flatsTotal: 1372.5, r1: 1502.6, r2: 1423.9, r3: 1285.7, r4: 1301.9, r5plus: 1547.0, housesTotal: 1195.6 },
+  { period: "3Q 2009", flatsTotal: 1353.6, r1: 1482.1, r2: 1385.1, r3: 1273.9, r4: 1328.4, r5plus: 1460.0, housesTotal: 1186.6 },
+  { period: "4Q 2009", flatsTotal: 1326.5, r1: 1465.2, r2: 1378.7, r3: 1254.5, r4: 1213.1, r5plus: 1412.2, housesTotal: 1180.5 },
+  { period: "1Q 2010", flatsTotal: 1324.2, r1: 1439.0, r2: 1373.3, r3: 1259.3, r4: 1246.6, r5plus: 1450.1, housesTotal: 1164.0 },
+  { period: "2Q 2010", flatsTotal: 1322.0, r1: 1428.1, r2: 1364.2, r3: 1262.1, r4: 1253.7, r5plus: 1531.4, housesTotal: 1144.0 },
+  { period: "3Q 2010", flatsTotal: 1332.6, r1: 1431.1, r2: 1389.1, r3: 1272.9, r4: 1255.2, r5plus: 1559.9, housesTotal: 1174.0 },
+  { period: "4Q 2010", flatsTotal: 1329.7, r1: 1407.6, r2: 1388.5, r3: 1267.2, r4: 1283.6, r5plus: 1453.8, housesTotal: 1144.8 },
+  { period: "1Q 2011", flatsTotal: 1319.5, r1: 1423.2, r2: 1369.8, r3: 1266.3, r4: 1244.7, r5plus: 1427.0, housesTotal: 1136.2 },
+  { period: "2Q 2011", flatsTotal: 1311.4, r1: 1419.1, r2: 1374.6, r3: 1253.1, r4: 1247.0, r5plus: 1350.4, housesTotal: 1117.0 },
+  { period: "3Q 2011", flatsTotal: 1307.5, r1: 1418.7, r2: 1363.7, r3: 1251.3, r4: 1244.0, r5plus: 1347.3, housesTotal: 1104.1 },
+  { period: "4Q 2011", flatsTotal: 1303.4, r1: 1412.1, r2: 1356.5, r3: 1251.0, r4: 1239.5, r5plus: 1364.7, housesTotal: 1088.8 },
+  { period: "1Q 2012", flatsTotal: 1299.6, r1: 1436.6, r2: 1348.4, r3: 1251.6, r4: 1201.4, r5plus: 1371.0, housesTotal: 1095.7 },
+  { period: "2Q 2012", flatsTotal: 1284.5, r1: 1399.8, r2: 1349.0, r3: 1228.9, r4: 1189.2, r5plus: 1345.1, housesTotal: 1104.0 },
+  { period: "3Q 2012", flatsTotal: 1293.1, r1: 1415.1, r2: 1349.0, r3: 1234.1, r4: 1226.8, r5plus: 1374.6, housesTotal: 1136.4 },
+  { period: "4Q 2012", flatsTotal: 1290.6, r1: 1413.5, r2: 1336.6, r3: 1233.3, r4: 1228.2, r5plus: 1397.8, housesTotal: 1164.4 },
+  { period: "1Q 2013", flatsTotal: 1294.2, r1: 1405.6, r2: 1341.9, r3: 1234.5, r4: 1231.0, r5plus: 1454.3, housesTotal: 1140.4 },
+  { period: "2Q 2013", flatsTotal: 1287.3, r1: 1423.8, r2: 1325.6, r3: 1218.4, r4: 1222.4, r5plus: 1392.4, housesTotal: 1132.9 },
+  { period: "3Q 2013", flatsTotal: 1282.1, r1: 1411.6, r2: 1321.3, r3: 1220.2, r4: 1221.0, r5plus: 1402.0, housesTotal: 1107.9 },
+  { period: "4Q 2013", flatsTotal: 1276.7, r1: 1394.6, r2: 1314.5, r3: 1215.8, r4: 1240.4, r5plus: 1368.7, housesTotal: 1104.5 },
+  { period: "1Q 2014", flatsTotal: 1283.2, r1: 1394.2, r2: 1322.5, r3: 1221.6, r4: 1257.0, r5plus: 1343.5, housesTotal: 1114.0 },
+  { period: "2Q 2014", flatsTotal: 1284.6, r1: 1390.0, r2: 1339.7, r3: 1217.9, r4: 1237.6, r5plus: 1399.8, housesTotal: 1089.8 },
+  { period: "3Q 2014", flatsTotal: 1285.2, r1: 1396.3, r2: 1334.1, r3: 1223.9, r4: 1229.2, r5plus: 1410.6, housesTotal: 1104.6 },
+  { period: "4Q 2014", flatsTotal: 1301.5, r1: 1418.6, r2: 1349.0, r3: 1243.3, r4: 1234.3, r5plus: 1438.4, housesTotal: 1101.6 },
+  { period: "1Q 2015", flatsTotal: 1322.8, r1: 1416.5, r2: 1372.4, r3: 1253.3, r4: 1289.1, r5plus: 1441.4, housesTotal: 1107.8 },
+  { period: "2Q 2015", flatsTotal: 1337.9, r1: 1446.0, r2: 1389.1, r3: 1281.3, r4: 1288.0, r5plus: 1408.0, housesTotal: 1087.2 },
+  { period: "3Q 2015", flatsTotal: 1356.6, r1: 1479.9, r2: 1407.3, r3: 1297.2, r4: 1302.8, r5plus: 1462.9, housesTotal: 1087.1 },
+  { period: "4Q 2015", flatsTotal: 1385.1, r1: 1532.2, r2: 1427.0, r3: 1314.9, r4: 1350.3, r5plus: 1457.2, housesTotal: 1073.0 },
+  { period: "1Q 2016", flatsTotal: 1413.1, r1: 1517.8, r2: 1450.2, r3: 1356.4, r4: 1394.4, r5plus: 1452.3, housesTotal: 1070.0 },
+  { period: "2Q 2016", flatsTotal: 1449.5, r1: 1573.1, r2: 1504.4, r3: 1380.2, r4: 1390.4, r5plus: 1550.9, housesTotal: 1102.4 },
+  { period: "3Q 2016", flatsTotal: 1479.1, r1: 1640.4, r2: 1538.0, r3: 1412.2, r4: 1411.3, r5plus: 1539.2, housesTotal: 1105.9 },
+  { period: "4Q 2016", flatsTotal: 1531.5, r1: 1740.7, r2: 1604.8, r3: 1456.5, r4: 1433.9, r5plus: 1582.4, housesTotal: 1087.0 },
+  { period: "1Q 2017", flatsTotal: 1569.8, r1: 1760.1, r2: 1667.6, r3: 1473.0, r4: 1462.5, r5plus: 1666.3, housesTotal: 1106.1 },
+  { period: "2Q 2017", flatsTotal: 1587.4, r1: 1745.5, r2: 1675.9, r3: 1501.9, r4: 1477.1, r5plus: 1647.0, housesTotal: 1143.0 },
+  { period: "3Q 2017", flatsTotal: 1603.0, r1: 1806.6, r2: 1697.1, r3: 1509.6, r4: 1488.5, r5plus: 1603.6, housesTotal: 1130.2 },
+  { period: "4Q 2017", flatsTotal: 1635.5, r1: 1839.9, r2: 1726.5, r3: 1550.5, r4: 1522.9, r5plus: 1565.5, housesTotal: 1111.8 },
+  { period: "1Q 2018", flatsTotal: 1677.0, r1: 1867.4, r2: 1763.6, r3: 1579.2, r4: 1617.2, r5plus: 1589.3, housesTotal: 1135.5 },
+  { period: "2Q 2018", flatsTotal: 1717.9, r1: 1943.8, r2: 1798.9, r3: 1616.4, r4: 1656.0, r5plus: 1598.1, housesTotal: 1163.5 },
+  { period: "3Q 2018", flatsTotal: 1722.0, r1: 1978.4, r2: 1809.1, r3: 1636.6, r4: 1611.2, r5plus: 1694.9, housesTotal: 1171.2 },
+  { period: "4Q 2018", flatsTotal: 1788.3, r1: 1990.2, r2: 1911.5, r3: 1654.1, r4: 1690.6, r5plus: 1829.3, housesTotal: 1167.8 },
+  { period: "1Q 2019", flatsTotal: 1828.6, r1: 2080.7, r2: 1925.2, r3: 1699.3, r4: 1740.4, r5plus: 1898.1, housesTotal: 1188.5 },
+  { period: "2Q 2019", flatsTotal: 1848.7, r1: 2071.3, r2: 1933.6, r3: 1756.5, r4: 1724.7, r5plus: 1952.3, housesTotal: 1204.7 },
+  { period: "3Q 2019", flatsTotal: 1898.1, r1: 2121.7, r2: 1982.5, r3: 1813.0, r4: 1750.5, r5plus: 2062.4, housesTotal: 1247.4 },
+  { period: "4Q 2019", flatsTotal: 1918.8, r1: 2181.7, r2: 2017.0, r3: 1815.3, r4: 1778.8, r5plus: 2110.2, housesTotal: 1232.3 },
+  { period: "1Q 2020", flatsTotal: 2005.9, r1: 2266.3, r2: 2107.6, r3: 1901.3, r4: 1860.2, r5plus: 2120.6, housesTotal: 1263.9 },
+  { period: "2Q 2020", flatsTotal: 2024.2, r1: 2335.8, r2: 2134.2, r3: 1900.7, r4: 1846.7, r5plus: 2140.8, housesTotal: 1296.3 },
+  { period: "3Q 2020", flatsTotal: 2054.5, r1: 2339.8, r2: 2178.9, r3: 1911.0, r4: 1914.8, r5plus: 2158.1, housesTotal: 1335.6 },
+  { period: "4Q 2020", flatsTotal: 2125.3, r1: 2404.1, r2: 2256.5, r3: 1979.4, r4: 1948.0, r5plus: 2195.8, housesTotal: 1369.2 },
+  { period: "1Q 2021", flatsTotal: 2234.1, r1: 2560.1, r2: 2338.3, r3: 2077.3, r4: 2061.4, r5plus: 2311.8, housesTotal: 1524.4 },
+  { period: "2Q 2021", flatsTotal: 2298.8, r1: 2617.2, r2: 2396.2, r3: 2154.7, r4: 2155.4, r5plus: 2333.5, housesTotal: 1669.1 },
+  { period: "3Q 2021", flatsTotal: 2404.4, r1: 2690.6, r2: 2539.7, r3: 2244.6, r4: 2265.6, r5plus: 2257.9, housesTotal: 1796.2 },
+  { period: "4Q 2021", flatsTotal: 2539.7, r1: 2899.0, r2: 2649.8, r3: 2383.9, r4: 2410.8, r5plus: 2317.2, housesTotal: 1831.3 },
+  { period: "1Q 2022", flatsTotal: 2760.5, r1: 3124.1, r2: 2917.3, r3: 2556.9, r4: 2574.0, r5plus: 2470.4, housesTotal: 1872.6 },
+  { period: "2Q 2022", flatsTotal: 2947.5, r1: 3310.3, r2: 3095.0, r3: 2746.4, r4: 2735.4, r5plus: 2960.0, housesTotal: 1986.8 },
+  { period: "3Q 2022", flatsTotal: 2982.5, r1: 3426.7, r2: 3133.5, r3: 2770.4, r4: 2740.0, r5plus: 2957.4, housesTotal: 2021.1 },
+  { period: "4Q 2022", flatsTotal: 2904.3, r1: 3351.9, r2: 3054.2, r3: 2674.8, r4: 2683.3, r5plus: 2737.1, housesTotal: 1974.6 },
+  { period: "1Q 2023", flatsTotal: 2795.9, r1: 3185.1, r2: 2912.3, r3: 2595.2, r4: 2607.6, r5plus: 2534.6, housesTotal: 1930.7 },
+  { period: "2Q 2023", flatsTotal: 2730.1, r1: 3106.9, r2: 2851.6, r3: 2525.3, r4: 2530.1, r5plus: 2631.4, housesTotal: 1947.2 },
+  { period: "3Q 2023", flatsTotal: 2702.7, r1: 3038.0, r2: 2849.8, r3: 2498.2, r4: 2521.2, r5plus: 2616.8, housesTotal: 1894.9 },
+  { period: "4Q 2023", flatsTotal: 2684.9, r1: 2993.8, r2: 2812.7, r3: 2475.1, r4: 2538.4, r5plus: 2643.9, housesTotal: 1911.7 },
+  { period: "1Q 2024", flatsTotal: 2689.4, r1: 3031.5, r2: 2812.0, r3: 2479.7, r4: 2534.9, r5plus: 2626.6, housesTotal: 1865.1 },
+  { period: "2Q 2024", flatsTotal: 2749.5, r1: 3081.2, r2: 2903.7, r3: 2515.5, r4: 2667.1, r5plus: 2653.7, housesTotal: 1931.2 },
+  { period: "3Q 2024", flatsTotal: 2815.3, r1: 3140.9, r2: 3008.1, r3: 2586.9, r4: 2659.0, r5plus: 2641.3, housesTotal: 1934.2 },
+  { period: "4Q 2024", flatsTotal: 2895.7, r1: 3341.1, r2: 3044.2, r3: 2684.4, r4: 2753.5, r5plus: 2756.7, housesTotal: 1978.2 },
+  { period: "1Q 2025", flatsTotal: 3041.1, r1: 3481.7, r2: 3234.8, r3: 2787.3, r4: 2867.4, r5plus: 2686.8, housesTotal: 2030.9 },
+  { period: "2Q 2025", flatsTotal: 3113.1, r1: 3615.3, r2: 3312.9, r3: 2853.9, r4: 2872.2, r5plus: 2880.3, housesTotal: 2098.2 },
+  { period: "3Q 2025", flatsTotal: 3176.7, r1: 3750.3, r2: 3362.0, r3: 2914.1, r4: 2944.1, r5plus: 2984.7, housesTotal: 2101.2 },
+  { period: "4Q 2025", flatsTotal: 3262.4, r1: 3819.5, r2: 3464.7, r3: 3015.1, r4: 3049.7, r5plus: 2974.9, housesTotal: 2138.9 },
+  { period: "1Q 2026", flatsTotal: 3377.7, r1: 4028.0, r2: 3596.3, r3: 3092.9, r4: 3149.2, r5plus: 2911.3, housesTotal: 2117.9 },
+]

@@ -1,0 +1,1125 @@
+"use client"
+
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react"
+
+export type Lang = "sk" | "en"
+
+// ─── Dictionary ──────────────────────────────────────────────────────────────
+// Flat, dot-namespaced keys. Slovak is the source of truth for this market;
+// English mirrors it.
+const dict: Record<Lang, Record<string, string>> = {
+  sk: {
+    // chrome
+    "navbar.estimate": "Odhad ceny",
+    "navbar.buyRent": "Kúpa vs nájom",
+    "navbar.market": "Trh",
+    "navbar.listings": "Inzeráty",
+    "navbar.pricing": "Cenník",
+    "navbar.engine": "Estima Engine™",
+    "navbar.contact": "Kontakt",
+    "navbar.signIn": "Prihlásiť sa",
+    "navbar.account": "Účet",
+    "navbar.signOut": "Odhlásiť sa",
+
+    // engine hero (valuation showcase cards)
+    "hero.priceLabel": "Odhadovaná trhová cena",
+    "hero.rangeLabel": "Spoľahlivé rozpätie",
+    "hero.attrSun": "Denné svetlo",
+    "hero.attrSunValue": "Výborné",
+    "hero.attrKitchen": "Moderná kuchyňa",
+    "hero.attrKitchenValue": "Vysoká kvalita",
+    "hero.attrVisual": "Vizuálna kvalita",
+    "hero.attrVisualValue": "8,6 / 10",
+    "hero.attrFloor": "Drevená podlaha",
+    "hero.attrFloorValue": "Prémiová",
+    "hero.attrReno": "Skóre rekonštrukcie",
+    "hero.attrRenoValue": "8,2 / 10",
+    "hero.metricPpsm": "Cena za m²",
+    "hero.metricRent": "Očakávaný mesačný nájom",
+    "hero.metricYield": "Hrubý výnos",
+    "hero.calcTitle": "Výpočet hodnoty",
+    "hero.calcComparable": "Porovnateľná trhová hodnota",
+    "hero.calcLocation": "Úprava za lokalitu",
+    "hero.calcAttributes": "Atribúty nehnuteľnosti",
+    "hero.calcInterior": "Kvalita interiéru",
+    "hero.calcCondition": "Stav a vek",
+    "hero.calcTiming": "Načasovanie trhu",
+    "hero.calcFinal": "Konečný odhad",
+
+    // engine
+    "engine.badge": "Model za každým ocenením",
+    "engine.title": "Estima Engine™",
+    "engine.heroPre": "XGBoost model trénovaný na",
+    "engine.heroAttrs": "desiatkach atribútov nehnuteľnosti",
+    "engine.heroPost":
+      " — architektúra overená na českom trhu, ktorá sa teraz učí na slovenských dátach.",
+    "engine.ctaOpen": "Otvoriť inzeráty",
+    "engine.ctaAnalyze": "Získať odhad ceny",
+    "engine.metric1": "Inzerátov v databáze",
+    "engine.metric2": "Krajov v pokrytí",
+    "engine.metric3": "Okresov v pokrytí",
+    "engine.metric4Value": "Denne",
+    "engine.metric4": "Aktualizácia dát",
+    "engine.archLabel": "Estima Engine",
+    "engine.archTitle": "Ako vzniká trhový odhad",
+    "engine.archSub":
+      "Estima premieňa tisíce realitných inzerátov na lokálne kalibrovaný cenový odhad s mierou spoľahlivosti.",
+    "engine.flowEngine": "Estima Engine",
+    "engine.phaseData": "Trhové dáta",
+    "engine.phaseEngine": "Estima Engine",
+    "engine.phaseResult": "Trhový odhad",
+    "engine.step1Title": "Zber trhových dát",
+    "engine.step1Body":
+      "Denný zber inzerátov zo slovenských realitných portálov. Každý inzerát sa uchováva v pôvodnej podobe, takže história sa nikdy neprepisuje.",
+    "engine.step2Title": "Čistenie a deduplikácia",
+    "engine.step2Body":
+      "Normalizácia údajov na štruktúrované polia, odstránenie duplicít a filtrovanie neúplných alebo chybných záznamov.",
+    "engine.step3Title": "Príprava modelových vstupov",
+    "engine.step3Body":
+      "Denné snímky nehnuteľností sa premieňajú na modelové príznaky bez úniku cieľovej premennej.",
+    "engine.step4Title": "Modely predaja a prenájmu",
+    "engine.step4Body":
+      "Samostatné modely pre predaj a prenájom zabraňujú miešaniu rozdielnych trhových segmentov.",
+    "engine.step5Title": "Lokálna kalibrácia",
+    "engine.step5Body":
+      "Odhady sa prispôsobujú mediánom a percentilom konkrétneho okresu a kraja.",
+    "engine.step6Title": "Nezávislé overenie presnosti",
+    "engine.step6Body":
+      "Každá nová verzia modelu sa testuje na dátach, ktoré počas tréningu nikdy nevidela.",
+    "engine.step7Title": "Trhový odhad",
+    "engine.step7Body":
+      "Výsledkom je cenové rozpätie s mierou spoľahlivosti — dátový odhad trhu, nie znalecký posudok.",
+    "engine.resExample": "Ilustračný príklad",
+    "engine.resValue": "Odhadovaná hodnota",
+    "engine.resRange": "Cenové rozpätie",
+    "engine.resConfidence": "Spoľahlivosť",
+    "engine.resConfidenceValue": "Vysoká",
+    "engine.resStatus": "Trhový odhad pripravený na rozhodnutie",
+    "engine.visualLabel": "Estima Vision",
+    "engine.visualTitle": "Stav interiéru ako merateľný príznak",
+    "engine.visualSub":
+      "Fotografie inzerátu sa skórujú počítačovým videním a do modelu vstupujú ako číselné príznaky.",
+    "engine.visualFeeds": "Skóre vstupujú do fázy 03 — príprava modelových vstupov",
+    "engine.va1": "Celkový stav",
+    "engine.va2": "Kvalita kuchyne",
+    "engine.va3": "Kvalita kúpeľne",
+    "engine.va4": "Kvalita podláh",
+    "engine.va5": "Denné svetlo",
+    "engine.va6": "Potreba rekonštrukcie",
+    "engine.va7": "Modernosť interiéru",
+    "engine.va8": "Kvalita fotografií",
+    "engine.va9": "Úroveň luxusu",
+    "engine.outLabel": "Výstup enginu",
+    "engine.outTitle": "Ceny a výnos pre každú nehnuteľnosť",
+    "engine.outSub": "Ukážkový výstup pre 2-izbový byt 56 m² v Košiciach.",
+    "engine.out1": "Ponuková cena",
+    "engine.out2": "Odhad transakčnej ceny",
+    "engine.out3": "Čistý nájom / mes.",
+    "engine.out4": "Čistý výnos",
+    "engine.ctaTitle": "Váš ďalší obchod je v dátach.",
+    "engine.ctaSub":
+      "Prezerajte inzeráty so živými dátami zo slovenského trhu — presné ocenenia prídu so spustením Estima Engine pre Slovensko.",
+
+    // contact
+    "contact.label": "Kontakt",
+    "contact.title": "Porozprávajme sa",
+    "contact.subtitle":
+      "Máte otázku, spätnú väzbu alebo nápad na spoluprácu? Radi sa ozveme.",
+    "contact.phoneLabel": "Telefón",
+    "contact.emailLabel": "E-mail",
+    "contact.officeLabel": "Kancelária",
+    "contact.respondTitle": "Odpovedáme rýchlo",
+    "contact.respondBody": "Väčšinu správ zodpovieme do 1 pracovného dňa.",
+    "contact.formTitle": "Napíšte nám",
+    "contact.formSub": "Vyplňte formulár a ozveme sa vám.",
+    "contact.name": "Meno",
+    "contact.namePlaceholder": "Vaše meno",
+    "contact.email": "E-mail",
+    "contact.emailPlaceholder": "vy@email.sk",
+    "contact.company": "Spoločnosť (nepovinné)",
+    "contact.companyPlaceholder": "Vaša spoločnosť",
+    "contact.message": "Správa",
+    "contact.messagePlaceholder": "Ako vám môžeme pomôcť?",
+    "contact.send": "Odoslať správu",
+    "contact.secure": "Vaše údaje sú v bezpečí a nikdy ich neposkytneme tretím stranám.",
+    "contact.sent": "Ďakujeme! Čoskoro sa vám ozveme.",
+    "contact.sendAnother": "Odoslať ďalšiu správu",
+
+    // sidebar
+    "nav.search": "Hľadať",
+    "nav.listings": "Inzeráty",
+    "nav.estimate": "Odhad ceny",
+    "nav.buyRent": "Kúpa vs nájom",
+    "nav.market": "Trh",
+    "nav.valuations": "Ocenenia",
+    "nav.dashboard": "Dashboard",
+    "nav.priceMap": "Mapa cien",
+    "nav.barometer": "Barometer",
+    "nav.opportunities": "Príležitosti",
+    "nav.portfolio": "Portfólio",
+    "nav.analyses": "Analýzy",
+    "nav.priceDrops": "Zľavy z cien",
+    "nav.saved": "Uložené",
+    "nav.upgrade": "Prejsť na PRO",
+    "nav.planBasic": "Plán Basic",
+    "nav.planPro": "Plán Pro",
+
+    // saved (ulozene)
+    "saved.title": "Uložené",
+    "saved.count": "{n} uložených inzerátov",
+    "saved.empty": "Zatiaľ nemáte žiadne uložené inzeráty.",
+    "saved.browse": "Prezerať inzeráty",
+    "saved.add": "Uložiť inzerát",
+    "saved.remove": "Odstrániť z uložených",
+
+    // price drops (zlavy)
+    "drops.title": "Zľavy z cien",
+    "drops.subtitle": "Nedávne zníženia cien naprieč sledovanými inzerátmi.",
+    "drops.empty": "Zatiaľ žiadne zníženia cien.",
+    "drops.emptyHint":
+      "Zmeny cien sa objavia po viacerých denných zberoch dát — pipeline porovnáva cenu každého inzerátu medzi dňami.",
+
+    // dashboard
+    "dash.title": "Dashboard",
+    "dash.subtitle": "Prehľad slovenského trhu zo živých dát.",
+    "dash.kpiTotal": "Inzerátov spolu",
+    "dash.kpiSale": "Na predaj",
+    "dash.kpiRent": "Na prenájom",
+    "dash.kpiPpsm": "Medián €/m² (predaj)",
+    "dash.kpiTowns": "Miest a obcí",
+    "dash.krajTitle": "Medián ceny za m² podľa kraja",
+    "dash.krajSub": "Predajné inzeráty s uvedenou plochou.",
+    "dash.tooltipMedian": "medián",
+    "dash.catTitle": "Rozdelenie podľa typu",
+    "dash.cat.apartments": "Byty",
+    "dash.cat.houses": "Domy",
+    "dash.cat.land": "Pozemky",
+    "dash.cat.commercial": "Komerčné",
+    "dash.cat.other": "Ostatné",
+
+    // opportunities (prilezitosti)
+    "opps.title": "Príležitosti",
+    "opps.subtitle": "{n} inzerátov výrazne pod mediánom svojho okresu",
+    "opps.empty": "Žiadne výrazne podhodnotené inzeráty.",
+    "opps.median": "Medián okresu",
+    "opps.comparables": "{n} porovnateľných",
+    "opps.disclaimer":
+      "Zľava je porovnanie ceny za m² s mediánom rovnakého typu nehnuteľnosti v rovnakom okrese (min. 4 porovnateľné inzeráty). Je to orientačný signál, nie ocenenie — nízka cena môže odrážať stav alebo polohu nehnuteľnosti.",
+
+    // portfolio
+    "portfolio.title": "Portfólio",
+    "portfolio.subtitle": "Vaše uložené nehnuteľnosti ako portfólio na jednom mieste.",
+    "portfolio.empty": "Portfólio je prázdne — uložte si inzeráty srdiečkom.",
+    "portfolio.kpiCount": "Nehnuteľností",
+    "portfolio.kpiValue": "Hodnota (predajné)",
+    "portfolio.kpiArea": "Plocha spolu",
+    "portfolio.kpiPpsm": "Priemer €/m²",
+    "portfolio.kpiKraje": "Krajov",
+    "portfolio.colName": "Inzerát",
+    "portfolio.colLocation": "Mesto",
+    "portfolio.colLayout": "Dispozícia",
+    "portfolio.colArea": "Plocha",
+    "portfolio.colPrice": "Cena",
+
+    // analyses (analyzy)
+    "analyses.title": "Analýzy",
+    "analyses.subtitle": "PDF reporty ocenenia pripravené pre klienta, zo živých inzerátov.",
+    "analyses.searchPlaceholder": "Hľadať podľa názvu, mesta alebo okresu…",
+    "analyses.listError": "Inzeráty sa nepodarilo načítať — beží backend?",
+    "analyses.noResults": "Žiadne inzeráty nezodpovedajú filtrom",
+    "analyses.listCount": "{n} inzerátov",
+    "analyses.generating": "Generujem report…",
+    "analyses.error": "Report nie je dostupný — skúste to znova",
+    "analyses.tab.all": "Všetko",
+    "analyses.tab.ready": "Pripravené",
+    "analyses.tab.drafts": "Rozpracované",
+    "analyses.tab.generated": "Vygenerované",
+    "analyses.filter.dealAll": "Predaj / prenájom",
+    "analyses.filter.sale": "Predaj",
+    "analyses.filter.rent": "Prenájom",
+    "analyses.filter.districtAll": "Všetky okresy",
+    "analyses.filter.layoutAll": "Všetky dispozície",
+    "analyses.filter.statusAll": "Všetky stavy",
+    "analyses.status.not_analysed": "Neanalyzované",
+    "analyses.status.ready": "Pripravený",
+    "analyses.status.missing_data": "Chýbajú dáta",
+    "analyses.status.pdf_generated": "PDF vygenerované",
+    "analyses.status.outdated_price": "Neaktuálna cena",
+    "analyses.header.updated": "Naposledy aktualizované {date}",
+    "analyses.header.generatePdf": "Vygenerovať PDF",
+    "analyses.header.preview": "Náhľad reportu",
+    "analyses.previewClose": "Zavrieť náhľad",
+    "analyses.header.editAssumptions": "Upraviť predpoklady",
+    "analyses.header.assumptionsHint":
+      "Úprava predpokladov (porovnateľné inzeráty, benchmark, korekcie) sa pripravuje.",
+    "analyses.value.title": "Odhadovaná hodnota",
+    "analyses.value.estimated": "Odhadovaná trhová hodnota",
+    "analyses.value.listingPrice": "Ponuková cena",
+    "analyses.value.difference": "Rozdiel vs. odhad",
+    "analyses.value.signal.under": "Pod trhom",
+    "analyses.value.signal.fair": "Férová cena",
+    "analyses.value.signal.above": "Nad trhom",
+    "analyses.comps.title": "Porovnateľné inzeráty",
+    "analyses.comps.address": "Inzerát",
+    "analyses.comps.layout": "Dispozícia",
+    "analyses.comps.area": "Plocha",
+    "analyses.comps.price": "Cena",
+    "analyses.comps.diff": "Rozdiel",
+    "analyses.comps.empty":
+      "Zatiaľ žiadne porovnateľné inzeráty. Pridajte ich z panela vľavo.",
+    "analyses.comps.add": "Pridať ako porovnateľný",
+    "analyses.comps.remove": "Odobrať porovnateľný",
+    "analyses.photo.title": "Analýza fotografií a stavu",
+    "analyses.photo.aiTag": "AI",
+    "analyses.photo.interior": "Stav interiéru",
+    "analyses.photo.renovation": "Úroveň rekonštrukcie",
+    "analyses.photo.quality": "Kvalita fotografií",
+    "analyses.photo.missing": "Chýbajúce miestnosti",
+    "analyses.photo.none": "Nič nechýba",
+    "analyses.photo.lowPhotoRisk": "Riziko: málo fotografií",
+    "analyses.photo.openImage": "Zobraziť fotografiu",
+    "analyses.photo.close": "Zavrieť",
+    "analyses.photo.prev": "Predchádzajúca fotografia",
+    "analyses.photo.next": "Ďalšia fotografia",
+    "analyses.level.high": "Vysoká",
+    "analyses.level.good": "Dobrá",
+    "analyses.level.average": "Priemerná",
+    "analyses.level.low": "Nízka",
+    "analyses.reno.modernized": "Modernizovaný",
+    "analyses.reno.renovated": "Po rekonštrukcii",
+    "analyses.reno.original": "Pôvodný stav",
+    "analyses.room.bathroom": "Kúpeľňa nie je na fotkách",
+    "analyses.room.kitchen": "Kuchyňa nie je na fotkách",
+    "analyses.location.title": "Lokalita a občianska vybavenosť",
+    "analyses.location.transport": "MHD / zastávka",
+    "analyses.location.grocery": "Potraviny",
+    "analyses.location.school": "Škola",
+    "analyses.location.park": "Park",
+    "analyses.location.restaurant": "Reštaurácie / kaviarne",
+    "analyses.pdf.title": "Sekcie PDF reportu",
+    "analyses.pdf.subtitle": "Čo bude súčasťou klientského reportu",
+    "analyses.pdf.section.overview": "Prehľad nehnuteľnosti",
+    "analyses.pdf.section.valuation": "Odhad hodnoty",
+    "analyses.pdf.section.market": "Porovnanie s trhom",
+    "analyses.pdf.section.comparables": "Porovnateľné inzeráty",
+    "analyses.pdf.section.location": "Lokalita a vybavenosť",
+    "analyses.pdf.section.photo": "Analýza fotografií",
+    "analyses.pdf.section.methodology": "Poznámky k metodike",
+    "analyses.pdf.export": "Exportovať klientské PDF",
+    "analyses.noListingsTitle": "Žiadne inzeráty na analýzu",
+    "analyses.noListingsText":
+      "V databáze zatiaľ nie sú žiadne inzeráty. Skontrolujte, či beží backend, alebo skúste obnoviť stránku.",
+    "analyses.goToSearch": "Prejsť na inzeráty",
+    "analyses.startTitle": "Vytvorte klientský oceňovací report",
+    "analyses.startHint": "Tri kroky od živého inzerátu k exportovanému PDF.",
+    "analyses.step.1.title": "Vyberte inzerát",
+    "analyses.step.1.text": "Zvoľte živý inzerát zo zoznamu vľavo.",
+    "analyses.step.2.title": "Skontrolujte ocenenie",
+    "analyses.step.2.text": "Prejdite odhad, porovnanie s trhom aj porovnateľné inzeráty.",
+    "analyses.step.3.title": "Exportujte PDF",
+    "analyses.step.3.text": "Vygenerujte report pripravený pre klienta.",
+    "analyses.market.title": "Porovnanie s trhom",
+    "analyses.market.district": "Medián okresu",
+    "analyses.market.similar": "Medián podobných inzerátov",
+    "analyses.market.nbs": "NBS index — {region}",
+    "analyses.market.nbsNational": "NBS index — Slovensko",
+    "analyses.market.selected": "Vybraný inzerát",
+    "analyses.market.vsMarket": "vs. okres",
+    "analyses.market.nbsNote":
+      "Priemerné realizované ceny bývania (NBS, {period}) — makro referencia za celý kraj, nie ocenenie tohto konkrétneho inzerátu.",
+
+    // map
+    "map.searchInView": "Hľadať pri posune mapy",
+    "map.expand": "Zväčšiť mapu",
+    "map.collapse": "Zmenšiť mapu",
+    "map.hide": "Skryť mapu",
+    "map.show": "Zobraziť mapu",
+
+    // sign in
+    "signin.title": "Prihlásenie",
+    "signin.byInvitationPre":
+      "Prihlásenie zatiaľ nie je spustené — prístup je na pozvánku.",
+    "signin.requestAccess": "Požiadať o prístup",
+    "signin.continueGoogle": "Pokračovať cez Google",
+    "signin.orEmail": "alebo e-mailom",
+    "signin.email": "E-mail",
+    "signin.password": "Heslo",
+    "signin.forgotPassword": "Zabudnuté heslo?",
+    "signin.submit": "Prihlásiť sa",
+    "signin.noAccount": "Nemáte účet?",
+    "signin.createAccount": "Vytvoriť účet",
+
+    // common
+    "common.loading": "Načítava sa…",
+    "common.from": "od",
+    "common.to": "do",
+
+    // listings (inzeraty)
+    "listings.title": "Inzeráty",
+    "listings.fromDb": "{n} inzerátov v databáze",
+    "listings.matchCount": "{n} z {total} inzerátov",
+    "listings.refresh": "Obnoviť",
+    "listings.searchPlaceholder": "Hľadať podľa názvu alebo mesta…",
+    "listings.dealAll": "Všetko",
+    "listings.dealSale": "Predaj",
+    "listings.dealRent": "Prenájom",
+    "listings.layout": "Dispozícia",
+    "listings.price": "Cena (€)",
+    "listings.area": "Plocha (m²)",
+    "listings.region": "Kraj",
+    "listings.allRegions": "Všetky kraje",
+    "listings.filtersActive": "Aktívne filtre: {n}",
+    "listings.clearAll": "Zrušiť filtre",
+    "listings.backendError": "Backend nie je dostupný",
+    "listings.backendHintPre": "Skontrolujte, či beží estima-sk-backend na",
+    "listings.noMatch": "Žiadne inzeráty nezodpovedajú filtrom.",
+    "listings.noneFound": "V databáze zatiaľ nie sú žiadne inzeráty.",
+    "listings.untitled": "Bez názvu",
+    "listings.priceNa": "Cena dohodou",
+    "listings.perMonth": "/mes.",
+    "listings.prev": "Predchádzajúca",
+    "listings.next": "Ďalšia",
+    "listings.page": "Strana",
+    "sort.newest": "Najnovšie",
+    "sort.priceAsc": "Cena vzostupne",
+    "sort.priceDesc": "Cena zostupne",
+    "sort.ppsmAsc": "€/m² vzostupne",
+    "sort.ppsmDesc": "€/m² zostupne",
+    "sort.areaDesc": "Najväčšia plocha",
+    "footer.tagline": "Realitná inteligencia pre slovenský trh.",
+    "footer.contact": "Kontakt",
+    "footer.disclaimer":
+      "Odhady sú orientačné a nie sú znaleckým posudkom ani ponukou.",
+
+    // landing
+    "landing.heroTitle": "Koľko stojí vaša nehnuteľnosť?",
+    "landing.heroSubtitle":
+      "Estima prináša dátový pohľad na slovenský realitný trh — orientačný odhad ceny, porovnanie kúpy s nájmom a trhové prehľady na jednom mieste.",
+    "landing.ctaEstimate": "Získať odhad ceny",
+    "landing.ctaBuyRent": "Kúpiť, či prenajať?",
+    "landing.feat1Title": "Odhad ceny za minútu",
+    "landing.feat1Body":
+      "Zadajte kraj, typ, stav a výmeru — dostanete orientačné cenové rozpätie ukotvené na štatistikách NBS.",
+    "landing.feat2Title": "Kúpa vs nájom",
+    "landing.feat2Body":
+      "Kalkulačka porovná 30 rokov hypotéky s nájmom a investovaním rozdielu — s grafom vývoja majetku.",
+    "landing.feat3Title": "Pripravené pre profesionálov",
+    "landing.feat3Body":
+      "Tarify pre maklérov a inštitúcie vrátane API a reportov s vlastnou značkou.",
+    "landing.statsNote":
+      "Priemerné ceny bývania podľa krajov (NBS, 2024) — základ orientačných odhadov.",
+
+    // estimate (odhad)
+    "estimate.title": "Orientačný odhad ceny",
+    "estimate.subtitle":
+      "Zadajte základné parametre nehnuteľnosti. Odhad vychádza z priemerných cien podľa krajov (NBS) a je orientačný.",
+    "estimate.region": "Kraj",
+    "estimate.type": "Typ nehnuteľnosti",
+    "estimate.typeFlat": "Byt",
+    "estimate.typeHouse": "Dom",
+    "estimate.condition": "Stav",
+    "estimate.condNew": "Novostavba",
+    "estimate.condRenovated": "Po rekonštrukcii",
+    "estimate.condOriginal": "Pôvodný stav",
+    "estimate.area": "Úžitková plocha",
+    "estimate.resultTitle": "Orientačné cenové rozpätie",
+    "estimate.perM2": "za m²",
+    "estimate.disclaimer":
+      "Toto je orientačný odhad z krajských priemerov — nezohľadňuje lokalitu v rámci kraja, poschodie, výhľad ani ďalšie parametre. Presný odhad z porovnateľných inzerátov pripravujeme so spustením Estima Engine pre Slovensko.",
+    "estimate.sourceNote": "Zdroj cenových hladín: NBS, priemery za rok 2024.",
+
+    // buy vs rent
+    "buyRent.title": "Kúpiť, či prenajať?",
+    "buyRent.subtitle":
+      "Porovnajte {years} rokov kúpy na hypotéku s nájmom a investovaním rozdielu.",
+    "buyRent.inputsTitle": "Vaša situácia",
+    "buyRent.propertyPrice": "Cena nehnuteľnosti",
+    "buyRent.monthlyRent": "Mesačný nájom",
+    "buyRent.mortgageRate": "Úrok hypotéky",
+    "buyRent.ltv": "Výška úveru (LTV)",
+    "buyRent.termYears": "Doba splácania",
+    "buyRent.inflation": "Inflácia",
+    "buyRent.investmentReturn": "Výnos investícií",
+    "buyRent.years": "rokov",
+    "buyRent.year": "Rok",
+    "buyRent.monthlyPayment": "Mesačná splátka hypotéky",
+    "buyRent.downPayment": "Potrebné vlastné zdroje",
+    "buyRent.finalWealth": "Čistý majetok po {years} rokoch",
+    "buyRent.verdictTitle": "Verdikt",
+    "buyRent.verdictBuy": "Kúpa vychádza lepšie",
+    "buyRent.verdictRent": "Nájom s investovaním vychádza lepšie",
+    "buyRent.verdictBy": "o {amount} po {years} rokoch",
+    "buyRent.breakeven": "Kúpa sa dostáva do vedenia v roku {year}",
+    "buyRent.noBreakeven": "Nájom zostáva vpredu počas celého horizontu",
+    "buyRent.chartTitle": "Čistý majetok v priebehu {years} rokov",
+    "buyRent.chartSubtitle":
+      "Vlastný kapitál v nehnuteľnosti + investície vs. investovaná akontácia + mesačný rozdiel",
+    "buyRent.buyer": "Kúpa",
+    "buyRent.renter": "Nájom + investície",
+    "buyRent.methodTitle": "Ako sa to počíta",
+    "buyRent.methodBody":
+      "Oba scenáre minú každý mesiac rovnakú sumu — kto platí za bývanie menej, investuje rozdiel pri zadanom výnose. Majetok kupujúceho je hodnota nehnuteľnosti (rastúca s infláciou) mínus zostávajúca hypotéka plus prípadné investície; nájomca na začiatku investuje akontáciu a nájom rastie s infláciou. Dane, údržba a transakčné náklady nie sú zahrnuté.",
+    "buyRent.cta": "Chcete vedieť, akú hodnotu má konkrétna nehnuteľnosť?",
+    "buyRent.ctaButton": "Získať odhad ceny",
+
+    // market insights (trh)
+    "market.title": "Vývoj cien nehnuteľností na Slovensku",
+    "market.subtitle":
+      "Priemerné ceny bývania podľa údajov NBS — celoštátny vývoj, členenie podľa krajov a podľa typu nehnuteľnosti. Dáta od roku 2002 do {period}.",
+    "market.tabNational": "Celoštátne",
+    "market.tabRegion": "Podľa kraja",
+    "market.tabType": "Podľa typu",
+    "market.metricPrice": "Cena €/m²",
+    "market.metricIndex": "Index (2002=100)",
+    "market.metricYoy": "Medziročne %",
+    "market.statLatestPrice": "Aktuálna cena",
+    "market.statYoy": "Medziročná zmena",
+    "market.statIndex": "Index 2002=100",
+    "market.statGrowth": "Rast od 2002",
+    "market.typeFlatsTotal": "Byty spolu",
+    "market.typeHousesTotal": "Domy spolu",
+    "market.type1r": "1-izbové",
+    "market.type2r": "2-izbové",
+    "market.type3r": "3-izbové",
+    "market.type4r": "4-izbové",
+    "market.type5r": "5+ izbové",
+    "market.sourceNote":
+      "Zdroj: Národná banka Slovenska (NBS), ceny rezidenčných nehnuteľností, €/m². Posledné obdobie: {period}.",
+    "market.methodTitle": "O týchto dátach",
+    "market.methodBody":
+      "Ide o oficiálne štatistiky NBS o cenách rezidenčných nehnuteľností. Body do roku 2004 sú ročné priemery, od roku 2005 ide o štvrťročné hodnoty. Index vychádza zo základne rok 2002 = 100. Ceny sú priemery a slúžia ako referencia trhu, nie ako znalecký posudok.",
+
+    // barometer
+    "baro.title": "Barometer trhu",
+    "baro.subtitle":
+      "Zohrieva sa slovenský realitný trh, alebo chladne? Kompozitné skóre 0–100 z reálnych signálov — ponukových cien, veľkosti ponuky, realizovaných cien NBS a zliav z cien.",
+    "baro.heatScore": "Teplota trhu",
+    "baro.band.cold": "Studený trh",
+    "baro.band.cool": "Chladnejší trh",
+    "baro.band.balanced": "Vyrovnaný trh",
+    "baro.band.warm": "Teplejší trh",
+    "baro.band.hot": "Horúci trh",
+    "baro.signals": "Signály",
+    "baro.signalsHint":
+      "Každý vstup posúva skóre o obmedzený počet bodov — výsledok je vždy vysvetliteľný.",
+    "baro.sigMomentum": "Ponukové ceny (30 dní)",
+    "baro.sigNbs": "Realizované ceny (NBS, QoQ)",
+    "baro.sigSupply": "Zmena ponuky (30 dní)",
+    "baro.sigDom": "Priemerný čas na trhu",
+    "baro.sigDrops": "Podiel inzerátov so zľavou",
+    "baro.noSignals": "Zatiaľ nie je dosť dát na výpočet signálov.",
+    "baro.youngData":
+      "Signály z inzerátov (čas na trhu, zľavy) sa zapoja po {min} dňoch zberu dát — zatiaľ {days} d.",
+    "baro.kpiMedian": "Medián ceny",
+    "baro.kpiSupply": "Aktívna ponuka",
+    "baro.kpiNbs": "NBS medzikvartálne",
+    "baro.kpiDom": "Čas na trhu",
+    "baro.kpi30d": "zmena za 30 dní",
+    "baro.kpiNbsHint": "Realizované ceny, {period}",
+    "baro.kpiDomHint": "priemer aktívnych inzerátov",
+    "baro.indexTitle": "Index ponukových cien",
+    "baro.indexHint":
+      "Denný medián ponukovej ceny za m² z našich snímok inzerátov.",
+    "baro.supplyTitle": "Vývoj ponuky",
+    "baro.supplyHint": "Počet aktívnych inzerátov v čase.",
+    "baro.noData": "Zatiaľ nie je dosť dát.",
+
+    // price heat map (mapa-cien)
+    "heat.title": "Mapa cien",
+    "heat.subtitle":
+      "Celý trh na jednej mape — okresy zafarbené podľa zvolenej vrstvy a rebríček, ktorý sa preraďuje podľa aktívnej metriky.",
+    "heat.layer.ppsm": "€/m²",
+    "heat.layer.supply": "Ponuka",
+    "heat.layer.drops": "Zľavy",
+    "heat.layer.new": "Nové",
+    "heat.districts": "Rebríček okresov",
+    "heat.districtsHint":
+      "Zoradené podľa aktívnej vrstvy; posledný stĺpec je počet inzerátov.",
+    "heat.noDistricts": "Žiadne okresy s dátami.",
+  },
+  en: {
+    // chrome
+    "navbar.estimate": "Price estimate",
+    "navbar.buyRent": "Buy vs Rent",
+    "navbar.market": "Market",
+    "navbar.listings": "Listings",
+    "navbar.pricing": "Pricing",
+    "navbar.engine": "Estima Engine™",
+    "navbar.contact": "Contact",
+    "navbar.signIn": "Sign in",
+    "navbar.account": "Account",
+    "navbar.signOut": "Sign out",
+
+    // engine hero (valuation showcase cards)
+    "hero.priceLabel": "Estimated market price",
+    "hero.rangeLabel": "Confident range",
+    "hero.attrSun": "Sun exposure",
+    "hero.attrSunValue": "Excellent",
+    "hero.attrKitchen": "Modern kitchen",
+    "hero.attrKitchenValue": "High quality",
+    "hero.attrVisual": "Visual quality",
+    "hero.attrVisualValue": "8.6 / 10",
+    "hero.attrFloor": "Wood flooring",
+    "hero.attrFloorValue": "Premium",
+    "hero.attrReno": "Renovation score",
+    "hero.attrRenoValue": "8.2 / 10",
+    "hero.metricPpsm": "Price per m²",
+    "hero.metricRent": "Expected monthly rent",
+    "hero.metricYield": "Gross yield",
+    "hero.calcTitle": "Value calculation",
+    "hero.calcComparable": "Comparable market value",
+    "hero.calcLocation": "Location adjustment",
+    "hero.calcAttributes": "Property attributes",
+    "hero.calcInterior": "Interior quality",
+    "hero.calcCondition": "Condition & age",
+    "hero.calcTiming": "Market timing",
+    "hero.calcFinal": "Final estimate",
+
+    // engine
+    "engine.badge": "The model behind every valuation",
+    "engine.title": "Estima Engine™",
+    "engine.heroPre": "An XGBoost model trained on",
+    "engine.heroAttrs": "dozens of property attributes",
+    "engine.heroPost":
+      " — an architecture proven on the Czech market, now learning from Slovak data.",
+    "engine.ctaOpen": "Browse listings",
+    "engine.ctaAnalyze": "Get a price estimate",
+    "engine.metric1": "Listings in the database",
+    "engine.metric2": "Regions covered",
+    "engine.metric3": "Districts covered",
+    "engine.metric4Value": "Daily",
+    "engine.metric4": "Data refresh",
+    "engine.archLabel": "Estima Engine",
+    "engine.archTitle": "How the market estimate is made",
+    "engine.archSub":
+      "Estima turns thousands of property listings into a locally calibrated price estimate with a confidence level.",
+    "engine.flowEngine": "Estima Engine",
+    "engine.phaseData": "Market data",
+    "engine.phaseEngine": "Estima Engine",
+    "engine.phaseResult": "Market estimate",
+    "engine.step1Title": "Market data collection",
+    "engine.step1Body":
+      "Daily collection of listings from Slovak property portals. Every listing is kept in its original form, so history is never overwritten.",
+    "engine.step2Title": "Cleaning & deduplication",
+    "engine.step2Body":
+      "Normalization into structured fields, removal of duplicates, and filtering of incomplete or invalid records.",
+    "engine.step3Title": "Model input preparation",
+    "engine.step3Body":
+      "Daily property snapshots are turned into model features with no target-variable leakage.",
+    "engine.step4Title": "Sale & rent models",
+    "engine.step4Body":
+      "Separate models for sale and rent prevent mixing different market segments.",
+    "engine.step5Title": "Local calibration",
+    "engine.step5Body":
+      "Estimates are adjusted to the medians and percentiles of the specific district and region.",
+    "engine.step6Title": "Independent accuracy validation",
+    "engine.step6Body":
+      "Every new model version is tested on data it never saw during training.",
+    "engine.step7Title": "Market estimate",
+    "engine.step7Body":
+      "The result is a price range with a confidence level — a data-driven market estimate, not a certified appraisal.",
+    "engine.resExample": "Illustrative example",
+    "engine.resValue": "Estimated value",
+    "engine.resRange": "Price range",
+    "engine.resConfidence": "Confidence",
+    "engine.resConfidenceValue": "High",
+    "engine.resStatus": "Market estimate ready for decision-making",
+    "engine.visualLabel": "Estima Vision",
+    "engine.visualTitle": "Interior condition becomes a measurable feature",
+    "engine.visualSub":
+      "Listing photos are scored by computer vision and enter the model as numeric features.",
+    "engine.visualFeeds": "Scores feed stage 03 — model input preparation",
+    "engine.va1": "Overall condition",
+    "engine.va2": "Kitchen quality",
+    "engine.va3": "Bathroom quality",
+    "engine.va4": "Floor quality",
+    "engine.va5": "Natural light",
+    "engine.va6": "Renovation need",
+    "engine.va7": "Interior modernity",
+    "engine.va8": "Photo quality",
+    "engine.va9": "Luxury level",
+    "engine.outLabel": "Engine output",
+    "engine.outTitle": "Prices and a yield, per property",
+    "engine.outSub": "Example output for a 2-room, 56 m² apartment in Košice.",
+    "engine.out1": "Asking price",
+    "engine.out2": "Transaction price estimate",
+    "engine.out3": "Net rent / mo",
+    "engine.out4": "Net yield",
+    "engine.ctaTitle": "Your next deal is in the data.",
+    "engine.ctaSub":
+      "Browse listings with live Slovak market data — precise valuations arrive with the launch of the Estima Engine for Slovakia.",
+
+    // contact
+    "contact.label": "Contact",
+    "contact.title": "Let's talk",
+    "contact.subtitle":
+      "Have a question, feedback or partnership idea? We'd love to hear from you.",
+    "contact.phoneLabel": "Phone",
+    "contact.emailLabel": "Email",
+    "contact.officeLabel": "Office",
+    "contact.respondTitle": "We respond fast",
+    "contact.respondBody": "Most messages are answered within 1 business day.",
+    "contact.formTitle": "Send us a message",
+    "contact.formSub": "Fill out the form and we'll get back to you.",
+    "contact.name": "Name",
+    "contact.namePlaceholder": "Your name",
+    "contact.email": "Email",
+    "contact.emailPlaceholder": "you@email.com",
+    "contact.company": "Company (optional)",
+    "contact.companyPlaceholder": "Your company",
+    "contact.message": "Message",
+    "contact.messagePlaceholder": "How can we help?",
+    "contact.send": "Send message",
+    "contact.secure": "Your information is secure and will never be shared.",
+    "contact.sent": "Thanks! We'll get back to you soon.",
+    "contact.sendAnother": "Send another message",
+
+    // sidebar
+    "nav.search": "Search",
+    "nav.listings": "Listings",
+    "nav.estimate": "Price estimate",
+    "nav.buyRent": "Buy vs Rent",
+    "nav.market": "Market",
+    "nav.valuations": "Valuations",
+    "nav.dashboard": "Dashboard",
+    "nav.priceMap": "Price map",
+    "nav.barometer": "Barometer",
+    "nav.opportunities": "Opportunities",
+    "nav.portfolio": "Portfolio",
+    "nav.analyses": "Analyses",
+    "nav.priceDrops": "Price drops",
+    "nav.saved": "Saved",
+    "nav.upgrade": "Upgrade to PRO",
+    "nav.planBasic": "Basic plan",
+    "nav.planPro": "Pro plan",
+
+    // saved (ulozene)
+    "saved.title": "Saved",
+    "saved.count": "{n} saved listings",
+    "saved.empty": "You have no saved listings yet.",
+    "saved.browse": "Browse listings",
+    "saved.add": "Save listing",
+    "saved.remove": "Remove from saved",
+
+    // price drops (zlavy)
+    "drops.title": "Price drops",
+    "drops.subtitle": "Recent price reductions across tracked listings.",
+    "drops.empty": "No price reductions yet.",
+    "drops.emptyHint":
+      "Price changes appear after multiple daily data collections — the pipeline compares each listing's price between days.",
+
+    // dashboard
+    "dash.title": "Dashboard",
+    "dash.subtitle": "Slovak market overview from live data.",
+    "dash.kpiTotal": "Total listings",
+    "dash.kpiSale": "For sale",
+    "dash.kpiRent": "For rent",
+    "dash.kpiPpsm": "Median €/m² (sale)",
+    "dash.kpiTowns": "Towns covered",
+    "dash.krajTitle": "Median price per m² by region",
+    "dash.krajSub": "Sale listings with a known area.",
+    "dash.tooltipMedian": "median",
+    "dash.catTitle": "Breakdown by type",
+    "dash.cat.apartments": "Apartments",
+    "dash.cat.houses": "Houses",
+    "dash.cat.land": "Land",
+    "dash.cat.commercial": "Commercial",
+    "dash.cat.other": "Other",
+
+    // opportunities (prilezitosti)
+    "opps.title": "Opportunities",
+    "opps.subtitle": "{n} listings priced well below their district median",
+    "opps.empty": "No significantly underpriced listings.",
+    "opps.median": "District median",
+    "opps.comparables": "{n} comparables",
+    "opps.disclaimer":
+      "The discount compares price per m² with the median of the same property type in the same district (min. 4 comparables). It is an indicative signal, not a valuation — a low price may reflect the property's condition or location.",
+
+    // portfolio
+    "portfolio.title": "Portfolio",
+    "portfolio.subtitle": "Your saved properties as a portfolio in one place.",
+    "portfolio.empty": "The portfolio is empty — save listings with the heart.",
+    "portfolio.kpiCount": "Properties",
+    "portfolio.kpiValue": "Value (sale)",
+    "portfolio.kpiArea": "Total area",
+    "portfolio.kpiPpsm": "Avg €/m²",
+    "portfolio.kpiKraje": "Regions",
+    "portfolio.colName": "Listing",
+    "portfolio.colLocation": "Town",
+    "portfolio.colLayout": "Layout",
+    "portfolio.colArea": "Area",
+    "portfolio.colPrice": "Price",
+
+    // analyses (analyzy)
+    "analyses.title": "Analyses",
+    "analyses.subtitle": "Client-ready valuation PDF reports for live listings.",
+    "analyses.searchPlaceholder": "Search by title, town or district…",
+    "analyses.listError": "Could not load listings — is the backend running?",
+    "analyses.noResults": "No listings match",
+    "analyses.listCount": "{n} listings",
+    "analyses.generating": "Generating report…",
+    "analyses.error": "Report unavailable — try again",
+    "analyses.tab.all": "All",
+    "analyses.tab.ready": "Ready",
+    "analyses.tab.drafts": "Drafts",
+    "analyses.tab.generated": "Generated",
+    "analyses.filter.dealAll": "Sale / Rent",
+    "analyses.filter.sale": "For sale",
+    "analyses.filter.rent": "For rent",
+    "analyses.filter.districtAll": "All districts",
+    "analyses.filter.layoutAll": "All layouts",
+    "analyses.filter.statusAll": "All statuses",
+    "analyses.status.not_analysed": "Not analysed",
+    "analyses.status.ready": "Ready",
+    "analyses.status.missing_data": "Missing data",
+    "analyses.status.pdf_generated": "PDF generated",
+    "analyses.status.outdated_price": "Outdated price",
+    "analyses.header.updated": "Last updated {date}",
+    "analyses.header.generatePdf": "Generate PDF",
+    "analyses.header.preview": "Preview report",
+    "analyses.previewClose": "Close preview",
+    "analyses.header.editAssumptions": "Edit assumptions",
+    "analyses.header.assumptionsHint":
+      "Assumption editing (comparables, benchmark, adjustments) is coming soon.",
+    "analyses.value.title": "Estimated value",
+    "analyses.value.estimated": "Estimated market value",
+    "analyses.value.listingPrice": "Listing price",
+    "analyses.value.difference": "Difference vs. estimate",
+    "analyses.value.signal.under": "Under market",
+    "analyses.value.signal.fair": "Fairly priced",
+    "analyses.value.signal.above": "Above market",
+    "analyses.comps.title": "Comparable listings",
+    "analyses.comps.address": "Listing",
+    "analyses.comps.layout": "Layout",
+    "analyses.comps.area": "Area",
+    "analyses.comps.price": "Price",
+    "analyses.comps.diff": "Diff.",
+    "analyses.comps.empty": "No comparables yet. Add listings from the panel on the left.",
+    "analyses.comps.add": "Add as comparable",
+    "analyses.comps.remove": "Remove comparable",
+    "analyses.photo.title": "Photo & condition analysis",
+    "analyses.photo.aiTag": "AI",
+    "analyses.photo.interior": "Interior condition",
+    "analyses.photo.renovation": "Renovation level",
+    "analyses.photo.quality": "Photo quality",
+    "analyses.photo.missing": "Missing rooms",
+    "analyses.photo.none": "None flagged",
+    "analyses.photo.lowPhotoRisk": "Risk: low number of photos",
+    "analyses.photo.openImage": "View photo",
+    "analyses.photo.close": "Close",
+    "analyses.photo.prev": "Previous photo",
+    "analyses.photo.next": "Next photo",
+    "analyses.level.high": "High",
+    "analyses.level.good": "Good",
+    "analyses.level.average": "Average",
+    "analyses.level.low": "Low",
+    "analyses.reno.modernized": "Modernized",
+    "analyses.reno.renovated": "Renovated",
+    "analyses.reno.original": "Original",
+    "analyses.room.bathroom": "Bathroom not visible",
+    "analyses.room.kitchen": "Kitchen not visible",
+    "analyses.location.title": "Location & amenities",
+    "analyses.location.transport": "Public transport",
+    "analyses.location.grocery": "Grocery",
+    "analyses.location.school": "School",
+    "analyses.location.park": "Park",
+    "analyses.location.restaurant": "Restaurants / cafés",
+    "analyses.pdf.title": "PDF report sections",
+    "analyses.pdf.subtitle": "What will be included in the client report",
+    "analyses.pdf.section.overview": "Property overview",
+    "analyses.pdf.section.valuation": "Estimated valuation",
+    "analyses.pdf.section.market": "Market comparison",
+    "analyses.pdf.section.comparables": "Comparable listings",
+    "analyses.pdf.section.location": "Location amenities",
+    "analyses.pdf.section.photo": "Photo condition analysis",
+    "analyses.pdf.section.methodology": "Methodology notes",
+    "analyses.pdf.export": "Export client PDF",
+    "analyses.noListingsTitle": "No listings available for analysis",
+    "analyses.noListingsText":
+      "There are no listings in the database yet. Check that the backend is running, or try refreshing.",
+    "analyses.goToSearch": "Go to listings",
+    "analyses.startTitle": "Build a client-ready valuation report",
+    "analyses.startHint": "Three steps from a live listing to an exported PDF.",
+    "analyses.step.1.title": "Choose a listing",
+    "analyses.step.1.text": "Pick a live listing from the selector on the left.",
+    "analyses.step.2.title": "Review valuation",
+    "analyses.step.2.text": "Check the estimate, market comparison and comparables.",
+    "analyses.step.3.title": "Export a PDF",
+    "analyses.step.3.text": "Generate a client-ready report to share.",
+    "analyses.market.title": "Market comparison",
+    "analyses.market.district": "District median",
+    "analyses.market.similar": "Similar listings median",
+    "analyses.market.nbs": "NBS index — {region}",
+    "analyses.market.nbsNational": "NBS index — Slovakia",
+    "analyses.market.selected": "Selected listing",
+    "analyses.market.vsMarket": "vs. district",
+    "analyses.market.nbsNote":
+      "Average realized residential prices (NBS, {period}) — a macro reference for the whole region, not a valuation of this specific listing.",
+
+    // map
+    "map.searchInView": "Search as I move the map",
+    "map.expand": "Expand map",
+    "map.collapse": "Collapse map",
+    "map.hide": "Hide map",
+    "map.show": "Show map",
+
+    // sign in
+    "signin.title": "Sign in",
+    "signin.byInvitationPre":
+      "Sign-in is not live yet — access is by invitation.",
+    "signin.requestAccess": "Request access",
+    "signin.continueGoogle": "Continue with Google",
+    "signin.orEmail": "or with e-mail",
+    "signin.email": "E-mail",
+    "signin.password": "Password",
+    "signin.forgotPassword": "Forgot password?",
+    "signin.submit": "Sign in",
+    "signin.noAccount": "No account?",
+    "signin.createAccount": "Create account",
+
+    // common
+    "common.loading": "Loading…",
+    "common.from": "from",
+    "common.to": "to",
+
+    // listings (inzeraty)
+    "listings.title": "Listings",
+    "listings.fromDb": "{n} listings in the database",
+    "listings.matchCount": "{n} of {total} listings",
+    "listings.refresh": "Refresh",
+    "listings.searchPlaceholder": "Search by title or town…",
+    "listings.dealAll": "All",
+    "listings.dealSale": "For sale",
+    "listings.dealRent": "For rent",
+    "listings.layout": "Layout",
+    "listings.price": "Price (€)",
+    "listings.area": "Area (m²)",
+    "listings.region": "Region",
+    "listings.allRegions": "All regions",
+    "listings.filtersActive": "Active filters: {n}",
+    "listings.clearAll": "Clear filters",
+    "listings.backendError": "Backend is not reachable",
+    "listings.backendHintPre": "Check that estima-sk-backend is running at",
+    "listings.noMatch": "No listings match the filters.",
+    "listings.noneFound": "No listings in the database yet.",
+    "listings.untitled": "Untitled",
+    "listings.priceNa": "Price on request",
+    "listings.perMonth": "/mo",
+    "listings.prev": "Previous",
+    "listings.next": "Next",
+    "listings.page": "Page",
+    "sort.newest": "Newest",
+    "sort.priceAsc": "Price ascending",
+    "sort.priceDesc": "Price descending",
+    "sort.ppsmAsc": "€/m² ascending",
+    "sort.ppsmDesc": "€/m² descending",
+    "sort.areaDesc": "Largest area",
+    "footer.tagline": "Property intelligence for the Slovak market.",
+    "footer.contact": "Contact",
+    "footer.disclaimer":
+      "Estimates are indicative and are not an expert appraisal or an offer.",
+
+    // landing
+    "landing.heroTitle": "What is your property worth?",
+    "landing.heroSubtitle":
+      "Estima brings a data-driven view of the Slovak property market — an indicative price estimate, a buy-vs-rent comparison and market insights in one place.",
+    "landing.ctaEstimate": "Get a price estimate",
+    "landing.ctaBuyRent": "Buy or rent?",
+    "landing.feat1Title": "An estimate in a minute",
+    "landing.feat1Body":
+      "Enter region, type, condition and area — you get an indicative price range anchored to NBS statistics.",
+    "landing.feat2Title": "Buy vs rent",
+    "landing.feat2Body":
+      "The calculator compares 30 years of a mortgage against renting and investing the difference — with a wealth chart.",
+    "landing.feat3Title": "Ready for professionals",
+    "landing.feat3Body":
+      "Plans for agents and institutions, including an API and reports with your own branding.",
+    "landing.statsNote":
+      "Average housing prices by region (NBS, 2024) — the basis of the indicative estimates.",
+
+    // estimate (odhad)
+    "estimate.title": "Indicative price estimate",
+    "estimate.subtitle":
+      "Enter the basic parameters of the property. The estimate is based on average regional prices (NBS) and is indicative.",
+    "estimate.region": "Region",
+    "estimate.type": "Property type",
+    "estimate.typeFlat": "Flat",
+    "estimate.typeHouse": "House",
+    "estimate.condition": "Condition",
+    "estimate.condNew": "New build",
+    "estimate.condRenovated": "Renovated",
+    "estimate.condOriginal": "Original condition",
+    "estimate.area": "Usable area",
+    "estimate.resultTitle": "Indicative price range",
+    "estimate.perM2": "per m²",
+    "estimate.disclaimer":
+      "This is an indicative estimate from regional averages — it does not account for the location within the region, floor, view or other parameters. A precise estimate from comparable listings is coming with the launch of the Estima Engine for Slovakia.",
+    "estimate.sourceNote": "Price level source: NBS, 2024 averages.",
+
+    // buy vs rent
+    "buyRent.title": "Buy or rent?",
+    "buyRent.subtitle":
+      "Compare {years} years of buying with a mortgage against renting and investing the difference.",
+    "buyRent.inputsTitle": "Your situation",
+    "buyRent.propertyPrice": "Property price",
+    "buyRent.monthlyRent": "Monthly rent",
+    "buyRent.mortgageRate": "Mortgage rate",
+    "buyRent.ltv": "Loan-to-value (LTV)",
+    "buyRent.termYears": "Mortgage term",
+    "buyRent.inflation": "Inflation",
+    "buyRent.investmentReturn": "Investment return",
+    "buyRent.years": "yrs",
+    "buyRent.year": "Year",
+    "buyRent.monthlyPayment": "Monthly mortgage payment",
+    "buyRent.downPayment": "Own funds needed",
+    "buyRent.finalWealth": "Net wealth after {years} years",
+    "buyRent.verdictTitle": "Verdict",
+    "buyRent.verdictBuy": "Buying comes out ahead",
+    "buyRent.verdictRent": "Renting & investing comes out ahead",
+    "buyRent.verdictBy": "by {amount} after {years} years",
+    "buyRent.breakeven": "Buying pulls ahead in year {year}",
+    "buyRent.noBreakeven": "Renting stays ahead over the whole horizon",
+    "buyRent.chartTitle": "Net wealth over {years} years",
+    "buyRent.chartSubtitle":
+      "Property equity + investments vs. invested down payment + monthly difference",
+    "buyRent.buyer": "Buy",
+    "buyRent.renter": "Rent & invest",
+    "buyRent.methodTitle": "How it's calculated",
+    "buyRent.methodBody":
+      "Both scenarios spend the same amount each month — whoever pays less for housing invests the difference at the given return. The buyer's wealth is the property value (growing with inflation) minus the remaining mortgage, plus any investments; the renter starts by investing the down payment and rent grows with inflation. Taxes, maintenance and transaction costs are not included.",
+    "buyRent.cta": "Want to know what a specific property is worth?",
+    "buyRent.ctaButton": "Get a price estimate",
+
+    // market insights (trh)
+    "market.title": "Development of residential property prices in Slovakia",
+    "market.subtitle":
+      "Average housing prices from NBS data — national development, a breakdown by region and by property type. Data from 2002 to {period}.",
+    "market.tabNational": "National",
+    "market.tabRegion": "By region",
+    "market.tabType": "By type",
+    "market.metricPrice": "Price €/m²",
+    "market.metricIndex": "Index (2002=100)",
+    "market.metricYoy": "Year-on-year %",
+    "market.statLatestPrice": "Latest price",
+    "market.statYoy": "Year-on-year change",
+    "market.statIndex": "Index 2002=100",
+    "market.statGrowth": "Growth since 2002",
+    "market.typeFlatsTotal": "Flats total",
+    "market.typeHousesTotal": "Houses total",
+    "market.type1r": "1-room",
+    "market.type2r": "2-room",
+    "market.type3r": "3-room",
+    "market.type4r": "4-room",
+    "market.type5r": "5+ room",
+    "market.sourceNote":
+      "Source: National Bank of Slovakia (NBS), residential property prices, €/m². Latest period: {period}.",
+    "market.methodTitle": "About this data",
+    "market.methodBody":
+      "These are the official NBS residential property price statistics. Points up to 2004 are annual averages; from 2005 they are quarterly values. The index is based on 2002 = 100. Prices are averages and serve as a market reference, not an expert appraisal.",
+
+    // barometer
+    "baro.title": "Market barometer",
+    "baro.subtitle":
+      "Is the Slovak property market heating up or cooling down? A composite 0–100 score from real signals — asking prices, supply, realized NBS prices and price cuts.",
+    "baro.heatScore": "Market heat",
+    "baro.band.cold": "Cold market",
+    "baro.band.cool": "Cooling market",
+    "baro.band.balanced": "Balanced market",
+    "baro.band.warm": "Warming market",
+    "baro.band.hot": "Hot market",
+    "baro.signals": "Signals",
+    "baro.signalsHint":
+      "Each input shifts the score by a bounded number of points — the result is always explainable.",
+    "baro.sigMomentum": "Asking prices (30 days)",
+    "baro.sigNbs": "Realized prices (NBS, QoQ)",
+    "baro.sigSupply": "Supply change (30 days)",
+    "baro.sigDom": "Average time on market",
+    "baro.sigDrops": "Share of listings with a cut",
+    "baro.noSignals": "Not enough data to compute signals yet.",
+    "baro.youngData":
+      "Listing-level signals (time on market, price cuts) activate after {min} days of data collection — {days} d so far.",
+    "baro.kpiMedian": "Median price",
+    "baro.kpiSupply": "Active supply",
+    "baro.kpiNbs": "NBS quarter-on-quarter",
+    "baro.kpiDom": "Time on market",
+    "baro.kpi30d": "30-day change",
+    "baro.kpiNbsHint": "Realized prices, {period}",
+    "baro.kpiDomHint": "average across active listings",
+    "baro.indexTitle": "Asking-price index",
+    "baro.indexHint":
+      "Daily median asking price per m² from our listing snapshots.",
+    "baro.supplyTitle": "Supply over time",
+    "baro.supplyHint": "Number of active listings over time.",
+    "baro.noData": "Not enough data yet.",
+
+    // price heat map (mapa-cien)
+    "heat.title": "Price map",
+    "heat.subtitle":
+      "The whole market on one map — districts coloured by the selected layer, with a ranking that re-orders by the active metric.",
+    "heat.layer.ppsm": "€/m²",
+    "heat.layer.supply": "Supply",
+    "heat.layer.drops": "Cuts",
+    "heat.layer.new": "New",
+    "heat.districts": "District ranking",
+    "heat.districtsHint":
+      "Ordered by the active layer; the last column is the listing count.",
+    "heat.noDistricts": "No districts with data.",
+  },
+}
+
+type Vars = Record<string, string | number>
+
+interface I18nValue {
+  lang: Lang
+  setLang: (l: Lang) => void
+  t: (key: string, vars?: Vars) => string
+}
+
+const I18nContext = createContext<I18nValue | null>(null)
+
+const STORAGE_KEY = "estima-sk.lang"
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [lang, setLangState] = useState<Lang>("sk")
+
+  // Restore persisted choice on mount.
+  useEffect(() => {
+    const saved = (typeof window !== "undefined" &&
+      window.localStorage.getItem(STORAGE_KEY)) as Lang | null
+    if (saved === "sk" || saved === "en") setLangState(saved)
+  }, [])
+
+  // Keep <html lang> and storage in sync.
+  useEffect(() => {
+    if (typeof document !== "undefined") document.documentElement.lang = lang
+    if (typeof window !== "undefined") window.localStorage.setItem(STORAGE_KEY, lang)
+  }, [lang])
+
+  const t = (key: string, vars?: Vars) => {
+    let str = dict[lang][key] ?? dict.sk[key] ?? key
+    if (vars) {
+      for (const [k, v] of Object.entries(vars)) {
+        str = str.replace(new RegExp(`\\{${k}\\}`, "g"), String(v))
+      }
+    }
+    return str
+  }
+
+  return (
+    <I18nContext.Provider value={{ lang, setLang: setLangState, t }}>
+      {children}
+    </I18nContext.Provider>
+  )
+}
+
+export function useI18n(): I18nValue {
+  const ctx = useContext(I18nContext)
+  if (!ctx) throw new Error("useI18n must be used within a LanguageProvider")
+  return ctx
+}
