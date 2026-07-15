@@ -15,6 +15,7 @@ import {
   LineChart,
   TrendingDown,
   Lock,
+  LogIn,
   ChevronLeft,
   ChevronRight,
   Menu,
@@ -23,7 +24,6 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n"
-import { currentUser } from "@/lib/user"
 
 type NavItem = {
   href: string
@@ -49,14 +49,27 @@ const navItems: NavItem[] = [
   { href: "/zlavy", icon: TrendingDown, key: "nav.priceDrops", locked: true },
 ]
 
+// Marketing links — shown inline in the navbar on desktop; folded into the
+// mobile drawer so small screens can still reach them.
+const marketingItems: { href: string; key: string }[] = [
+  { href: "/engine", key: "navbar.engine" },
+  { href: "/trh", key: "navbar.market" },
+  { href: "/cennik", key: "navbar.pricing" },
+  { href: "/kupa-alebo-prenajom", key: "navbar.buyRent" },
+  { href: "/kontakt", key: "navbar.contact" },
+]
+
 // The sidebar surface itself — shared between the persistent desktop rail
-// and the mobile overlay drawer (where `collapsed` is always false).
+// and the mobile overlay drawer (where `collapsed` is always false and
+// `showMarketing` is true).
 function SidebarBody({
   collapsed,
+  showMarketing,
   mode,
   setMode,
 }: {
   collapsed: boolean
+  showMarketing?: boolean
   mode: "basic" | "pro"
   setMode: (m: "basic" | "pro") => void
 }) {
@@ -112,6 +125,21 @@ function SidebarBody({
             </Link>
           )
         })}
+
+        {/* Marketing links (mobile drawer only) */}
+        {showMarketing && (
+          <div className="mt-1 border-t border-white/10 pt-1">
+            {marketingItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center px-3 py-2 text-[11px] font-medium text-gray-500 hover:text-gray-200 transition-colors select-none"
+              >
+                {t(item.key)}
+              </Link>
+            ))}
+          </div>
+        )}
       </nav>
 
       {/* Upgrade CTA */}
@@ -131,26 +159,17 @@ function SidebarBody({
         )}
       </div>
 
-      {/* User */}
+      {/* Sign in — no auth backend yet, so the app is always signed out. */}
       <Link
         href="/prihlasenie"
         className={cn(
-          "flex items-center gap-2 px-2 py-2.5 border-t border-white/5 shrink-0 hover:bg-white/5 transition-colors",
-          collapsed && "justify-center"
+          "flex items-center gap-2 px-3 py-2.5 border-t border-white/5 shrink-0 text-gray-400 hover:text-white hover:bg-white/5 transition-colors",
+          collapsed && "justify-center px-0"
         )}
       >
-        <div className="w-7 h-7 rounded-full bg-gray-700 flex items-center justify-center text-[11px] text-white font-semibold shrink-0">
-          {currentUser.initials}
-        </div>
+        <LogIn className="h-4 w-4 shrink-0" />
         {!collapsed && (
-          <div className="min-w-0">
-            <p className="text-[10px] text-gray-300 font-medium truncate">
-              {currentUser.name}
-            </p>
-            <p className="text-[8px] text-gray-600 uppercase tracking-wider">
-              {mode === "pro" ? t("nav.planPro") : t("nav.planBasic")}
-            </p>
-          </div>
+          <span className="text-[11px] font-medium">{t("navbar.signIn")}</span>
         )}
       </Link>
     </>
@@ -209,7 +228,7 @@ export default function Sidebar() {
             >
               <X className="h-4 w-4" />
             </button>
-            <SidebarBody collapsed={false} mode={mode} setMode={setMode} />
+            <SidebarBody collapsed={false} showMarketing mode={mode} setMode={setMode} />
           </aside>
         </div>
       )}

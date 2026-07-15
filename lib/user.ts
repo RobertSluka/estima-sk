@@ -1,16 +1,6 @@
-// Mock signed-in user. The app has no auth backend yet — this stands in for
-// whatever the session/API will return later. Swap for real data when wired.
+// Auth state. There is no authentication backend yet, so the app always
+// renders a signed-out UI (a "Sign in" link, never a fabricated identity).
+// When real auth is wired, expose the session/user here — and never hardcode
+// a real person's name or email into the client bundle.
 
-export interface CurrentUser {
-  name: string
-  email: string
-  initials: string
-  plan: string
-}
-
-export const currentUser: CurrentUser = {
-  name: "Robert Sluka",
-  email: "geminitech11@gmail.com",
-  initials: "R",
-  plan: "BASIC",
-}
+export const isAuthenticated = false as const
