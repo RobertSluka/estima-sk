@@ -1,0 +1,10 @@
+# estima.sk frontend. network_mode: host because Docker port-publishing hangs
+# on this VPS; the app binds 127.0.0.1:3000 (see Dockerfile CMD) so only nginx
+# reaches it. restart: unless-stopped gives crash + reboot survival.
+services:
+  frontend:
+    build: .
+    image: estima-sk-frontend:latest
+    container_name: estima-sk-frontend
+    restart: unless-stopped
+    network_mode: host
