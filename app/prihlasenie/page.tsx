@@ -2,13 +2,34 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Building2, Lock, Eye, EyeOff } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Building2, Lock, Eye, EyeOff, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useI18n } from "@/lib/i18n"
+import { login } from "@/lib/user"
 
 export default function SignInPage() {
   const { t, lang, setLang } = useI18n()
+  const router = useRouter()
   const [showPw, setShowPw] = useState(false)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (submitting) return
+    setSubmitting(true)
+    setError(null)
+    const err = await login(email, password)
+    setSubmitting(false)
+    if (err) {
+      setError(err === "auth_not_configured" ? t("signin.notConfigured") : t("signin.error"))
+      return
+    }
+    router.replace("/inzeraty")
+  }
 
   return (
     // Full-screen overlay so the app chrome (sidebar/navbar) is hidden on this page.
@@ -81,13 +102,23 @@ export default function SignInPage() {
           </div>
 
           {/* Email form */}
-          <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+          <form onSubmit={onSubmit} className="space-y-4">
+            {error && (
+              <div className="flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                {error}
+              </div>
+            )}
             <div>
               <label className="text-sm font-medium text-slate-700">
                 {t("signin.email")}
               </label>
               <input
                 type="email"
+                required
+                autoComplete="username"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="vy@priklad.sk"
                 className="mt-1.5 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-400"
               />
@@ -104,6 +135,10 @@ export default function SignInPage() {
               <div className="relative mt-1.5">
                 <input
                   type={showPw ? "text" : "password"}
+                  required
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full rounded-lg border border-slate-200 px-3 py-2.5 pr-10 text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-400"
                 />
                 <button
@@ -116,8 +151,8 @@ export default function SignInPage() {
                 </button>
               </div>
             </div>
-            <Button type="submit" className="w-full" size="lg">
-              {t("signin.submit")}
+            <Button type="submit" className="w-full" size="lg" disabled={submitting}>
+              {submitting ? t("signin.submitting") : t("signin.submit")}
             </Button>
           </form>
 

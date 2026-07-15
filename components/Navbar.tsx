@@ -1,11 +1,13 @@
 "use client"
 
 import Link from "next/link"
-import { Building2, LogIn } from "lucide-react"
+import { Building2, LogIn, LogOut } from "lucide-react"
 import { useI18n } from "@/lib/i18n"
+import { useSession, logout } from "@/lib/user"
 
 export default function Navbar() {
   const { lang, setLang, t } = useI18n()
+  const session = useSession()
 
   return (
     <header className="w-full border-b border-slate-200 bg-white h-12 flex items-center pl-14 pr-3 md:px-5 shrink-0">
@@ -57,8 +59,8 @@ export default function Navbar() {
         </nav>
       </div>
 
-      {/* Right side: language + sign in. No auth backend yet, so the app is
-          always signed out — never show a fabricated user identity. */}
+      {/* Right side: language + session. The identity comes from the session
+          cookie (lib/user.ts) — signed-out UI until it says otherwise. */}
       <div className="ml-auto flex items-center gap-3">
         <div className="flex items-center rounded-md border border-slate-200 overflow-hidden">
           {(["sk", "en"] as const).map((l) => (
@@ -77,13 +79,34 @@ export default function Navbar() {
           ))}
         </div>
 
-        <Link
-          href="/prihlasenie"
-          className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
-        >
-          <LogIn className="h-3.5 w-3.5 text-slate-400" />
-          <span className="hidden sm:inline">{t("navbar.signIn")}</span>
-        </Link>
+        {session.authenticated && session.user ? (
+          <div className="flex items-center gap-2">
+            <span className="hidden sm:flex items-center gap-1.5">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-[11px] font-semibold text-white select-none">
+                {session.user.name[0]}
+              </span>
+              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700">
+                {t("navbar.roleAdmin")}
+              </span>
+            </span>
+            <button
+              type="button"
+              onClick={() => logout()}
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+            >
+              <LogOut className="h-3.5 w-3.5 text-slate-400" />
+              <span className="hidden sm:inline">{t("navbar.signOut")}</span>
+            </button>
+          </div>
+        ) : (
+          <Link
+            href="/prihlasenie"
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+          >
+            <LogIn className="h-3.5 w-3.5 text-slate-400" />
+            <span className="hidden sm:inline">{t("navbar.signIn")}</span>
+          </Link>
+        )}
       </div>
     </header>
   )

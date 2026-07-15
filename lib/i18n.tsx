@@ -26,6 +26,7 @@ const dict: Record<Lang, Record<string, string>> = {
     "navbar.signIn": "Prihlásiť sa",
     "navbar.account": "Účet",
     "navbar.signOut": "Odhlásiť sa",
+    "navbar.roleAdmin": "Admin",
 
     // engine hero (valuation showcase cards)
     "hero.priceLabel": "Odhadovaná trhová cena",
@@ -354,6 +355,9 @@ const dict: Record<Lang, Record<string, string>> = {
     "signin.password": "Heslo",
     "signin.forgotPassword": "Zabudnuté heslo?",
     "signin.submit": "Prihlásiť sa",
+    "signin.submitting": "Prihlasovanie…",
+    "signin.error": "Nesprávny e-mail alebo heslo.",
+    "signin.notConfigured": "Prihlásenie zatiaľ nie je na tomto serveri nastavené.",
     "signin.noAccount": "Nemáte účet?",
     "signin.createAccount": "Vytvoriť účet",
 
@@ -557,6 +561,7 @@ const dict: Record<Lang, Record<string, string>> = {
     "navbar.signIn": "Sign in",
     "navbar.account": "Account",
     "navbar.signOut": "Sign out",
+    "navbar.roleAdmin": "Admin",
 
     // engine hero (valuation showcase cards)
     "hero.priceLabel": "Estimated market price",
@@ -884,6 +889,9 @@ const dict: Record<Lang, Record<string, string>> = {
     "signin.password": "Password",
     "signin.forgotPassword": "Forgot password?",
     "signin.submit": "Sign in",
+    "signin.submitting": "Signing in…",
+    "signin.error": "Wrong e-mail or password.",
+    "signin.notConfigured": "Sign-in is not configured on this server yet.",
     "signin.noAccount": "No account?",
     "signin.createAccount": "Create account",
 

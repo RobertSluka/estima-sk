@@ -24,6 +24,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n"
+import { useSession } from "@/lib/user"
 
 type NavItem = {
   href: string
@@ -34,8 +35,8 @@ type NavItem = {
 }
 
 // Mirrors the CZ (byteval) sidebar — same items in the same order. Locked
-// items are CZ features not yet ported/backed for SK; they render as
-// visible-but-disabled so the product shape matches the CZ version.
+// items are gated for the public site; an authenticated admin session
+// unlocks all of them (the pages exist and work).
 const navItems: NavItem[] = [
   { href: "/inzeraty", icon: Search, key: "nav.search" },
   { href: "/ulozene", icon: Heart, key: "nav.saved", locked: true },
@@ -75,6 +76,7 @@ function SidebarBody({
 }) {
   const pathname = usePathname()
   const { t } = useI18n()
+  const session = useSession()
 
   return (
     <>
@@ -100,24 +102,25 @@ function SidebarBody({
       <nav className="flex-1 py-1 overflow-y-auto">
         {navItems.map((item) => {
           const Icon = item.icon
+          const locked = Boolean(item.locked) && !session.authenticated
           const active = pathname === item.href
           return (
             <Link
               key={item.key}
-              href={item.locked ? "#" : item.href}
-              aria-disabled={item.locked}
+              href={locked ? "#" : item.href}
+              aria-disabled={locked}
               className={cn(
                 "flex items-center gap-2.5 px-3 py-2 text-[11px] font-medium transition-colors select-none",
                 collapsed ? "justify-center" : "",
                 active ? "text-white" : "text-gray-500 hover:text-gray-200",
-                item.locked && "opacity-40 pointer-events-none"
+                locked && "opacity-40 pointer-events-none"
               )}
             >
               <Icon className="h-3.5 w-3.5 shrink-0" />
               {!collapsed && (
                 <>
                   <span className="truncate flex-1">{t(item.key)}</span>
-                  {item.locked && (
+                  {locked && (
                     <Lock className="h-2.5 w-2.5 shrink-0 text-gray-600" />
                   )}
                 </>
@@ -159,19 +162,42 @@ function SidebarBody({
         )}
       </div>
 
-      {/* Sign in — no auth backend yet, so the app is always signed out. */}
-      <Link
-        href="/prihlasenie"
-        className={cn(
-          "flex items-center gap-2 px-3 py-2.5 border-t border-white/5 shrink-0 text-gray-400 hover:text-white hover:bg-white/5 transition-colors",
-          collapsed && "justify-center px-0"
-        )}
-      >
-        <LogIn className="h-4 w-4 shrink-0" />
-        {!collapsed && (
-          <span className="text-[11px] font-medium">{t("navbar.signIn")}</span>
-        )}
-      </Link>
+      {/* Session footer: admin identity when signed in, sign-in link otherwise. */}
+      {session.authenticated && session.user ? (
+        <div
+          className={cn(
+            "flex items-center gap-2 px-3 py-2.5 border-t border-white/5 shrink-0",
+            collapsed && "justify-center px-0"
+          )}
+        >
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-700 text-[11px] font-semibold text-white shrink-0">
+            {session.user.name[0]}
+          </span>
+          {!collapsed && (
+            <div className="min-w-0">
+              <p className="text-[10px] font-medium text-gray-300 truncate">
+                {session.user.name}
+              </p>
+              <p className="text-[8px] uppercase tracking-wider text-emerald-500">
+                {t("navbar.roleAdmin")}
+              </p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <Link
+          href="/prihlasenie"
+          className={cn(
+            "flex items-center gap-2 px-3 py-2.5 border-t border-white/5 shrink-0 text-gray-400 hover:text-white hover:bg-white/5 transition-colors",
+            collapsed && "justify-center px-0"
+          )}
+        >
+          <LogIn className="h-4 w-4 shrink-0" />
+          {!collapsed && (
+            <span className="text-[11px] font-medium">{t("navbar.signIn")}</span>
+          )}
+        </Link>
+      )}
     </>
   )
 }
