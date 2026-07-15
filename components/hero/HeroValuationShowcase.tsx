@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { motion, useReducedMotion } from "framer-motion"
 import {
   ArrowRight,
   ArrowUpRight,
@@ -21,9 +20,11 @@ import { useI18n } from "@/lib/i18n"
  * CZ app (byteval); labels go through i18n and the demo numbers are EUR,
  * sized for a Slovak (Košice-level) apartment.
  *
- * Photo lives at /public/hero-interior.jpg (swap `imageSrc`). Framer Motion
- * handles the staggered entrance; CSS handles the gentle float loop
- * (.hero-anim-float). Both respect prefers-reduced-motion.
+ * Photo lives at /public/hero-interior.jpg (swap `imageSrc`). CSS keyframes
+ * handle both the staggered entrance (.hero-anim-rise + inline delay) and the
+ * gentle float loop (.hero-anim-float); both respect prefers-reduced-motion.
+ * CSS on purpose — rAF-driven animation (framer-motion) never ticks in a
+ * hidden/backgrounded document and left every card stuck at opacity 0.
  */
 
 /* ------------------------------------------------------------------ */
@@ -211,17 +212,10 @@ export default function HeroValuationShowcase({
   imageSrc = "/hero-interior.jpg",
 }: HeroValuationShowcaseProps) {
   const { t } = useI18n()
-  const reduce = !!useReducedMotion()
 
-  // Entrance: fade + lift, staggered across the floating cards.
-  const fade = {
-    hidden: reduce ? {} : { opacity: 0, y: 16, scale: 0.97 },
-    show: { opacity: 1, y: 0, scale: 1 },
-  }
-  const stage = {
-    hidden: {},
-    show: { transition: { staggerChildren: 0.09, delayChildren: 0.15 } },
-  }
+  // Entrance stagger: mirrors framer's delayChildren 0.15 + staggerChildren
+  // 0.09 across the floating cards, as inline animation-delay per element.
+  const rise = (i: number) => ({ animationDelay: `${(0.15 + i * 0.09).toFixed(2)}s` })
 
   return (
     <section className="relative overflow-hidden bg-[#f5f6f8]">
@@ -237,12 +231,7 @@ export default function HeroValuationShowcase({
 
       <div className="relative mx-auto max-w-6xl px-6 pt-16 md:pt-20">
         {/* ── Heading ─────────────────────────────────────────────── */}
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="mx-auto max-w-2xl text-center"
-        >
+        <div className="hero-anim-rise mx-auto max-w-2xl text-center">
           {eyebrow && (
             <p className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-semibold text-emerald-700 uppercase tracking-widest">
               {eyebrow}
@@ -270,15 +259,10 @@ export default function HeroValuationShowcase({
               {secondaryCta.label}
             </CtaEl>
           </div>
-        </motion.div>
+        </div>
 
         {/* ── Showcase: photo + floating valuation cards ──────────── */}
-        <motion.div
-          variants={stage}
-          initial="hidden"
-          animate="show"
-          className="relative mt-10 aspect-[4/5] w-full sm:mt-12 sm:aspect-[16/11] lg:aspect-[16/10]"
-        >
+        <div className="relative mt-10 aspect-[4/5] w-full sm:mt-12 sm:aspect-[16/11] lg:aspect-[16/10]">
           {/* Photo */}
           <div className="absolute inset-0 overflow-hidden rounded-3xl ring-1 ring-slate-900/5 shadow-2xl">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -330,11 +314,11 @@ export default function HeroValuationShowcase({
           </svg>
 
           {/* Estimated market price — primary card (top-left) */}
-          <motion.div
-            variants={fade}
-            className="absolute left-[1%] top-[5%] z-20 w-[58%] max-w-[300px]"
+          <div
+            className="hero-anim-rise absolute left-[1%] top-[5%] z-20 w-[58%] max-w-[300px]"
+            style={rise(0)}
           >
-            <div className={cn(!reduce && "hero-anim-float")}>
+            <div className="hero-anim-float">
               <Glass className="p-4 sm:p-5">
                 <div className="flex items-center gap-2 text-[11px] font-medium text-slate-500">
                   <span className="h-2 w-2 rounded-full bg-emerald-500" />
@@ -350,17 +334,16 @@ export default function HeroValuationShowcase({
                 <p className="text-sm font-semibold text-slate-700">172 000 € – 198 000 €</p>
               </Glass>
             </div>
-          </motion.div>
+          </div>
 
           {/* Attribute chips */}
-          {attributes.map((a) => {
+          {attributes.map((a, i) => {
             const Icon = a.icon
             return (
-              <motion.div
+              <div
                 key={a.id}
-                variants={fade}
-                className="absolute z-20 hidden lg:block"
-                style={{ left: `${a.pos.x}%`, top: `${a.pos.y}%` }}
+                className="hero-anim-rise absolute z-20 hidden lg:block"
+                style={{ left: `${a.pos.x}%`, top: `${a.pos.y}%`, ...rise(1 + i) }}
               >
                 <Glass className="flex items-center gap-2.5 px-3 py-2">
                   <Icon className="h-4 w-4 shrink-0 text-slate-500" />
@@ -378,14 +361,14 @@ export default function HeroValuationShowcase({
                     </p>
                   </div>
                 </Glass>
-              </motion.div>
+              </div>
             )
           })}
 
           {/* Metric cards (left edge, lower) */}
           <div className="absolute left-[1%] top-[55%] z-20 hidden w-[230px] flex-col gap-2.5 md:flex">
-            {metrics.map((m) => (
-              <motion.div key={m.labelKey} variants={fade}>
+            {metrics.map((m, i) => (
+              <div key={m.labelKey} className="hero-anim-rise" style={rise(1 + attributes.length + i)}>
                 <Glass className="flex items-center justify-between gap-3 px-3.5 py-2.5">
                   <div className="leading-tight">
                     <p className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500">
@@ -398,14 +381,14 @@ export default function HeroValuationShowcase({
                   </div>
                   <Sparkline data={m.spark} />
                 </Glass>
-              </motion.div>
+              </div>
             ))}
           </div>
 
           {/* Value calculation panel (right) */}
-          <motion.div
-            variants={fade}
-            className="absolute right-[1%] top-[44%] z-20 hidden w-[300px] lg:block"
+          <div
+            className="hero-anim-rise absolute right-[1%] top-[44%] z-20 hidden w-[300px] lg:block"
+            style={rise(1 + attributes.length + metrics.length)}
           >
             <Glass className="p-4">
               <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
@@ -434,8 +417,8 @@ export default function HeroValuationShowcase({
                 </span>
               </div>
             </Glass>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   )

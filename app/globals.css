@@ -42,6 +42,30 @@
   }
 }
 
+/* Entrance for hero content: fade + lift, staggered via inline
+   animation-delay. Deliberately CSS, not framer-motion: CSS animation clocks
+   keep advancing while the document is hidden (background tab, embedded
+   preview), whereas rAF-driven JS animation never ticks there and stranded
+   the cards at opacity 0. `both` keeps elements hidden through their delay. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.hero-anim-rise {
+  animation: hero-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-anim-rise {
+    animation: none !important;
+  }
+}
+
 /* Gentle vertical bob for floating hero insight cards. */
 @keyframes hero-float {
   0%,

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
@@ -17,6 +17,8 @@ import {
   Lock,
   ChevronLeft,
   ChevronRight,
+  Menu,
+  X,
   type LucideIcon,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -31,34 +33,38 @@ type NavItem = {
   locked?: boolean
 }
 
-// Mirrors the CZ (byteval) sidebar — same items in the same order. All pages
-// exist for SK; `locked` stays supported for future gated features.
+// Mirrors the CZ (byteval) sidebar — same items in the same order. Locked
+// items are CZ features not yet ported/backed for SK; they render as
+// visible-but-disabled so the product shape matches the CZ version.
 const navItems: NavItem[] = [
   { href: "/inzeraty", icon: Search, key: "nav.search" },
-  { href: "/ulozene", icon: Heart, key: "nav.saved" },
+  { href: "/ulozene", icon: Heart, key: "nav.saved", locked: true },
   { href: "/odhad", icon: DollarSign, key: "nav.valuations", badge: "••••" },
-  { href: "/dashboard", icon: LayoutDashboard, key: "nav.dashboard" },
+  { href: "/dashboard", icon: LayoutDashboard, key: "nav.dashboard", locked: true },
   { href: "/mapa-cien", icon: Map, key: "nav.priceMap" },
   { href: "/barometer", icon: Gauge, key: "nav.barometer" },
-  { href: "/prilezitosti", icon: Star, key: "nav.opportunities" },
-  { href: "/portfolio", icon: Briefcase, key: "nav.portfolio" },
-  { href: "/analyzy", icon: LineChart, key: "nav.analyses" },
-  { href: "/zlavy", icon: TrendingDown, key: "nav.priceDrops" },
+  { href: "/prilezitosti", icon: Star, key: "nav.opportunities", locked: true },
+  { href: "/portfolio", icon: Briefcase, key: "nav.portfolio", locked: true },
+  { href: "/analyzy", icon: LineChart, key: "nav.analyses", locked: true },
+  { href: "/zlavy", icon: TrendingDown, key: "nav.priceDrops", locked: true },
 ]
 
-export default function Sidebar() {
+// The sidebar surface itself — shared between the persistent desktop rail
+// and the mobile overlay drawer (where `collapsed` is always false).
+function SidebarBody({
+  collapsed,
+  mode,
+  setMode,
+}: {
+  collapsed: boolean
+  mode: "basic" | "pro"
+  setMode: (m: "basic" | "pro") => void
+}) {
   const pathname = usePathname()
   const { t } = useI18n()
-  const [collapsed, setCollapsed] = useState(false)
-  const [mode, setMode] = useState<"basic" | "pro">("basic")
 
   return (
-    <aside
-      className={cn(
-        "relative flex flex-col shrink-0 bg-[#111113] transition-all duration-200 overflow-visible",
-        collapsed ? "w-[52px]" : "w-[148px]"
-      )}
-    >
+    <>
       {/* Mode tabs */}
       {!collapsed && (
         <div className="flex border-b border-white/10 shrink-0">
@@ -76,18 +82,6 @@ export default function Sidebar() {
           ))}
         </div>
       )}
-
-      {/* Collapse toggle */}
-      <button
-        onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3 top-3 z-20 flex h-6 w-6 items-center justify-center rounded-full bg-[#111113] border border-white/10 text-gray-500 hover:text-white transition-colors"
-      >
-        {collapsed ? (
-          <ChevronRight className="h-3 w-3" />
-        ) : (
-          <ChevronLeft className="h-3 w-3" />
-        )}
-      </button>
 
       {/* Nav items */}
       <nav className="flex-1 py-1 overflow-y-auto">
@@ -112,9 +106,6 @@ export default function Sidebar() {
                   <span className="truncate flex-1">{t(item.key)}</span>
                   {item.locked && (
                     <Lock className="h-2.5 w-2.5 shrink-0 text-gray-600" />
-                  )}
-                  {item.badge && !item.locked && (
-                    <span className="text-[9px] text-gray-600">{item.badge}</span>
                   )}
                 </>
               )}
@@ -162,6 +153,88 @@ export default function Sidebar() {
           </div>
         )}
       </Link>
-    </aside>
+    </>
+  )
+}
+
+export default function Sidebar() {
+  const pathname = usePathname()
+  const { t } = useI18n()
+  const [collapsed, setCollapsed] = useState(false)
+  const [mode, setMode] = useState<"basic" | "pro">("basic")
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  // Close the drawer whenever navigation happens (a nav link was tapped).
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [pathname])
+
+  // Lock body scroll behind the open drawer.
+  useEffect(() => {
+    if (!mobileOpen) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => {
+      document.body.style.overflow = prev
+    }
+  }, [mobileOpen])
+
+  return (
+    <>
+      {/* Mobile: hamburger over the navbar's left edge (the rail is hidden). */}
+      <button
+        type="button"
+        aria-label={t("nav.menu")}
+        aria-expanded={mobileOpen}
+        onClick={() => setMobileOpen(true)}
+        className="fixed left-3 top-2 z-40 flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 shadow-sm md:hidden"
+      >
+        <Menu className="h-4 w-4" />
+      </button>
+
+      {/* Mobile: overlay drawer */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-black/55"
+            onClick={() => setMobileOpen(false)}
+          />
+          <aside className="absolute left-0 top-0 flex h-full w-[240px] flex-col bg-[#111113] shadow-2xl">
+            <button
+              type="button"
+              aria-label={t("nav.closeMenu")}
+              onClick={() => setMobileOpen(false)}
+              className="absolute right-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-md text-gray-500 hover:text-white"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <SidebarBody collapsed={false} mode={mode} setMode={setMode} />
+          </aside>
+        </div>
+      )}
+
+      {/* Desktop: persistent rail */}
+      <aside
+        className={cn(
+          "relative hidden md:flex flex-col shrink-0 bg-[#111113] transition-all duration-200 overflow-visible",
+          collapsed ? "w-[52px]" : "w-[148px]"
+        )}
+      >
+        {/* Collapse toggle */}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="absolute -right-3 top-3 z-20 flex h-6 w-6 items-center justify-center rounded-full bg-[#111113] border border-white/10 text-gray-500 hover:text-white transition-colors"
+        >
+          {collapsed ? (
+            <ChevronRight className="h-3 w-3" />
+          ) : (
+            <ChevronLeft className="h-3 w-3" />
+          )}
+        </button>
+
+        <SidebarBody collapsed={collapsed} mode={mode} setMode={setMode} />
+      </aside>
+    </>
   )
 }

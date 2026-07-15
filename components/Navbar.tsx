@@ -37,8 +37,9 @@ export default function Navbar() {
   }, [menuOpen])
 
   return (
-    <header className="w-full border-b border-slate-200 bg-white h-12 flex items-center px-5 shrink-0">
-      {/* Logo + nav links — centered */}
+    <header className="w-full border-b border-slate-200 bg-white h-12 flex items-center pl-14 pr-3 md:px-5 shrink-0">
+      {/* Logo + nav links — centered (left padding on mobile clears the
+          sidebar's fixed hamburger button) */}
       <div className="flex items-center gap-6 mx-auto">
         <Link href="/" className="flex items-center gap-1.5 group">
           <div className="flex h-6 w-6 items-center justify-center rounded bg-slate-900 group-hover:bg-slate-700 transition-colors">
@@ -49,8 +50,9 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Marketing links only — app pages live in the sidebar (CZ layout). */}
-        <nav className="flex items-center gap-5">
+        {/* Marketing links only — app pages live in the sidebar (CZ layout).
+            On mobile they move into the user menu below. */}
+        <nav className="hidden md:flex items-center gap-5">
           <Link
             href="/engine"
             className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
@@ -137,6 +139,30 @@ export default function Navbar() {
               <div className="px-3 py-2">
                 <p className="text-sm font-semibold text-slate-900">{currentUser.name}</p>
                 <p className="text-xs text-slate-400 truncate">{currentUser.email}</p>
+              </div>
+
+              {/* Mobile: the marketing links hidden from the top bar */}
+              <div className="md:hidden">
+                <div className="my-1.5 h-px bg-slate-100" />
+                {(
+                  [
+                    ["/engine", "navbar.engine"],
+                    ["/trh", "navbar.market"],
+                    ["/cennik", "navbar.pricing"],
+                    ["/kupa-alebo-prenajom", "navbar.buyRent"],
+                    ["/kontakt", "navbar.contact"],
+                  ] as const
+                ).map(([href, key]) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    role="menuitem"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                  >
+                    {t(key)}
+                  </Link>
+                ))}
               </div>
 
               <div className="my-1.5 h-px bg-slate-100" />
