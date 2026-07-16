@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Link from "next/link"
 import { MapPin, Home, Maximize2, ArrowUpRight, Heart } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { type Listing } from "@/lib/api"
@@ -9,8 +10,8 @@ import { useI18n } from "@/lib/i18n"
 import { isSaved, toggleSaved, onSavedChange } from "@/lib/saved"
 import { cn } from "@/lib/utils"
 
-// Shared listing card for the listings grid. Links out to the source portal
-// (Bazoš) until a local detail page exists.
+// Shared listing card for the listings grid. Links to the local property
+// detail page; the original Bazoš listing stays reachable from there.
 export default function ListingCard({ listing: l }: { listing: Listing }) {
   const { t } = useI18n()
   const [saved, setSaved] = useState(false)
@@ -21,10 +22,8 @@ export default function ListingCard({ listing: l }: { listing: Listing }) {
     return onSavedChange(() => setSaved(isSaved(l.id)))
   }, [l.id])
   return (
-    <a
-      href={l.url ?? "#"}
-      target="_blank"
-      rel="noopener noreferrer"
+    <Link
+      href={`/inzeraty/${encodeURIComponent(l.id)}`}
       className="block group"
     >
       <Card className="overflow-hidden hover:shadow-md hover:border-slate-300 transition-all duration-200 h-full">
@@ -118,6 +117,6 @@ export default function ListingCard({ listing: l }: { listing: Listing }) {
           </div>
         </CardContent>
       </Card>
-    </a>
+    </Link>
   )
 }

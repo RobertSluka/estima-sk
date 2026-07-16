@@ -89,12 +89,11 @@ function popupHtml(l: Listing): string {
   const meta = [l.layout, l.floorArea ? `${Math.round(l.floorArea)} m²` : null, l.locality]
     .filter(Boolean)
     .join(" · ")
-  // No local detail page yet — the popup links out to the source portal.
   return `<div style="font:400 12px ui-sans-serif,system-ui;min-width:150px">
     <div style="font-weight:600;color:#0f172a;margin-bottom:2px">${l.name ?? l.locality ?? "Inzerát"}</div>
     <div style="color:#64748b">${meta}</div>
     <div style="font-weight:700;color:#0f172a;margin:4px 0">${price}</div>
-    ${l.url ? `<a href="${l.url}" target="_blank" rel="noopener noreferrer" style="color:#2563eb;font-weight:600">Otvoriť inzerát →</a>` : ""}
+    <a href="/inzeraty/${encodeURIComponent(l.id)}" style="color:#2563eb;font-weight:600">Otvoriť inzerát →</a>
   </div>`
 }
 

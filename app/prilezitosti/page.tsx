@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import Link from "next/link"
 import { Star, Home } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { fetchAllListings, categoryBucket, type Listing } from "@/lib/api"
@@ -88,11 +89,9 @@ export default function OpportunitiesPage() {
 
       <div className="space-y-3">
         {opportunities.map((o) => (
-          <a
+          <Link
             key={o.listing.id}
-            href={o.listing.url ?? "#"}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={`/inzeraty/${encodeURIComponent(o.listing.id)}`}
             className="block"
           >
             <Card className="hover:border-slate-300 transition-colors">
@@ -143,7 +142,7 @@ export default function OpportunitiesPage() {
                 </span>
               </CardContent>
             </Card>
-          </a>
+          </Link>
         ))}
       </div>
 

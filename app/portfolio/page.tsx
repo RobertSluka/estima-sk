@@ -107,14 +107,12 @@ export default function PortfolioPage() {
                   {holdings.map((l) => (
                     <tr key={l.id} className="hover:bg-slate-50/60">
                       <td className="px-5 py-3 max-w-[280px]">
-                        <a
-                          href={l.url ?? "#"}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <Link
+                          href={`/inzeraty/${encodeURIComponent(l.id)}`}
                           className="font-medium text-slate-900 hover:underline line-clamp-1"
                         >
                           {l.name ?? "—"}
-                        </a>
+                        </Link>
                       </td>
                       <td className="px-5 py-3 text-slate-500 whitespace-nowrap">
                         {l.locality ?? "—"}

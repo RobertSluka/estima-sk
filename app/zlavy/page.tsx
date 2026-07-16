@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Link from "next/link"
 import { TrendingDown, Home } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { fetchPriceDrops, type PriceDrop } from "@/lib/api"
@@ -46,11 +47,9 @@ export default function PriceDropsPage() {
       {!error && drops.length > 0 && (
         <div className="space-y-3">
           {drops.map((d) => (
-            <a
+            <Link
               key={d.id}
-              href={d.url ?? "#"}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={`/inzeraty/${encodeURIComponent(d.propertyId)}`}
               className="block"
             >
               <Card className="hover:border-slate-300 transition-colors">
@@ -91,7 +90,7 @@ export default function PriceDropsPage() {
                   </span>
                 </CardContent>
               </Card>
-            </a>
+            </Link>
           ))}
         </div>
       )}
