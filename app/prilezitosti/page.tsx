@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { fetchAllListings, categoryBucket, type Listing } from "@/lib/api"
 import { formatEUR, formatNumber } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n"
+import OpportunitiesChart from "@/components/OpportunitiesChart"
 
 // Minimum comparables in the same (okres, category) group for a meaningful
 // median; below this the discount is noise, not an opportunity.
@@ -82,6 +83,8 @@ export default function OpportunitiesPage() {
           </CardContent>
         </Card>
       )}
+
+      {!loading && <OpportunitiesChart opportunities={opportunities} />}
 
       <div className="space-y-3">
         {opportunities.map((o) => (
