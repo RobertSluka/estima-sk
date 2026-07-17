@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
 import {
   ScatterChart,
   Scatter,
@@ -60,17 +61,21 @@ const DOT = "#059669" // emerald-600 — house "discount" color, ≥3:1 on white
 function DotShape(props: { cx?: number; cy?: number }) {
   const { cx, cy } = props
   if (cx == null || cy == null) return null
+  // The invisible outer circle widens the mouse target so the tooltip
+  // appears on hover near the dot, not only when pixel-perfect on it.
   return (
-    <circle
-      cx={cx}
-      cy={cy}
-      r={5.5}
-      fill={DOT}
-      fillOpacity={0.85}
-      stroke="#fff"
-      strokeWidth={1.5}
-      style={{ cursor: "pointer" }}
-    />
+    <g style={{ cursor: "pointer" }}>
+      <circle cx={cx} cy={cy} r={16} fill="transparent" />
+      <circle
+        cx={cx}
+        cy={cy}
+        r={5.5}
+        fill={DOT}
+        fillOpacity={0.85}
+        stroke="#fff"
+        strokeWidth={1.5}
+      />
+    </g>
   )
 }
 
@@ -113,6 +118,7 @@ export default function OpportunitiesChart({
   opportunities: OpportunityDatum[]
 }) {
   const { lang } = useI18n()
+  const router = useRouter()
   const labels = LABELS[lang === "en" ? "en" : "sk"]
   const [region, setRegion] = useState<string | null>(null)
 
@@ -129,6 +135,18 @@ export default function OpportunitiesChart({
         .map((o) => ({ x: Math.round(o.groupMedian), y: o.discount, o })),
     [opportunities, region],
   )
+
+  // Market-line label follows the region filter: the selected kraj plus the
+  // median €/m² of its visible points, so switching regions visibly
+  // re-anchors what the line stands for. All-regions keeps the generic label
+  // (one median across differently-priced kraje would mislead).
+  const marketLineLabel = useMemo(() => {
+    if (!region || points.length === 0) return labels.marketLine
+    const xs = points.map((p) => p.x).sort((a, b) => a - b)
+    const mid = Math.floor(xs.length / 2)
+    const med = xs.length % 2 ? xs[mid] : (xs[mid - 1] + xs[mid]) / 2
+    return `${region} kraj · ${labels.median} ~${formatEUR(Math.round(med))}/m²`
+  }, [points, region, labels])
 
   if (opportunities.length === 0) return null
 
@@ -198,7 +216,7 @@ export default function OpportunitiesChart({
                 stroke="#0f172a"
                 strokeDasharray="6 4"
                 label={{
-                  value: labels.marketLine,
+                  value: marketLineLabel,
                   position: "insideTopRight",
                   fontSize: 11,
                   fill: "#0f172a",
@@ -214,8 +232,8 @@ export default function OpportunitiesChart({
                 shape={<DotShape />}
                 isAnimationActive={false}
                 onClick={(p: Point) => {
-                  const url = p?.o?.listing.url
-                  if (url) window.open(url, "_blank", "noopener,noreferrer")
+                  const id = p?.o?.listing.id
+                  if (id) router.push(`/inzeraty/${encodeURIComponent(id)}`)
                 }}
               />
             </ScatterChart>
