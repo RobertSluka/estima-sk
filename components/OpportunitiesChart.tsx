@@ -8,7 +8,6 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
   ReferenceLine,
   ResponsiveContainer,
 } from "recharts"
@@ -58,13 +57,29 @@ const LABELS = {
 
 const DOT = "#059669" // emerald-600 — house "discount" color, ≥3:1 on white
 
-function DotShape(props: { cx?: number; cy?: number }) {
-  const { cx, cy } = props
+function DotShape({
+  cx,
+  cy,
+  point,
+  onEnter,
+  onLeave,
+}: {
+  cx?: number
+  cy?: number
+  point: Point
+  onEnter: (p: Point, cx: number, cy: number) => void
+  onLeave: () => void
+}) {
   if (cx == null || cy == null) return null
-  // The invisible outer circle widens the mouse target so the tooltip
-  // appears on hover near the dot, not only when pixel-perfect on it.
+  // Mouse events live directly on the SVG element (recharts' own tooltip
+  // plumbing is unreliable for scatter hover). The invisible outer circle
+  // widens the target so hovering near the dot is enough.
   return (
-    <g style={{ cursor: "pointer" }}>
+    <g
+      style={{ cursor: "pointer" }}
+      onMouseEnter={() => onEnter(point, cx, cy)}
+      onMouseLeave={onLeave}
+    >
       <circle cx={cx} cy={cy} r={16} fill="transparent" />
       <circle
         cx={cx}
@@ -79,20 +94,16 @@ function DotShape(props: { cx?: number; cy?: number }) {
   )
 }
 
-function PointTooltip({
-  active,
-  payload,
+function TooltipCard({
+  o,
   labels,
 }: {
-  active?: boolean
-  payload?: { payload: Point }[]
+  o: OpportunityDatum
   labels: (typeof LABELS)[keyof typeof LABELS]
 }) {
-  if (!active || !payload?.length) return null
-  const { o } = payload[0].payload
   const l = o.listing
   return (
-    <div className="max-w-[260px] rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-sm">
+    <div className="w-[260px] rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-md">
       <p className="text-xs font-semibold text-slate-900 truncate">{l.name ?? "—"}</p>
       <p className="text-[11px] text-slate-400 truncate">
         {[l.locality, l.district, l.layout].filter(Boolean).join(" · ")}
@@ -114,13 +125,21 @@ function PointTooltip({
 
 export default function OpportunitiesChart({
   opportunities,
+  region,
+  onRegionChange,
 }: {
   opportunities: OpportunityDatum[]
+  region: string | null
+  onRegionChange: (region: string | null) => void
 }) {
   const { lang } = useI18n()
   const router = useRouter()
   const labels = LABELS[lang === "en" ? "en" : "sk"]
-  const [region, setRegion] = useState<string | null>(null)
+
+  // Tooltip is plain React state driven by the symbols' mouse events —
+  // recharts' own <Tooltip> is unreliable on scatter charts (hover often
+  // doesn't activate it), so we position our own card at the dot.
+  const [hover, setHover] = useState<{ p: Point; cx: number; cy: number } | null>(null)
 
   const regions = useMemo(() => {
     const set = new Set<string>()
@@ -164,7 +183,10 @@ export default function OpportunitiesChart({
             {[null, ...regions].map((r) => (
               <button
                 key={r ?? "all"}
-                onClick={() => setRegion(r)}
+                onClick={() => {
+                  setHover(null)
+                  onRegionChange(r)
+                }}
                 className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
                   region === r
                     ? "border-slate-900 bg-slate-900 text-white"
@@ -177,7 +199,7 @@ export default function OpportunitiesChart({
           </div>
         </div>
 
-        <div className="mt-4">
+        <div className="relative mt-4">
           <ResponsiveContainer width="100%" height={320}>
             <ScatterChart margin={{ top: 10, right: 16, bottom: 4, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -223,13 +245,20 @@ export default function OpportunitiesChart({
                   dy: -12,
                 }}
               />
-              <Tooltip
-                cursor={{ strokeDasharray: "3 3", stroke: "#cbd5e1" }}
-                content={<PointTooltip labels={labels} />}
-              />
               <Scatter
                 data={points}
-                shape={<DotShape />}
+                shape={(raw: unknown) => {
+                  const p = raw as { cx?: number; cy?: number; payload: Point }
+                  return (
+                    <DotShape
+                      cx={p.cx}
+                      cy={p.cy}
+                      point={p.payload}
+                      onEnter={(pt, cx, cy) => setHover({ p: pt, cx, cy })}
+                      onLeave={() => setHover(null)}
+                    />
+                  )
+                }}
                 isAnimationActive={false}
                 onClick={(p: Point) => {
                   const id = p?.o?.listing.id
@@ -238,6 +267,23 @@ export default function OpportunitiesChart({
               />
             </ScatterChart>
           </ResponsiveContainer>
+
+          {hover && (
+            <div
+              className="pointer-events-none absolute z-10"
+              style={{
+                left: hover.cx,
+                top: hover.cy,
+                // Flip below the dot when there is no room above it.
+                transform:
+                  hover.cy < 110
+                    ? "translate(-50%, 14px)"
+                    : "translate(-50%, calc(-100% - 14px))",
+              }}
+            >
+              <TooltipCard o={hover.p.o} labels={labels} />
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

@@ -30,6 +30,9 @@ export default function OpportunitiesPage() {
   const { t } = useI18n()
   const [items, setItems] = useState<Listing[]>([])
   const [loading, setLoading] = useState(true)
+  // Region (kraj) filter — owned here so the chart chips and the list below
+  // stay in sync.
+  const [region, setRegion] = useState<string | null>(null)
 
   useEffect(() => {
     fetchAllListings({ dealType: "sale" })
@@ -67,16 +70,23 @@ export default function OpportunitiesPage() {
     return out.sort((a, b) => a.discount - b.discount)
   }, [items])
 
+  const visible = useMemo(
+    () => opportunities.filter((o) => !region || o.listing.region === region),
+    [opportunities, region],
+  )
+
   return (
     <div className="mx-auto max-w-6xl px-6 py-8">
       <h1 className="text-2xl font-bold text-slate-900">{t("opps.title")}</h1>
       <p className="text-sm text-slate-500 mt-1 mb-6">
         {loading
           ? t("common.loading")
-          : t("opps.subtitle", { n: formatNumber(opportunities.length) })}
+          : t("opps.subtitle", { n: formatNumber(visible.length) })}
       </p>
 
-      {!loading && opportunities.length === 0 && (
+      {!loading && <OpportunitiesChart opportunities={opportunities} region={region} onRegionChange={setRegion} />}
+
+      {!loading && visible.length === 0 && (
         <Card className="border-dashed">
           <CardContent className="py-16 text-center">
             <Star className="h-6 w-6 text-slate-400 mx-auto mb-3" />
@@ -85,10 +95,8 @@ export default function OpportunitiesPage() {
         </Card>
       )}
 
-      {!loading && <OpportunitiesChart opportunities={opportunities} />}
-
       <div className="space-y-3">
-        {opportunities.map((o) => (
+        {visible.map((o) => (
           <Link
             key={o.listing.id}
             href={`/inzeraty/${encodeURIComponent(o.listing.id)}`}
