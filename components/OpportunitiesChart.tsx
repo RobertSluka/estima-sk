@@ -239,10 +239,10 @@ export default function OpportunitiesChart({
                 strokeDasharray="6 4"
                 label={{
                   value: marketLineLabel,
-                  position: "insideTopRight",
+                  position: "insideBottomRight",
                   fontSize: 11,
                   fill: "#0f172a",
-                  dy: -12,
+                  dy: 22,
                 }}
               />
               <Scatter
