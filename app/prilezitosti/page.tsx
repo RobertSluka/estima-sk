@@ -43,8 +43,11 @@ import { useI18n } from "@/lib/i18n"
 // Radix SelectItem values must be non-empty, so "all districts" gets a sentinel.
 const ALL = "__all__"
 
-// The chart plots only the clear-cut deals — same threshold it always used.
-const CHART_DISCOUNT = -10
+// User-selectable minimum discount vs. the okres median, in positive %.
+// 0 = no minimum (every scored listing). Default 10 preserves the page's
+// original "well below median" behavior; chart and feed share the value.
+const THRESHOLDS = [0, 5, 10, 15, 20] as const
+const DEFAULT_MIN_DISCOUNT = 10
 
 // Labels live here (not in lib/i18n.tsx) so the page stays self-contained;
 // the pre-existing opps.* keys it still uses are read-only.
@@ -58,7 +61,6 @@ const LABELS = {
     rent: "Prenájom",
     allDistricts: "Všetky okresy",
     district: "Okres",
-    belowOnly: "Len pod trhom",
     highConfOnly: "Len vysoká spoľahlivosť",
     clearFilters: "Zrušiť filtre",
     error: "Nepodarilo sa načítať inzeráty.",
@@ -72,7 +74,6 @@ const LABELS = {
     rent: "For rent",
     allDistricts: "All districts",
     district: "District",
-    belowOnly: "Below market only",
     highConfOnly: "High confidence only",
     clearFilters: "Clear filters",
     error: "Failed to load listings.",
@@ -117,7 +118,7 @@ export default function OpportunitiesPage() {
   // below stay in sync.
   const [region, setRegion] = useState<string | null>(null)
   const [district, setDistrict] = useState<string>(ALL)
-  const [belowOnly, setBelowOnly] = useState(false)
+  const [minDiscount, setMinDiscount] = useState<number>(DEFAULT_MIN_DISCOUNT)
   const [highConfOnly, setHighConfOnly] = useState(false)
   const [sort, setSort] = useState<SortKey>("opportunity")
 
@@ -165,12 +166,14 @@ export default function OpportunitiesPage() {
     [scored, dealType],
   )
 
-  // Chart input: the clear-cut discounts for the selected deal type. The
-  // chart applies the kraj filter itself (and derives its chips from this).
+  // Chart input: discounts past the selected threshold, for the selected deal
+  // type. The chart applies the kraj filter itself (and derives its chips from
+  // this). At threshold 0 it still plots only below-median listings — the
+  // chart's axis only spans the below-the-line half.
   const chartData = useMemo<OpportunityDatum[]>(
     () =>
       byDeal
-        .filter((o) => o.opp.diffPct < CHART_DISCOUNT)
+        .filter((o) => o.opp.diffPct < -minDiscount)
         .map((o) => ({
           listing: o.listing,
           groupMedian: o.opp.groupMedianPpsm,
@@ -178,7 +181,7 @@ export default function OpportunitiesPage() {
           comparables: o.opp.comparables,
         }))
         .sort((a, b) => a.discount - b.discount),
-    [byDeal],
+    [byDeal, minDiscount],
   )
 
   // District (okres) options follow the selected kraj.
@@ -197,11 +200,13 @@ export default function OpportunitiesPage() {
       if (district !== ALL && o.listing.district !== district) return false
       return true
     })
-    if (belowOnly) filtered = filtered.filter((o) => o.opp.position === "below")
+    // Same threshold as the chart; 0 keeps every scored listing.
+    if (minDiscount > 0)
+      filtered = filtered.filter((o) => o.opp.diffPct < -minDiscount)
     if (highConfOnly)
       filtered = filtered.filter((o) => o.opp.confidence === "High")
     return sortOpportunities(filtered, sort)
-  }, [byDeal, region, district, belowOnly, highConfOnly, sort])
+  }, [byDeal, region, district, minDiscount, highConfOnly, sort])
 
   // Headline stats over the current selection.
   const stats = useMemo(() => {
@@ -235,7 +240,7 @@ export default function OpportunitiesPage() {
 
   const handleClear = () => {
     handleRegionChange(null)
-    setBelowOnly(false)
+    setMinDiscount(DEFAULT_MIN_DISCOUNT)
     setHighConfOnly(false)
   }
 
@@ -334,28 +339,43 @@ export default function OpportunitiesPage() {
           </SelectContent>
         </Select>
 
-        {/* Quality toggles */}
-        {(
-          [
-            { on: belowOnly, set: setBelowOnly, label: labels.belowOnly },
-            { on: highConfOnly, set: setHighConfOnly, label: labels.highConfOnly },
-          ] as const
-        ).map((f) => (
-          <button
-            key={f.label}
-            type="button"
-            onClick={() => f.set(!f.on)}
-            aria-pressed={f.on}
-            className={cn(
-              "rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors",
-              f.on
-                ? "border-slate-900 bg-slate-900 text-white"
-                : "border-slate-200 bg-white text-slate-600 hover:border-slate-400",
-            )}
-          >
-            {f.label}
-          </button>
-        ))}
+        {/* Minimum discount vs. okres median — shared by chart and feed */}
+        <div className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white py-1 pl-2 pr-1">
+          <span className="text-[11px] font-medium text-slate-400">
+            {t("opps.minDiscount")}
+          </span>
+          {THRESHOLDS.map((v) => (
+            <button
+              key={v}
+              type="button"
+              onClick={() => setMinDiscount(v)}
+              aria-pressed={v === minDiscount}
+              className={cn(
+                "rounded-md px-2 py-0.5 text-xs font-semibold transition-colors",
+                v === minDiscount
+                  ? "bg-slate-900 text-white"
+                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-700",
+              )}
+            >
+              {v === 0 ? t("opps.thresholdAll") : `−${v} %`}
+            </button>
+          ))}
+        </div>
+
+        {/* Quality toggle */}
+        <button
+          type="button"
+          onClick={() => setHighConfOnly(!highConfOnly)}
+          aria-pressed={highConfOnly}
+          className={cn(
+            "rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors",
+            highConfOnly
+              ? "border-slate-900 bg-slate-900 text-white"
+              : "border-slate-200 bg-white text-slate-600 hover:border-slate-400",
+          )}
+        >
+          {labels.highConfOnly}
+        </button>
 
         <div className="ml-auto">
           <SortControl value={sort} onChange={setSort} />

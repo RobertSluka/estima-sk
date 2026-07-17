@@ -212,6 +212,8 @@ const dict: Record<Lang, Record<string, string>> = {
     "opps.empty": "Žiadne výrazne podhodnotené inzeráty.",
     "opps.median": "Medián okresu",
     "opps.comparables": "{n} porovnateľných",
+    "opps.minDiscount": "Zľava aspoň",
+    "opps.thresholdAll": "Všetky",
     "opps.disclaimer":
       "Zľava je porovnanie ceny za m² s mediánom rovnakého typu nehnuteľnosti v rovnakom okrese (min. 4 porovnateľné inzeráty). Je to orientačný signál, nie ocenenie — nízka cena môže odrážať stav alebo polohu nehnuteľnosti.",
 
@@ -854,6 +856,8 @@ const dict: Record<Lang, Record<string, string>> = {
     "opps.empty": "No significantly underpriced listings.",
     "opps.median": "District median",
     "opps.comparables": "{n} comparables",
+    "opps.minDiscount": "Min. discount",
+    "opps.thresholdAll": "All",
     "opps.disclaimer":
       "The discount compares price per m² with the median of the same property type in the same district (min. 4 comparables). It is an indicative signal, not a valuation — a low price may reflect the property's condition or location.",
 
