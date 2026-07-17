@@ -155,17 +155,15 @@ export default function OpportunitiesChart({
     [opportunities, region],
   )
 
-  // Market-line label follows the region filter: the selected kraj plus the
-  // median €/m² of its visible points, so switching regions visibly
-  // re-anchors what the line stands for. All-regions keeps the generic label
+  // Median €/m² of the selected kraj, marked as a vertical line on the price
+  // axis — that is where the value actually lives. All-regions shows none
   // (one median across differently-priced kraje would mislead).
-  const marketLineLabel = useMemo(() => {
-    if (!region || points.length === 0) return labels.marketLine
+  const regionMedian = useMemo(() => {
+    if (!region || points.length === 0) return null
     const xs = points.map((p) => p.x).sort((a, b) => a - b)
     const mid = Math.floor(xs.length / 2)
-    const med = xs.length % 2 ? xs[mid] : (xs[mid - 1] + xs[mid]) / 2
-    return `${region} kraj · ${labels.median} ~${formatEUR(Math.round(med))}/m²`
-  }, [points, region, labels])
+    return xs.length % 2 ? xs[mid] : (xs[mid - 1] + xs[mid]) / 2
+  }, [points, region])
 
   if (opportunities.length === 0) return null
 
@@ -238,13 +236,27 @@ export default function OpportunitiesChart({
                 stroke="#0f172a"
                 strokeDasharray="6 4"
                 label={{
-                  value: marketLineLabel,
+                  value: labels.marketLine,
                   position: "insideBottomRight",
                   fontSize: 11,
                   fill: "#0f172a",
                   dy: 22,
                 }}
               />
+              {regionMedian != null && (
+                <ReferenceLine
+                  x={regionMedian}
+                  stroke="#64748b"
+                  strokeDasharray="4 4"
+                  label={{
+                    value: `${region} kraj · ${labels.median} ~${formatEUR(Math.round(regionMedian))}/m²`,
+                    position: "insideBottomLeft",
+                    fontSize: 11,
+                    fill: "#475569",
+                    dx: 6,
+                  }}
+                />
+              )}
               <Scatter
                 data={points}
                 shape={(raw: unknown) => {
