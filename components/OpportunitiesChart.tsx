@@ -1,7 +1,7 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useEffect, useMemo, useState } from "react"
+import Link from "next/link"
 import {
   ScatterChart,
   Scatter,
@@ -41,6 +41,8 @@ const LABELS = {
     allRegions: "Všetky kraje",
     median: "Medián okresu",
     vs: "oproti",
+    viewListing: "Zobraziť inzerát",
+    close: "Zavrieť",
   },
   en: {
     title: "Below market value",
@@ -52,6 +54,8 @@ const LABELS = {
     allRegions: "All regions",
     median: "District median",
     vs: "vs",
+    viewListing: "View listing",
+    close: "Close",
   },
 } as const
 
@@ -63,12 +67,14 @@ function DotShape({
   point,
   onEnter,
   onLeave,
+  onSelect,
 }: {
   cx?: number
   cy?: number
   point: Point
   onEnter: (p: Point, cx: number, cy: number) => void
   onLeave: () => void
+  onSelect: (p: Point, cx: number, cy: number) => void
 }) {
   if (cx == null || cy == null) return null
   // Mouse events live directly on the SVG element (recharts' own tooltip
@@ -79,6 +85,7 @@ function DotShape({
       style={{ cursor: "pointer" }}
       onMouseEnter={() => onEnter(point, cx, cy)}
       onMouseLeave={onLeave}
+      onClick={() => onSelect(point, cx, cy)}
     >
       <circle cx={cx} cy={cy} r={16} fill="transparent" />
       <circle
@@ -97,27 +104,57 @@ function DotShape({
 function TooltipCard({
   o,
   labels,
+  pinned = false,
+  onClose,
 }: {
   o: OpportunityDatum
   labels: (typeof LABELS)[keyof typeof LABELS]
+  pinned?: boolean
+  onClose?: () => void
 }) {
   const l = o.listing
   return (
-    <div className="w-[260px] rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-md">
-      <p className="text-xs font-semibold text-slate-900 truncate">{l.name ?? "—"}</p>
-      <p className="text-[11px] text-slate-400 truncate">
-        {[l.locality, l.district, l.layout].filter(Boolean).join(" · ")}
-      </p>
-      <div className="mt-1 flex items-center gap-2 text-xs">
-        <span className="font-medium tabular-nums text-slate-900">
-          {l.pricePerSqm != null ? `${formatEUR(Math.round(l.pricePerSqm))}/m²` : "—"}
-        </span>
-        <span className="text-slate-400">
-          {labels.vs} {formatEUR(Math.round(o.groupMedian))}/m²
-        </span>
-        <span className="ml-auto rounded-full bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[11px] font-semibold text-emerald-700 tabular-nums">
-          {o.discount.toFixed(0)} %
-        </span>
+    <div
+      className={`w-[260px] overflow-hidden rounded-lg border border-slate-200 bg-white ${pinned ? "shadow-lg" : "shadow-md"}`}
+    >
+      {pinned && l.imageUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={l.imageUrl} alt="" className="h-28 w-full object-cover" />
+      )}
+      {pinned && (
+        <button
+          type="button"
+          aria-label={labels.close}
+          onClick={onClose}
+          className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-slate-900/60 text-white hover:bg-slate-900/80"
+        >
+          ×
+        </button>
+      )}
+      <div className="px-3 py-2">
+        <p className="text-xs font-semibold text-slate-900 truncate">{l.name ?? "—"}</p>
+        <p className="text-[11px] text-slate-400 truncate">
+          {[l.locality, l.district, l.layout].filter(Boolean).join(" · ")}
+        </p>
+        <div className="mt-1 flex items-center gap-2 text-xs">
+          <span className="font-medium tabular-nums text-slate-900">
+            {l.pricePerSqm != null ? `${formatEUR(Math.round(l.pricePerSqm))}/m²` : "—"}
+          </span>
+          <span className="text-slate-400">
+            {labels.vs} {formatEUR(Math.round(o.groupMedian))}/m²
+          </span>
+          <span className="ml-auto rounded-full bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 text-[11px] font-semibold text-emerald-700 tabular-nums">
+            {o.discount.toFixed(0)} %
+          </span>
+        </div>
+        {pinned && (
+          <Link
+            href={`/inzeraty/${encodeURIComponent(l.id)}`}
+            className="mt-2 block w-full rounded-md bg-slate-900 py-1.5 text-center text-xs font-semibold text-white hover:bg-slate-800"
+          >
+            {labels.viewListing}
+          </Link>
+        )}
       </div>
     </div>
   )
@@ -133,13 +170,22 @@ export default function OpportunitiesChart({
   onRegionChange: (region: string | null) => void
 }) {
   const { lang } = useI18n()
-  const router = useRouter()
   const labels = LABELS[lang === "en" ? "en" : "sk"]
 
   // Tooltip is plain React state driven by the symbols' mouse events —
   // recharts' own <Tooltip> is unreliable on scatter charts (hover often
   // doesn't activate it), so we position our own card at the dot.
   const [hover, setHover] = useState<{ p: Point; cx: number; cy: number } | null>(null)
+  // Clicking a dot pins the card (with photo + view-listing button) so the
+  // user can read it and decide; navigation happens only via the button.
+  const [pinned, setPinned] = useState<{ p: Point; cx: number; cy: number } | null>(null)
+
+  useEffect(() => {
+    if (!pinned) return
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setPinned(null)
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [pinned])
 
   const regions = useMemo(() => {
     const set = new Set<string>()
@@ -183,6 +229,7 @@ export default function OpportunitiesChart({
                 key={r ?? "all"}
                 onClick={() => {
                   setHover(null)
+                  setPinned(null)
                   onRegionChange(r)
                 }}
                 className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
@@ -268,33 +315,54 @@ export default function OpportunitiesChart({
                       point={p.payload}
                       onEnter={(pt, cx, cy) => setHover({ p: pt, cx, cy })}
                       onLeave={() => setHover(null)}
+                      onSelect={(pt, cx, cy) => setPinned({ p: pt, cx, cy })}
                     />
                   )
                 }}
                 isAnimationActive={false}
-                onClick={(p: Point) => {
-                  const id = p?.o?.listing.id
-                  if (id) router.push(`/inzeraty/${encodeURIComponent(id)}`)
-                }}
               />
             </ScatterChart>
           </ResponsiveContainer>
 
-          {hover && (
+          {pinned ? (
             <div
-              className="pointer-events-none absolute z-10"
+              className="absolute z-10"
               style={{
-                left: hover.cx,
-                top: hover.cy,
+                left: pinned.cx,
+                top: pinned.cy,
                 // Flip below the dot when there is no room above it.
                 transform:
-                  hover.cy < 110
+                  pinned.cy < 230
                     ? "translate(-50%, 14px)"
                     : "translate(-50%, calc(-100% - 14px))",
               }}
             >
-              <TooltipCard o={hover.p.o} labels={labels} />
+              <div className="relative">
+                <TooltipCard
+                  o={pinned.p.o}
+                  labels={labels}
+                  pinned
+                  onClose={() => setPinned(null)}
+                />
+              </div>
             </div>
+          ) : (
+            hover && (
+              <div
+                className="pointer-events-none absolute z-10"
+                style={{
+                  left: hover.cx,
+                  top: hover.cy,
+                  // Flip below the dot when there is no room above it.
+                  transform:
+                    hover.cy < 110
+                      ? "translate(-50%, 14px)"
+                      : "translate(-50%, calc(-100% - 14px))",
+                }}
+              >
+                <TooltipCard o={hover.p.o} labels={labels} />
+              </div>
+            )
           )}
         </div>
       </CardContent>
