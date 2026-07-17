@@ -75,7 +75,7 @@ interface Poi {
   id: string
   lat: number
   lon: number
-  name: string
+  name: string // "" when OSM has no name — rendered as t(`poi.${type}`)
   type: string
   cat: CatId
   dist: number
@@ -158,14 +158,16 @@ const catIcon = Object.fromEntries(
   CATS.map((c) => [c.id, teardrop(c.color, 22)]),
 ) as Record<CatId, L.DivIcon>
 
-// Shared marker layer for both inline and expanded maps.
+// Shared marker layer for both inline and expanded maps. Unnamed POIs get a
+// generic per-type label, resolved at render time so it follows the language.
 function PoiMarkers({ pois }: { pois: Poi[] }) {
+  const { t } = useI18n()
   return (
     <>
       {pois.map((p) => (
         <Marker key={p.id} position={[p.lat, p.lon]} icon={catIcon[p.cat]}>
           <Tooltip direction="top" offset={[0, -16]}>
-            <span className="font-medium">{p.name}</span> · {fmtDist(p.dist)}
+            <span className="font-medium">{p.name || t(`poi.${p.type}`)}</span> · {fmtDist(p.dist)}
           </Tooltip>
         </Marker>
       ))}
@@ -216,9 +218,15 @@ export default function PropertyMap({
             const pLat = el.lat ?? el.center?.lat
             const pLon = el.lon ?? el.center?.lon
             if (pLat == null || pLon == null) continue
-            const name = tags.name || tags["name:en"] || tags.brand
-            if (!name) continue // skip unnamed clutter
-            const key = `${cat}:${name}:${Math.round(pLat * 1e4)}`
+            const name = tags.name || tags["name:en"] || tags.brand || ""
+            const type =
+              tags.shop || tags.amenity || tags.leisure || tags.railway || tags.highway || "stop"
+            // Named POIs dedup on name+lat (OSM often maps one place as both a
+            // node and a building way); unnamed ones dedup on position only so
+            // two distinct unnamed stops/playgrounds both survive.
+            const key = name
+              ? `${cat}:${name}:${Math.round(pLat * 1e4)}`
+              : `${cat}:${type}:${Math.round(pLat * 1e4)}:${Math.round(pLon * 1e4)}`
             if (seen.has(key)) continue
             seen.add(key)
             out.push({
@@ -226,7 +234,7 @@ export default function PropertyMap({
               lat: pLat,
               lon: pLon,
               name,
-              type: tags.shop || tags.amenity || tags.leisure || tags.railway || tags.highway || "stop",
+              type,
               cat,
               dist: haversine(lat, lon, pLat, pLon),
             })
