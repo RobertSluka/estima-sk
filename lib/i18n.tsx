@@ -571,8 +571,10 @@ const dict: Record<Lang, Record<string, string>> = {
     // estimate (odhad)
     "estimate.title": "Orientačný odhad ceny",
     "estimate.subtitle":
-      "Zadajte základné parametre nehnuteľnosti. Odhad vychádza z priemerných cien podľa krajov (NBS) a je orientačný.",
+      "Zadajte základné parametre nehnuteľnosti. Odhad vychádza z priemerných cien podľa krajov, krajských miest a mestských častí a je orientačný.",
     "estimate.region": "Kraj",
+    "estimate.locality": "Lokalita",
+    "estimate.wholeRegion": "Celý kraj – priemer",
     "estimate.type": "Typ nehnuteľnosti",
     "estimate.typeFlat": "Byt",
     "estimate.typeHouse": "Dom",
@@ -584,8 +586,9 @@ const dict: Record<Lang, Record<string, string>> = {
     "estimate.resultTitle": "Orientačné cenové rozpätie",
     "estimate.perM2": "za m²",
     "estimate.disclaimer":
-      "Toto je orientačný odhad z krajských priemerov — nezohľadňuje lokalitu v rámci kraja, poschodie, výhľad ani ďalšie parametre. Presný odhad z porovnateľných inzerátov pripravujeme so spustením Estima Engine pre Slovensko.",
-    "estimate.sourceNote": "Zdroj cenových hladín: NBS, priemery za rok 2024.",
+      "Toto je orientačný odhad z priemerných cenových hladín — cenové hladiny mestských častí a okresov sú približné a nezohľadňujú mikropolohu, poschodie, výhľad ani ďalšie parametre. Presný odhad z porovnateľných inzerátov pripravujeme so spustením Estima Engine pre Slovensko.",
+    "estimate.sourceNote":
+      "Zdroje cenových hladín: NBS (kraje, priemery 2024), Realitný barometer Realitnej únie SR (krajské mestá, jún 2026), portálové prehľady (mestské časti Bratislavy, orientačne).",
 
     // buy vs rent
     "buyRent.title": "Kúpiť, či prenajať?",
@@ -1256,8 +1259,10 @@ const dict: Record<Lang, Record<string, string>> = {
     // estimate (odhad)
     "estimate.title": "Indicative price estimate",
     "estimate.subtitle":
-      "Enter the basic parameters of the property. The estimate is based on average regional prices (NBS) and is indicative.",
+      "Enter the basic parameters of the property. The estimate is based on average price levels for regions, regional capitals and city parts, and is indicative.",
     "estimate.region": "Region",
+    "estimate.locality": "Location",
+    "estimate.wholeRegion": "Whole region – average",
     "estimate.type": "Property type",
     "estimate.typeFlat": "Flat",
     "estimate.typeHouse": "House",
@@ -1269,8 +1274,9 @@ const dict: Record<Lang, Record<string, string>> = {
     "estimate.resultTitle": "Indicative price range",
     "estimate.perM2": "per m²",
     "estimate.disclaimer":
-      "This is an indicative estimate from regional averages — it does not account for the location within the region, floor, view or other parameters. A precise estimate from comparable listings is coming with the launch of the Estima Engine for Slovakia.",
-    "estimate.sourceNote": "Price level source: NBS, 2024 averages.",
+      "This is an indicative estimate from average price levels — city-part and district levels are approximate and do not account for micro-location, floor, view or other parameters. A precise estimate from comparable listings is coming with the launch of the Estima Engine for Slovakia.",
+    "estimate.sourceNote":
+      "Price level sources: NBS (regions, 2024 averages), Realitná únia SR barometer (regional capitals, June 2026), portal overviews (Bratislava city parts, indicative).",
 
     // buy vs rent
     "buyRent.title": "Buy or rent?",

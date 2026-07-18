@@ -15,21 +15,35 @@ import { useI18n } from "@/lib/i18n"
 import { formatEUR } from "@/lib/utils"
 import {
   REGIONS,
+  SUBREGIONS,
   estimatePrice,
   type Condition,
   type PropertyType,
 } from "@/lib/market"
 
+// Sentinel for "no locality picked" — Radix Select can't use "" as a value.
+const WHOLE_REGION = "all"
+
 export default function EstimateForm() {
   const { t } = useI18n()
   const [regionId, setRegionId] = useState("ba")
+  const [localityId, setLocalityId] = useState(WHOLE_REGION)
   const [type, setType] = useState<PropertyType>("flat")
   const [condition, setCondition] = useState<Condition>("renovated")
   const [area, setArea] = useState(65)
 
+  const localities = SUBREGIONS[regionId] ?? []
+
   const estimate = useMemo(
-    () => estimatePrice(regionId, type, condition, area),
-    [regionId, type, condition, area],
+    () =>
+      estimatePrice(
+        regionId,
+        localityId === WHOLE_REGION ? null : localityId,
+        type,
+        condition,
+        area,
+      ),
+    [regionId, localityId, type, condition, area],
   )
 
   return (
@@ -39,10 +53,16 @@ export default function EstimateForm() {
           <CardTitle className="text-sm">{t("estimate.title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <div className="space-y-1.5">
               <Label className="text-xs text-slate-500">{t("estimate.region")}</Label>
-              <Select value={regionId} onValueChange={setRegionId}>
+              <Select
+                value={regionId}
+                onValueChange={(v) => {
+                  setRegionId(v)
+                  setLocalityId(WHOLE_REGION)
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -50,6 +70,23 @@ export default function EstimateForm() {
                   {REGIONS.map((r) => (
                     <SelectItem key={r.id} value={r.id}>
                       {r.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs text-slate-500">{t("estimate.locality")}</Label>
+              <Select value={localityId} onValueChange={setLocalityId}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={WHOLE_REGION}>{t("estimate.wholeRegion")}</SelectItem>
+                  {localities.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>
+                      {s.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
