@@ -1,15 +1,113 @@
 "use client"
 
-import { Check, Sparkles } from "lucide-react"
+import { Suspense, useEffect, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { AlertCircle, Check, CheckCircle2, Sparkles } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useI18n } from "@/lib/i18n"
 import { pricingContent } from "@/lib/pricing"
+import { fetchAuthProviders, useSession, type AuthProviders } from "@/lib/user"
 import { cn } from "@/lib/utils"
 
-export default function CennikPage() {
-  const { lang } = useI18n()
+function CennikContent() {
+  const { lang, t } = useI18n()
   const c = pricingContent[lang]
+  const router = useRouter()
+  const params = useSearchParams()
+  const session = useSession()
+
+  const [providers, setProviders] = useState<AuthProviders | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchAuthProviders().then(setProviders)
+  }, [])
+
+  const billingLive = providers?.billing ?? false
+  const plan = session.user?.plan ?? null
+  const banner = params.get("billing") // success | canceled | null
+
+  // POST to a billing endpoint and follow the returned Stripe URL.
+  async function goTo(endpoint: "checkout" | "portal") {
+    if (busy) return
+    if (!session.authenticated) {
+      router.push("/prihlasenie?mode=register&next=/cennik")
+      return
+    }
+    setBusy(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/billing/${endpoint}`, { method: "POST" })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok && data.url) {
+        window.location.href = data.url
+        return
+      }
+      if (res.status === 401) {
+        router.push("/prihlasenie?next=/cennik")
+        return
+      }
+      setError(t("pricing.checkoutError"))
+    } catch {
+      setError(t("pricing.checkoutError"))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  // Per-plan call to action; falls back to the original mailto when Stripe
+  // isn't configured on this deployment.
+  function planCta(planId: string, featured: boolean) {
+    const variant = featured ? "default" : "outline"
+    if (planId === "invest" || !billingLive) {
+      return (
+        <Button asChild variant={variant} className="mt-6 w-full">
+          <a href="mailto:hello@estima.sk">
+            {planId === "invest" ? c.ctaContact : c.ctaGetStarted}
+          </a>
+        </Button>
+      )
+    }
+    if (planId === "basic") {
+      if (session.authenticated) {
+        return (
+          <Button variant="outline" className="mt-6 w-full" disabled>
+            {plan === "basic" ? t("pricing.currentPlan") : c.ctaGetStarted}
+          </Button>
+        )
+      }
+      return (
+        <Button asChild variant={variant} className="mt-6 w-full">
+          <a href="/prihlasenie?mode=register&next=/cennik">{c.ctaGetStarted}</a>
+        </Button>
+      )
+    }
+    // pro
+    if (plan === "pro") {
+      return (
+        <Button
+          variant={variant}
+          className="mt-6 w-full"
+          disabled={busy}
+          onClick={() => goTo("portal")}
+        >
+          {t("pricing.manage")}
+        </Button>
+      )
+    }
+    return (
+      <Button
+        variant={variant}
+        className="mt-6 w-full"
+        disabled={busy}
+        onClick={() => goTo("checkout")}
+      >
+        {c.ctaGetStarted}
+      </Button>
+    )
+  }
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-10">
@@ -20,6 +118,26 @@ export default function CennikPage() {
         </h1>
         <p className="mx-auto mt-3 max-w-xl text-sm text-slate-500">{c.subheading}</p>
       </div>
+
+      {/* Checkout result / error banners */}
+      {banner === "success" && (
+        <div className="mx-auto mb-8 flex max-w-xl items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          <CheckCircle2 className="h-4 w-4 shrink-0" />
+          {t("pricing.success")}
+        </div>
+      )}
+      {banner === "canceled" && (
+        <div className="mx-auto mb-8 flex max-w-xl items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+          <AlertCircle className="h-4 w-4 shrink-0" />
+          {t("pricing.canceled")}
+        </div>
+      )}
+      {error && (
+        <div className="mx-auto mb-8 flex max-w-xl items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+          <AlertCircle className="h-4 w-4 shrink-0" />
+          {error}
+        </div>
+      )}
 
       {/* Plan cards */}
       <div className="grid grid-cols-1 gap-5 md:grid-cols-3 md:items-start">
@@ -64,11 +182,7 @@ export default function CennikPage() {
                   ))}
                 </ul>
 
-                <Button asChild variant={featured ? "default" : "outline"} className="mt-6 w-full">
-                  <a href="mailto:hello@estima.sk">
-                    {plan.id === "invest" ? c.ctaContact : c.ctaGetStarted}
-                  </a>
-                </Button>
+                {planCta(plan.id, Boolean(featured))}
               </CardContent>
             </Card>
           )
@@ -112,5 +226,14 @@ export default function CennikPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function CennikPage() {
+  // useSearchParams requires a Suspense boundary during prerender.
+  return (
+    <Suspense fallback={null}>
+      <CennikContent />
+    </Suspense>
   )
 }

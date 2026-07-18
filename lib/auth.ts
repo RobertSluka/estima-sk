@@ -1,15 +1,17 @@
-// Server-side auth core — the single admin account.
+// Server-side auth core — session cookies for admin + database users.
 //
-// There is no user database yet: one admin account is configured through
-// environment variables and sessions are stateless HMAC-signed cookies, so
-// no new dependencies and nothing persists server-side.
+// Two kinds of account share one HMAC-signed, stateless session cookie:
+//   - the env-var admin account (ADMIN_EMAIL/ADMIN_PASSWORD), as before
+//   - real users stored in estima-sk-backend (e-mail/password or Google),
+//     reached through lib/backend.ts — the token then carries the user id
+//     and /api/auth/me re-fetches fresh profile + plan from the backend.
 //
-//   ADMIN_EMAIL     login e-mail (default admin@estima.sk)
-//   ADMIN_PASSWORD  login password — REQUIRED; login is disabled while unset,
-//                   so a fresh deploy can never be entered with a known default
+//   ADMIN_EMAIL     admin login e-mail (default admin@estima.sk)
+//   ADMIN_PASSWORD  admin password — while unset the admin account is disabled
 //   AUTH_SECRET     cookie-signing key; falls back to a key derived from
 //                   ADMIN_PASSWORD so sessions survive restarts without
-//                   extra configuration
+//                   extra configuration. REQUIRED (directly or via
+//                   ADMIN_PASSWORD) for any sign-in to work.
 //
 // Server-only module: never import from client components.
 
@@ -19,9 +21,12 @@ export const SESSION_COOKIE = "estima_session"
 const SESSION_TTL_S = 7 * 24 * 60 * 60 // 7 days
 
 export interface SessionUser {
+  /** Backend user id; absent for the env-var admin account. */
+  id?: number
   email: string
   name: string
-  role: "admin"
+  role: "admin" | "user"
+  picture?: string | null
 }
 
 function adminEmail(): string {
@@ -42,13 +47,18 @@ function safeEqual(a: string, b: string): boolean {
   return timingSafeEqual(ab, bb)
 }
 
-/** True when the admin account is usable (password configured). */
+/** True when at least one sign-in method can mint sessions. */
 export function authConfigured(): boolean {
+  return Boolean(secret())
+}
+
+/** True when the env-var admin account is usable. */
+export function adminConfigured(): boolean {
   return Boolean(process.env.ADMIN_PASSWORD)
 }
 
-/** Check the submitted credentials against the configured admin account. */
-export function verifyCredentials(email: string, password: string): SessionUser | null {
+/** Check submitted credentials against the env-var admin account. */
+export function verifyAdminCredentials(email: string, password: string): SessionUser | null {
   const expected = process.env.ADMIN_PASSWORD
   if (!expected) return null
   const emailOk = safeEqual(email.trim().toLowerCase(), adminEmail().toLowerCase())
@@ -62,7 +72,14 @@ export function createSessionToken(user: SessionUser): string | null {
   const key = secret()
   if (!key) return null
   const payload = Buffer.from(
-    JSON.stringify({ e: user.email, r: user.role, x: Math.floor(Date.now() / 1000) + SESSION_TTL_S }),
+    JSON.stringify({
+      u: user.id ?? null,
+      e: user.email,
+      n: user.name,
+      p: user.picture ?? null,
+      r: user.role,
+      x: Math.floor(Date.now() / 1000) + SESSION_TTL_S,
+    }),
   ).toString("base64url")
   const sig = createHmac("sha256", key).update(payload).digest("base64url")
   return `${payload}.${sig}`
@@ -80,8 +97,15 @@ export function verifySessionToken(token: string | undefined): SessionUser | nul
   try {
     const data = JSON.parse(Buffer.from(payload, "base64url").toString())
     if (typeof data.x !== "number" || data.x < Date.now() / 1000) return null
-    if (data.r !== "admin") return null
-    return { email: String(data.e), name: "Admin", role: "admin" }
+    if (data.r !== "admin" && data.r !== "user") return null
+    if (data.r === "user" && typeof data.u !== "number") return null
+    return {
+      id: typeof data.u === "number" ? data.u : undefined,
+      email: String(data.e),
+      name: String(data.n || (data.r === "admin" ? "Admin" : data.e)),
+      role: data.r,
+      picture: data.p ? String(data.p) : null,
+    }
   } catch {
     return null
   }

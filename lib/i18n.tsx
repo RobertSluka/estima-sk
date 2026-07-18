@@ -362,6 +362,19 @@ const dict: Record<Lang, Record<string, string>> = {
     "signin.notConfigured": "Prihlásenie zatiaľ nie je na tomto serveri nastavené.",
     "signin.noAccount": "Nemáte účet?",
     "signin.createAccount": "Vytvoriť účet",
+    "signin.name": "Meno (nepovinné)",
+    "signin.registerSubmitting": "Vytváranie účtu…",
+    "signin.haveAccount": "Máte už účet?",
+    "signin.emailTaken": "Účet s týmto e-mailom už existuje.",
+    "signin.weakPassword": "Heslo musí mať aspoň 8 znakov.",
+    "signin.googleError": "Prihlásenie cez Google zlyhalo. Skúste to znova.",
+
+    // pricing / billing
+    "pricing.currentPlan": "Váš aktuálny plán",
+    "pricing.manage": "Spravovať predplatné",
+    "pricing.success": "Ďakujeme! Predplatné Pro je aktívne.",
+    "pricing.canceled": "Platba bola zrušená — nič sme vám nezaúčtovali.",
+    "pricing.checkoutError": "Platbu sa nepodarilo spustiť. Skúste to znova.",
 
     // common
     "common.loading": "Načítava sa…",
@@ -1009,6 +1022,19 @@ const dict: Record<Lang, Record<string, string>> = {
     "signin.notConfigured": "Sign-in is not configured on this server yet.",
     "signin.noAccount": "No account?",
     "signin.createAccount": "Create account",
+    "signin.name": "Name (optional)",
+    "signin.registerSubmitting": "Creating account…",
+    "signin.haveAccount": "Already have an account?",
+    "signin.emailTaken": "An account with this e-mail already exists.",
+    "signin.weakPassword": "Password must be at least 8 characters.",
+    "signin.googleError": "Google sign-in failed. Please try again.",
+
+    // pricing / billing
+    "pricing.currentPlan": "Your current plan",
+    "pricing.manage": "Manage subscription",
+    "pricing.success": "Thank you! Your Pro subscription is active.",
+    "pricing.canceled": "Payment canceled — you were not charged.",
+    "pricing.checkoutError": "Could not start the checkout. Please try again.",
 
     // common
     "common.loading": "Loading…",
