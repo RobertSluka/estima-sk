@@ -2,8 +2,9 @@
 
 // ─── ListingsMap ─────────────────────────────────────────────────────────────
 // OpenStreetMap tile map (Leaflet) showing the filtered listings as clustered,
-// navigable EUR price pins. Bazoš carries only town-level locations, so pins
-// sit on town centroids and same-town listings stack — clustering is essential.
+// navigable EUR price pins. Listings with a geocoded street (geoPrecision
+// "street") sit on their street; the rest sit on town centroids and stack —
+// clustering is essential.
 //
 // Rendered client-only (dynamic import with ssr:false on the listings page)
 // because Leaflet touches `window` at module load.
@@ -86,7 +87,11 @@ function popupHtml(l: Listing): string {
     l.price != null
       ? `${l.price.toLocaleString("sk-SK")} €${l.dealType === "rent" ? "/mes." : ""}`
       : "—"
-  const meta = [l.layout, l.floorArea ? `${Math.round(l.floorArea)} m²` : null, l.locality]
+  const meta = [
+    l.layout,
+    l.floorArea ? `${Math.round(l.floorArea)} m²` : null,
+    l.street ? `${l.street}, ${l.locality ?? ""}`.replace(/, $/, "") : l.locality,
+  ]
     .filter(Boolean)
     .join(" · ")
   return `<div style="font:400 12px ui-sans-serif,system-ui;min-width:150px">

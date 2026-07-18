@@ -39,7 +39,8 @@
     ".next-3020/types/**/*.ts",
     ".next-buildcheck/types/**/*.ts",
     ".next-3022/types/**/*.ts",
-    ".next-3024/types/**/*.ts"
+    ".next-3024/types/**/*.ts",
+    ".next-build-verify/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

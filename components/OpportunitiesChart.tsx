@@ -24,8 +24,8 @@ export interface OpportunityDatum {
 }
 
 interface Point {
-  x: number // group median €/m² (the market index level)
-  y: number // % below that median
+  x: number // the listing's own €/m²
+  y: number // % below its district median
   o: OpportunityDatum
 }
 
@@ -36,10 +36,10 @@ const LABELS = {
     subtitle:
       "Každý bod je inzerát. Čím nižšie pod čiarou, tým väčšia zľava oproti mediánu svojho okresu.",
     marketLine: "Medián okresu (trhová hodnota)",
-    xAxis: "Medián okresu (€/m²)",
+    xAxis: "Cena inzerátu (€/m²)",
     yAxis: "Odchýlka od mediánu",
     allRegions: "Všetky kraje",
-    median: "Medián okresu",
+    median: "trhová hodnota",
     vs: "oproti",
     viewListing: "Zobraziť inzerát",
     close: "Zavrieť",
@@ -49,10 +49,10 @@ const LABELS = {
     subtitle:
       "Each dot is a listing. The further below the line, the bigger the discount vs its district median.",
     marketLine: "District median (market value)",
-    xAxis: "District median (€/m²)",
+    xAxis: "Listing price (€/m²)",
     yAxis: "Deviation from median",
     allRegions: "All regions",
-    median: "District median",
+    median: "market value",
     vs: "vs",
     viewListing: "View listing",
     close: "Close",
@@ -197,16 +197,18 @@ export default function OpportunitiesChart({
     () =>
       opportunities
         .filter((o) => !region || o.listing.region === region)
-        .map((o) => ({ x: Math.round(o.groupMedian), y: o.discount, o })),
+        .filter((o) => o.listing.pricePerSqm != null)
+        .map((o) => ({ x: Math.round(o.listing.pricePerSqm!), y: o.discount, o })),
     [opportunities, region],
   )
 
-  // Median €/m² of the selected kraj, marked as a vertical line on the price
-  // axis — that is where the value actually lives. All-regions shows none
-  // (one median across differently-priced kraje would mislead).
+  // Market level of the selected kraj (median of its district medians), marked
+  // as a vertical line — listings left of it are cheaper than the kraj market.
+  // All-regions shows none (one median across differently-priced kraje would
+  // mislead).
   const regionMedian = useMemo(() => {
     if (!region || points.length === 0) return null
-    const xs = points.map((p) => p.x).sort((a, b) => a - b)
+    const xs = points.map((p) => Math.round(p.o.groupMedian)).sort((a, b) => a - b)
     const mid = Math.floor(xs.length / 2)
     return xs.length % 2 ? xs[mid] : (xs[mid - 1] + xs[mid]) / 2
   }, [points, region])
