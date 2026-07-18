@@ -80,16 +80,18 @@ function SidebarBody({
 
   return (
     <>
-      {/* Mode tabs */}
+      {/* Mode tabs — active tab carries a steel underline, not a bright fill */}
       {!collapsed && (
-        <div className="flex border-b border-[#ffffff1a] shrink-0">
+        <div className="flex border-b border-steel/15 shrink-0">
           {(["basic", "pro"] as const).map((m) => (
             <button
               key={m}
               onClick={() => setMode(m)}
               className={cn(
-                "flex-1 py-2.5 text-[10px] font-bold tracking-widest uppercase transition-colors",
-                mode === m ? "text-[#ffffff]" : "text-gray-400 hover:text-gray-200"
+                "flex-1 py-2.5 -mb-px border-b-2 text-[10px] font-bold tracking-widest uppercase transition-colors",
+                mode === m
+                  ? "border-steel text-[#F4F6F8]"
+                  : "border-transparent text-gray-400 hover:text-gray-200"
               )}
             >
               {m === "basic" ? "BASIC" : "PRO"}
@@ -98,8 +100,8 @@ function SidebarBody({
         </div>
       )}
 
-      {/* Nav items */}
-      <nav className="flex-1 py-1 overflow-y-auto">
+      {/* Nav items — active: subtle steel fill + hairline ring, no bright block */}
+      <nav className="flex-1 py-1.5 overflow-y-auto">
         {navItems.map((item) => {
           const Icon = item.icon
           const locked = Boolean(item.locked) && !session.authenticated
@@ -110,18 +112,25 @@ function SidebarBody({
               href={locked ? "#" : item.href}
               aria-disabled={locked}
               className={cn(
-                "flex items-center gap-2.5 px-3 py-2 text-[11px] font-medium transition-colors select-none",
+                "mx-1.5 my-0.5 flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[11px] font-medium transition-colors select-none",
                 collapsed ? "justify-center" : "",
-                active ? "text-[#ffffff]" : "text-gray-300 hover:text-[#ffffff]",
+                active
+                  ? "bg-steel/15 text-[#F4F6F8] ring-1 ring-inset ring-steel/30"
+                  : "text-gray-300 hover:bg-[#ffffff08] hover:text-[#F4F6F8]",
                 locked && "opacity-40 pointer-events-none"
               )}
             >
-              <Icon className="h-3.5 w-3.5 shrink-0" />
+              <Icon
+                className={cn(
+                  "h-3.5 w-3.5 shrink-0",
+                  active ? "text-steel-strong" : "text-gray-400"
+                )}
+              />
               {!collapsed && (
                 <>
                   <span className="truncate flex-1">{t(item.key)}</span>
                   {locked && (
-                    <Lock className="h-2.5 w-2.5 shrink-0 text-gray-600" />
+                    <Lock className="h-2.5 w-2.5 shrink-0 text-gray-500" />
                   )}
                 </>
               )}
@@ -131,12 +140,12 @@ function SidebarBody({
 
         {/* Marketing links (mobile drawer only) */}
         {showMarketing && (
-          <div className="mt-1 border-t border-[#ffffff1a] pt-1">
+          <div className="mt-1 border-t border-steel/15 pt-1">
             {marketingItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center px-3 py-2 text-[11px] font-medium text-gray-300 hover:text-[#ffffff] transition-colors select-none"
+                className="mx-1.5 my-0.5 flex items-center rounded-md px-2.5 py-2 text-[11px] font-medium text-gray-300 hover:bg-[#ffffff08] hover:text-[#F4F6F8] transition-colors select-none"
               >
                 {t(item.key)}
               </Link>
@@ -145,19 +154,19 @@ function SidebarBody({
         )}
       </nav>
 
-      {/* Upgrade CTA */}
-      <div className="px-2 pb-2 shrink-0 border-t border-[#ffffff0d] pt-2">
+      {/* Upgrade CTA — the one deliberately white-filled action in the rail */}
+      <div className="px-2 pb-2 shrink-0 border-t border-steel/10 pt-2">
         {collapsed ? (
           <div className="flex justify-center">
-            <Star className="h-3.5 w-3.5 text-yellow-500" />
+            <Star className="h-3.5 w-3.5 text-steel" />
           </div>
         ) : (
           <Link
             href="/cennik"
-            className="w-full bg-[#ffffff] text-black text-[9px] font-bold py-2 px-2 rounded flex items-center justify-between leading-none"
+            className="w-full bg-[#F4F6F8] text-[#0B111C] text-[9px] font-bold py-2 px-2.5 rounded-md flex items-center justify-between leading-none transition-colors hover:bg-[#ffffff]"
           >
             <span>{t("nav.upgrade")}</span>
-            <span className="text-gray-500">9,90 €</span>
+            <span className="text-[#6F7B8D]">9,90 €</span>
           </Link>
         )}
       </div>
@@ -166,11 +175,11 @@ function SidebarBody({
       {session.authenticated && session.user ? (
         <div
           className={cn(
-            "flex items-center gap-2 px-3 py-2.5 border-t border-[#ffffff0d] shrink-0",
+            "flex items-center gap-2 px-3 py-2.5 border-t border-steel/10 shrink-0",
             collapsed && "justify-center px-0"
           )}
         >
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-700 text-[11px] font-semibold text-[#ffffff] shrink-0">
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#243149] text-[11px] font-semibold text-[#F4F6F8] shrink-0">
             {session.user.name[0]}
           </span>
           {!collapsed && (
@@ -178,7 +187,7 @@ function SidebarBody({
               <p className="text-[10px] font-medium text-gray-300 truncate">
                 {session.user.name}
               </p>
-              <p className="text-[8px] uppercase tracking-wider text-emerald-500">
+              <p className="text-[8px] uppercase tracking-wider text-steel-strong">
                 {t("navbar.roleAdmin")}
               </p>
             </div>
@@ -188,7 +197,7 @@ function SidebarBody({
         <Link
           href="/prihlasenie"
           className={cn(
-            "flex items-center gap-2 px-3 py-2.5 border-t border-[#ffffff0d] shrink-0 text-gray-400 hover:text-[#ffffff] hover:bg-[#ffffff0d] transition-colors",
+            "flex items-center gap-2 px-3 py-2.5 border-t border-steel/10 shrink-0 text-gray-400 hover:text-[#F4F6F8] hover:bg-[#ffffff08] transition-colors",
             collapsed && "justify-center px-0"
           )}
         >
@@ -245,7 +254,7 @@ export default function Sidebar() {
             className="absolute inset-0 bg-black/55"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="absolute left-0 top-0 flex h-full w-[240px] flex-col bg-[#111113] shadow-2xl">
+          <aside className="absolute left-0 top-0 flex h-full w-[240px] flex-col bg-sidebar shadow-2xl">
             <button
               type="button"
               aria-label={t("nav.closeMenu")}
@@ -262,14 +271,14 @@ export default function Sidebar() {
       {/* Desktop: persistent rail */}
       <aside
         className={cn(
-          "relative hidden md:flex flex-col shrink-0 bg-[#111113] transition-all duration-200 overflow-visible",
+          "relative hidden md:flex flex-col shrink-0 bg-sidebar transition-all duration-200 overflow-visible",
           collapsed ? "w-[52px]" : "w-[148px]"
         )}
       >
         {/* Collapse toggle */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="absolute -right-3 top-3 z-20 flex h-6 w-6 items-center justify-center rounded-full bg-[#111113] border border-[#ffffff1a] text-gray-500 hover:text-[#ffffff] transition-colors"
+          className="absolute -right-3 top-3 z-20 flex h-6 w-6 items-center justify-center rounded-full bg-sidebar border border-steel/25 text-gray-400 hover:text-[#F4F6F8] transition-colors"
         >
           {collapsed ? (
             <ChevronRight className="h-3 w-3" />

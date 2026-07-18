@@ -13,7 +13,7 @@ export default function Navbar() {
   const session = useSession()
 
   return (
-    <header className="w-full border-b border-slate-200 bg-white h-12 flex items-center pl-14 pr-3 md:px-5 shrink-0">
+    <header className="w-full border-b border-slate-200 bg-header h-12 flex items-center pl-14 pr-3 md:px-5 shrink-0">
       {/* Logo + nav links — centered (left padding on mobile clears the
           sidebar's fixed hamburger button) */}
       <div className="flex items-center gap-6 mx-auto">
@@ -77,7 +77,7 @@ export default function Navbar() {
               className={
                 "text-[11px] font-semibold px-2 py-1 transition-colors " +
                 (lang === l
-                  ? "bg-slate-900 text-white"
+                  ? "bg-steel/20 text-slate-900"
                   : "text-slate-500 hover:text-slate-900")
               }
             >
@@ -92,7 +92,7 @@ export default function Navbar() {
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-[11px] font-semibold text-white select-none">
                 {session.user.name[0]}
               </span>
-              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700">
+              <span className="rounded-full border border-steel/35 bg-steel/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-steel">
                 {t("navbar.roleAdmin")}
               </span>
             </span>
