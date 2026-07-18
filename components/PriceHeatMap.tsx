@@ -99,7 +99,7 @@ export default function PriceHeatMap({
       center={SLOVAKIA}
       zoom={8}
       zoomControl={false}
-      className="h-full w-full rounded-2xl"
+      className="h-full w-full rounded-2xl border border-slate-200"
       scrollWheelZoom
     >
       <FitToData rows={rows} />
@@ -114,8 +114,8 @@ export default function PriceHeatMap({
           center={[r.lat, r.lon]}
           radius={10 + 22 * Math.sqrt(r.count / maxCount)}
           pathOptions={{
-            color: selected === r.district ? "#0f172a" : "white",
-            weight: selected === r.district ? 2.5 : 1.5,
+            color: selected === r.district ? "#5b7ba6" : "white",
+            weight: selected === r.district ? 3 : 1.5,
             fillColor: heatColor(r.value, min, max),
             fillOpacity: 0.75,
           }}

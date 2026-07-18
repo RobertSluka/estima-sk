@@ -147,12 +147,13 @@ function teardrop(color: string, size: number, ring = "#fff") {
   })
 }
 // Small, unobtrusive dot for the property itself (keeps the map clean).
+// Steel — the "you are here" marker is an active state, not a semantic gain.
 const propertyIcon = L.divIcon({
   className: "",
   iconSize: [18, 18],
   iconAnchor: [9, 9],
   popupAnchor: [0, -9],
-  html: `<div style="width:14px;height:14px;border-radius:9999px;background:#047857;border:3px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4)"></div>`,
+  html: `<div style="width:14px;height:14px;border-radius:9999px;background:#5b7ba6;border:3px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4)"></div>`,
 })
 const catIcon = Object.fromEntries(
   CATS.map((c) => [c.id, teardrop(c.color, 22)]),
@@ -293,11 +294,12 @@ export default function PropertyMap({
     })
   }
 
-  // Clean, light base map (CARTO Voyager) — far less busy than raw OSM tiles.
+  // Muted light-grey base map (CARTO Positron) — matches the map style used
+  // across the app and keeps the light map soft against the dark UI.
   const mapTile = (
     <TileLayer
       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-      url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
+      url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"
       subdomains="abcd"
     />
   )

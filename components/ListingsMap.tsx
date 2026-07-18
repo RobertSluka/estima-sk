@@ -48,11 +48,11 @@ function compactPrice(l: Listing): string {
     : `${Math.round(l.price / 1000)}k`
 }
 
-// A single price pin. `active` = hovered or selected → dark fill.
+// A single price pin. `active` = hovered or selected → steel fill.
 function priceIcon(label: string, active: boolean): L.DivIcon {
-  const bg = active ? "#0f172a" : "#ffffff"
-  const fg = active ? "#ffffff" : "#0f172a"
-  const border = active ? "#0f172a" : "#cbd5e1"
+  const bg = active ? "#5b7ba6" : "#ffffff"
+  const fg = active ? "#ffffff" : "#0f1b2d"
+  const border = active ? "#5b7ba6" : "#cbd5e1"
   const z = active ? "z-index:1000;" : ""
   return L.divIcon({
     className: "",
@@ -75,8 +75,8 @@ function clusterIcon(count: number): L.DivIcon {
     iconSize: [size, size],
     html: `<div style="width:${size}px;height:${size}px;border-radius:9999px;
       display:flex;align-items:center;justify-content:center;
-      background:rgba(15,23,42,.82);color:#fff;font:600 13px ui-sans-serif,system-ui;
-      box-shadow:0 2px 8px rgba(15,23,42,.28),inset 0 0 0 1px rgba(255,255,255,.14);
+      background:rgba(11,17,28,.85);color:#fff;font:600 13px ui-sans-serif,system-ui;
+      box-shadow:0 2px 8px rgba(7,11,18,.28),inset 0 0 0 1px rgba(255,255,255,.14);
       backdrop-filter:blur(1px);">${label}</div>`,
   })
 }
@@ -93,7 +93,7 @@ function popupHtml(l: Listing): string {
     <div style="font-weight:600;color:#0f172a;margin-bottom:2px">${l.name ?? l.locality ?? "Inzerát"}</div>
     <div style="color:#64748b">${meta}</div>
     <div style="font-weight:700;color:#0f172a;margin:4px 0">${price}</div>
-    <a href="/inzeraty/${encodeURIComponent(l.id)}" style="color:#2563eb;font-weight:600">Otvoriť inzerát →</a>
+    <a href="/inzeraty/${encodeURIComponent(l.id)}" style="color:#5b7ba6;font-weight:600">Otvoriť inzerát →</a>
   </div>`
 }
 
@@ -297,7 +297,7 @@ export default function ListingsMap({
         expanded ? "fixed inset-0 z-[2000] bg-white p-2 sm:p-3" : "relative h-full w-full",
       )}
     >
-      <div className="relative h-full w-full overflow-hidden rounded-xl">
+      <div className="relative h-full w-full overflow-hidden rounded-xl border border-slate-200">
         <MapContainer
           center={SLOVAKIA}
           zoom={8}

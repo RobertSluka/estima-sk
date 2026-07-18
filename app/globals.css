@@ -174,6 +174,39 @@
   }
 }
 
+/* Leaflet chrome aligned with the app: light-grey surfaces with dark icons,
+   consistent radius and hairline borders, muted attribution. Fixed light
+   colors on purpose — these controls float over the light map tiles, not
+   over themed surfaces. */
+.leaflet-touch .leaflet-bar,
+.leaflet-bar {
+  border: 1px solid #d7dde5 !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(7, 11, 18, 0.1) !important;
+}
+.leaflet-bar a {
+  background: #fbfcfd !important;
+  color: #243149 !important;
+  border-bottom-color: #e3e8ee !important;
+}
+.leaflet-bar a:hover {
+  background: #eef1f5 !important;
+  color: #0f1b2d !important;
+}
+.leaflet-container .leaflet-control-attribution {
+  background: rgba(251, 252, 253, 0.8) !important;
+  color: #737d8b !important;
+}
+.leaflet-container .leaflet-control-attribution a {
+  color: #5b7ba6 !important;
+}
+.leaflet-popup-content-wrapper,
+.leaflet-tooltip {
+  border-radius: 10px !important;
+  box-shadow: 0 2px 10px rgba(7, 11, 18, 0.18);
+}
+
 /* Dark-mode retargeting of recharts' hardcoded neutral colors. Recharts sets
    fill/stroke as SVG presentation attributes, which any CSS rule outranks —
    so these attribute selectors re-theme every chart without touching chart
