@@ -274,15 +274,15 @@ export default function ListingsPage() {
           <div className="bg-white border border-slate-200 rounded-xl shadow-sm mb-6 divide-y divide-slate-100">
             {/* Row 1: deal-type toggle + search + sort */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-4">
-              <div className="flex items-center rounded-md border border-slate-200 overflow-hidden shrink-0">
+              <div className="flex items-center h-9 rounded-md border border-slate-200 overflow-hidden shrink-0">
                 {(["all", "sale", "rent"] as const).map((d) => (
                   <button
                     key={d}
                     onClick={() => set("deal", d)}
                     className={cn(
-                      "text-xs font-medium px-3 py-2 transition-colors",
+                      "text-xs font-medium px-3 h-full transition-colors",
                       filters.deal === d
-                        ? "bg-slate-900 text-white"
+                        ? "bg-steel/15 text-slate-900 shadow-[inset_0_0_0_1px_rgb(var(--steel)/0.35)]"
                         : "text-slate-500 hover:text-slate-900",
                     )}
                   >
@@ -301,12 +301,12 @@ export default function ListingsPage() {
                   value={filters.q}
                   onChange={(e) => set("q", e.target.value)}
                   placeholder={t("listings.searchPlaceholder")}
-                  className="w-full text-xs border border-slate-200 rounded-md py-2 pl-9 pr-8 text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-400"
+                  className="w-full h-9 text-xs border border-slate-200 rounded-md bg-page/50 pl-9 pr-8 text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-ring focus:border-steel/40"
                 />
                 {filters.q && (
                   <button
                     onClick={() => set("q", "")}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
@@ -317,7 +317,7 @@ export default function ListingsPage() {
                 <select
                   value={filters.sort}
                   onChange={(e) => set("sort", e.target.value as SortKey)}
-                  className="text-xs border border-slate-200 rounded-md py-2 px-2.5 text-slate-700 bg-white"
+                  className="h-9 text-xs border border-slate-200 rounded-md px-2.5 text-slate-700 bg-page/50 focus:outline-none focus:ring-1 focus:ring-ring"
                 >
                   {sortOptions.map((o) => (
                     <option key={o.id} value={o.id}>
@@ -342,8 +342,8 @@ export default function ListingsPage() {
                       className={cn(
                         "px-2.5 py-1 rounded text-[11px] font-medium border transition-colors",
                         filters.layouts.includes(l)
-                          ? "bg-slate-900 text-white border-slate-900"
-                          : "bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-400",
+                          ? "bg-steel/15 text-slate-900 border-steel/40"
+                          : "bg-page/50 text-slate-600 border-slate-200 hover:border-slate-400",
                       )}
                     >
                       {l}
@@ -371,7 +371,7 @@ export default function ListingsPage() {
                       )
                     }
                     placeholder={t("common.from")}
-                    className="w-full text-xs border border-slate-200 rounded-md py-1.5 px-2.5 text-slate-700 placeholder:text-slate-300 disabled:bg-slate-50 disabled:opacity-60"
+                    className="w-full h-9 text-xs border border-slate-200 rounded-md bg-page/50 px-2.5 text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-ring focus:border-steel/40 disabled:bg-slate-50 disabled:opacity-60"
                   />
                   <input
                     type="number"
@@ -384,7 +384,7 @@ export default function ListingsPage() {
                       )
                     }
                     placeholder={t("common.to")}
-                    className="w-full text-xs border border-slate-200 rounded-md py-1.5 px-2.5 text-slate-700 placeholder:text-slate-300 disabled:bg-slate-50 disabled:opacity-60"
+                    className="w-full h-9 text-xs border border-slate-200 rounded-md bg-page/50 px-2.5 text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-ring focus:border-steel/40 disabled:bg-slate-50 disabled:opacity-60"
                   />
                 </div>
                 {filters.deal === "all" && (
@@ -403,14 +403,14 @@ export default function ListingsPage() {
                     value={filters.areaMin}
                     onChange={(e) => set("areaMin", e.target.value)}
                     placeholder={t("common.from")}
-                    className="w-full text-xs border border-slate-200 rounded-md py-1.5 px-2.5 text-slate-700 placeholder:text-slate-300"
+                    className="w-full h-9 text-xs border border-slate-200 rounded-md bg-page/50 px-2.5 text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-ring focus:border-steel/40"
                   />
                   <input
                     type="number"
                     value={filters.areaMax}
                     onChange={(e) => set("areaMax", e.target.value)}
                     placeholder={t("common.to")}
-                    className="w-full text-xs border border-slate-200 rounded-md py-1.5 px-2.5 text-slate-700 placeholder:text-slate-300"
+                    className="w-full h-9 text-xs border border-slate-200 rounded-md bg-page/50 px-2.5 text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-ring focus:border-steel/40"
                   />
                 </div>
               </div>
@@ -421,7 +421,7 @@ export default function ListingsPage() {
                 <select
                   value={filters.region}
                   onChange={(e) => set("region", e.target.value)}
-                  className="w-full text-xs border border-slate-200 rounded-md py-1.5 px-2.5 text-slate-700 bg-white"
+                  className="w-full h-9 text-xs border border-slate-200 rounded-md px-2.5 text-slate-700 bg-page/50 focus:outline-none focus:ring-1 focus:ring-ring"
                 >
                   <option value="all">{t("listings.allRegions")}</option>
                   {regionFacets.map((r) => (

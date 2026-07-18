@@ -178,7 +178,7 @@ export default function PriceMapPage() {
               className={cn(
                 "rounded-md px-3 py-1 text-xs font-semibold transition-colors",
                 d === dealType
-                  ? "bg-white text-slate-900 shadow-sm"
+                  ? "bg-steel/15 text-slate-900 shadow-[inset_0_0_0_1px_rgb(var(--steel)/0.35)]"
                   : "text-slate-500 hover:text-slate-700",
               )}
             >
@@ -196,7 +196,7 @@ export default function PriceMapPage() {
               className={cn(
                 "rounded-md px-3 py-1 text-xs font-semibold transition-colors",
                 l === layer
-                  ? "bg-white text-slate-900 shadow-sm"
+                  ? "bg-steel/15 text-slate-900 shadow-[inset_0_0_0_1px_rgb(var(--steel)/0.35)]"
                   : "text-slate-500 hover:text-slate-700",
               )}
             >

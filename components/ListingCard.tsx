@@ -42,8 +42,10 @@ export default function ListingCard({ listing: l }: { listing: Listing }) {
               <Home className="h-8 w-8 text-slate-300" />
             </div>
           )}
+          {/* Overlays sit on the photo, not on a themed surface — fixed
+              colors so neither theme flips them illegible. */}
           {l.dealType && (
-            <span className="absolute top-2 left-2 rounded bg-slate-900/80 px-1.5 py-0.5 text-[10px] font-semibold text-white uppercase tracking-wide">
+            <span className="absolute top-2 left-2 rounded bg-[#F4F6F8]/90 px-1.5 py-0.5 text-[10px] font-semibold text-[#1B2638] uppercase tracking-wide">
               {l.dealType === "sale"
                 ? t("listings.dealSale")
                 : t("listings.dealRent")}
@@ -60,13 +62,13 @@ export default function ListingCard({ listing: l }: { listing: Listing }) {
             className={cn(
               "absolute top-2 right-2 rounded-full p-1.5 transition-colors",
               saved
-                ? "bg-rose-600 text-white"
-                : "bg-slate-900/60 text-white hover:bg-slate-900/80",
+                ? "bg-[#5B7BA6] text-[#F4F6F8]"
+                : "bg-[#0B111C]/60 text-[#F4F6F8] hover:bg-[#0B111C]/80",
             )}
           >
             <Heart className={cn("h-3.5 w-3.5", saved && "fill-current")} />
           </button>
-          <span className="absolute bottom-2 right-2 rounded bg-slate-900/70 p-1 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+          <span className="absolute bottom-2 right-2 rounded bg-[#0B111C]/70 p-1 text-[#F4F6F8] opacity-0 group-hover:opacity-100 transition-opacity">
             <ArrowUpRight className="h-3.5 w-3.5" />
           </span>
         </div>
