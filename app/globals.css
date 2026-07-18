@@ -105,10 +105,14 @@
        presentation attributes. */
     --chart-ink: #0f172a;
     --chart-muted: #cbd5e1;
+    /* Steel accent of the brand mark (components/brand/EstimaLogo.tsx) —
+       darker on light surfaces so the detail keeps contrast. */
+    --logo-accent: #5b7ba6;
   }
   .dark {
     --chart-ink: #f8fafc;
     --chart-muted: #475569;
+    --logo-accent: #91a6c2;
   }
 
   * {

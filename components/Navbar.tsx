@@ -1,7 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { Building2, LogIn, LogOut, Moon, Sun } from "lucide-react"
+import { LogIn, LogOut, Moon, Sun } from "lucide-react"
+import EstimaLogo from "@/components/brand/EstimaLogo"
 import { useI18n } from "@/lib/i18n"
 import { useTheme } from "@/lib/theme"
 import { useSession, logout } from "@/lib/user"
@@ -16,13 +17,8 @@ export default function Navbar() {
       {/* Logo + nav links — centered (left padding on mobile clears the
           sidebar's fixed hamburger button) */}
       <div className="flex items-center gap-6 mx-auto">
-        <Link href="/" className="flex items-center gap-1.5 group">
-          <div className="flex h-6 w-6 items-center justify-center rounded bg-slate-900 group-hover:bg-slate-700 transition-colors">
-            <Building2 className="h-3.5 w-3.5 text-white" />
-          </div>
-          <span className="text-sm font-bold text-slate-900 tracking-tight">
-            Estima<span className="text-emerald-600">.sk</span>
-          </span>
+        <Link href="/" className="group transition-opacity hover:opacity-80">
+          <EstimaLogo markClassName="h-7 w-7" textClassName="text-sm" />
         </Link>
 
         {/* Marketing links only — app pages live in the sidebar (CZ layout).

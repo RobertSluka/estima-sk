@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Favicon: navy tile so the light mark reads in any browser theme.
+       Same geometry as public/brand/estima-mark-*.svg, scaled 0.75 + inset. -->
+  <rect width="48" height="48" rx="10" fill="#0B111C"/>
+  <path d="M11.25 37.5v-6M15.75 37.5V26.25M20.25 37.5V16.5l6.75-6 6.75 6v9M33.75 30v5.25h-6" stroke="#F4F6F8" stroke-width="2.6"/>
+  <path d="M26.25 39.75h8.25" stroke="#91A6C2" stroke-width="2.6"/>
+</svg>

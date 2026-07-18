@@ -3,7 +3,8 @@
 import { Suspense, useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Building2, Lock, Eye, EyeOff, AlertCircle } from "lucide-react"
+import { Lock, Eye, EyeOff, AlertCircle } from "lucide-react"
+import EstimaLogo from "@/components/brand/EstimaLogo"
 import { Button } from "@/components/ui/button"
 import { useI18n } from "@/lib/i18n"
 import { fetchAuthProviders, login, register, type AuthProviders } from "@/lib/user"
@@ -97,13 +98,8 @@ function SignInForm() {
     <div className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-[#f7f7f8]">
       {/* Minimal top bar */}
       <header className="flex items-center justify-between px-5 py-4">
-        <Link href="/" className="flex items-center gap-1.5">
-          <div className="flex h-6 w-6 items-center justify-center rounded bg-slate-900">
-            <Building2 className="h-3.5 w-3.5 text-white" />
-          </div>
-          <span className="text-sm font-bold tracking-tight text-slate-900">
-            Estima<span className="text-emerald-600">.sk</span>
-          </span>
+        <Link href="/" className="transition-opacity hover:opacity-80">
+          <EstimaLogo markClassName="h-7 w-7" textClassName="text-sm" />
         </Link>
         <div className="flex items-center gap-4">
           <button
@@ -120,13 +116,8 @@ function SignInForm() {
       <div className="flex flex-1 items-center justify-center px-4 py-10">
         <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
           {/* Brand */}
-          <div className="flex items-center justify-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900">
-              <Building2 className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-2xl font-bold tracking-tight text-slate-900">
-              Estima<span className="text-emerald-600">.sk</span>
-            </span>
+          <div className="flex items-center justify-center">
+            <EstimaLogo markClassName="h-10 w-10" textClassName="text-2xl" />
           </div>
 
           {/* Invitation notice only while open registration isn't available. */}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 236 48" fill="none">
+  <!-- Estima horizontal lockup — dark version for light surfaces. -->
+  <path d="M7 42v-8M13 42V27M19 42V14l9-8 9 8v12M37 32v7h-8" stroke="#0F1B2D" stroke-width="3"/>
+  <path d="M27 45h11" stroke="#5B7BA6" stroke-width="3"/>
+  <text x="52" y="33" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="-0.5" fill="#0F1B2D">Estima<tspan fill="#6F7B8D" font-weight="600">.sk</tspan></text>
+</svg>
