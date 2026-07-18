@@ -89,7 +89,7 @@ function SidebarBody({
               onClick={() => setMode(m)}
               className={cn(
                 "flex-1 py-2.5 text-[10px] font-bold tracking-widest uppercase transition-colors",
-                mode === m ? "text-[#ffffff]" : "text-gray-600 hover:text-gray-400"
+                mode === m ? "text-[#ffffff]" : "text-gray-400 hover:text-gray-200"
               )}
             >
               {m === "basic" ? "BASIC" : "PRO"}
@@ -112,7 +112,7 @@ function SidebarBody({
               className={cn(
                 "flex items-center gap-2.5 px-3 py-2 text-[11px] font-medium transition-colors select-none",
                 collapsed ? "justify-center" : "",
-                active ? "text-[#ffffff]" : "text-gray-500 hover:text-gray-200",
+                active ? "text-[#ffffff]" : "text-gray-300 hover:text-[#ffffff]",
                 locked && "opacity-40 pointer-events-none"
               )}
             >
@@ -136,7 +136,7 @@ function SidebarBody({
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center px-3 py-2 text-[11px] font-medium text-gray-500 hover:text-gray-200 transition-colors select-none"
+                className="flex items-center px-3 py-2 text-[11px] font-medium text-gray-300 hover:text-[#ffffff] transition-colors select-none"
               >
                 {t(item.key)}
               </Link>
