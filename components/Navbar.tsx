@@ -1,12 +1,14 @@
 "use client"
 
 import Link from "next/link"
-import { Building2, LogIn, LogOut } from "lucide-react"
+import { Building2, LogIn, LogOut, Moon, Sun } from "lucide-react"
 import { useI18n } from "@/lib/i18n"
+import { useTheme } from "@/lib/theme"
 import { useSession, logout } from "@/lib/user"
 
 export default function Navbar() {
   const { lang, setLang, t } = useI18n()
+  const { theme, setTheme } = useTheme()
   const session = useSession()
 
   return (
@@ -62,6 +64,15 @@ export default function Navbar() {
       {/* Right side: language + session. The identity comes from the session
           cookie (lib/user.ts) — signed-out UI until it says otherwise. */}
       <div className="ml-auto flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          aria-label={theme === "dark" ? "Light mode" : "Dark mode"}
+          className="flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 text-slate-500 hover:text-slate-900 transition-colors"
+        >
+          {theme === "dark" ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
+        </button>
+
         <div className="flex items-center rounded-md border border-slate-200 overflow-hidden">
           {(["sk", "en"] as const).map((l) => (
             <button

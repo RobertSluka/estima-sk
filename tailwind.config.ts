@@ -1,5 +1,15 @@
 import type { Config } from "tailwindcss"
 
+// Build a color scale whose steps resolve through the CSS variables defined
+// in globals.css (:root / .dark) — the mechanism behind the theme toggle.
+const varScale = (name: string) =>
+  Object.fromEntries(
+    [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map((step) => [
+      step,
+      `rgb(var(--${name}-${step}) / <alpha-value>)`,
+    ]),
+  )
+
 const config: Config = {
   darkMode: ["class"],
   content: [
@@ -15,6 +25,17 @@ const config: Config = {
     },
     extend: {
       colors: {
+        // Theme-aware palettes (see globals.css). `white` deliberately
+        // becomes the card surface in dark mode.
+        white: "rgb(var(--white) / <alpha-value>)",
+        page: "rgb(var(--page) / <alpha-value>)",
+        slate: varScale("slate"),
+        emerald: varScale("emerald"),
+        red: varScale("red"),
+        rose: varScale("rose"),
+        amber: varScale("amber"),
+        blue: varScale("blue"),
+        sky: varScale("sky"),
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

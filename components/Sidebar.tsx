@@ -82,14 +82,14 @@ function SidebarBody({
     <>
       {/* Mode tabs */}
       {!collapsed && (
-        <div className="flex border-b border-white/10 shrink-0">
+        <div className="flex border-b border-[#ffffff1a] shrink-0">
           {(["basic", "pro"] as const).map((m) => (
             <button
               key={m}
               onClick={() => setMode(m)}
               className={cn(
                 "flex-1 py-2.5 text-[10px] font-bold tracking-widest uppercase transition-colors",
-                mode === m ? "text-white" : "text-gray-600 hover:text-gray-400"
+                mode === m ? "text-[#ffffff]" : "text-gray-600 hover:text-gray-400"
               )}
             >
               {m === "basic" ? "BASIC" : "PRO"}
@@ -112,7 +112,7 @@ function SidebarBody({
               className={cn(
                 "flex items-center gap-2.5 px-3 py-2 text-[11px] font-medium transition-colors select-none",
                 collapsed ? "justify-center" : "",
-                active ? "text-white" : "text-gray-500 hover:text-gray-200",
+                active ? "text-[#ffffff]" : "text-gray-500 hover:text-gray-200",
                 locked && "opacity-40 pointer-events-none"
               )}
             >
@@ -131,7 +131,7 @@ function SidebarBody({
 
         {/* Marketing links (mobile drawer only) */}
         {showMarketing && (
-          <div className="mt-1 border-t border-white/10 pt-1">
+          <div className="mt-1 border-t border-[#ffffff1a] pt-1">
             {marketingItems.map((item) => (
               <Link
                 key={item.href}
@@ -146,7 +146,7 @@ function SidebarBody({
       </nav>
 
       {/* Upgrade CTA */}
-      <div className="px-2 pb-2 shrink-0 border-t border-white/5 pt-2">
+      <div className="px-2 pb-2 shrink-0 border-t border-[#ffffff0d] pt-2">
         {collapsed ? (
           <div className="flex justify-center">
             <Star className="h-3.5 w-3.5 text-yellow-500" />
@@ -154,7 +154,7 @@ function SidebarBody({
         ) : (
           <Link
             href="/cennik"
-            className="w-full bg-white text-black text-[9px] font-bold py-2 px-2 rounded flex items-center justify-between leading-none"
+            className="w-full bg-[#ffffff] text-black text-[9px] font-bold py-2 px-2 rounded flex items-center justify-between leading-none"
           >
             <span>{t("nav.upgrade")}</span>
             <span className="text-gray-500">9,90 €</span>
@@ -166,11 +166,11 @@ function SidebarBody({
       {session.authenticated && session.user ? (
         <div
           className={cn(
-            "flex items-center gap-2 px-3 py-2.5 border-t border-white/5 shrink-0",
+            "flex items-center gap-2 px-3 py-2.5 border-t border-[#ffffff0d] shrink-0",
             collapsed && "justify-center px-0"
           )}
         >
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-700 text-[11px] font-semibold text-white shrink-0">
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-700 text-[11px] font-semibold text-[#ffffff] shrink-0">
             {session.user.name[0]}
           </span>
           {!collapsed && (
@@ -188,7 +188,7 @@ function SidebarBody({
         <Link
           href="/prihlasenie"
           className={cn(
-            "flex items-center gap-2 px-3 py-2.5 border-t border-white/5 shrink-0 text-gray-400 hover:text-white hover:bg-white/5 transition-colors",
+            "flex items-center gap-2 px-3 py-2.5 border-t border-[#ffffff0d] shrink-0 text-gray-400 hover:text-[#ffffff] hover:bg-[#ffffff0d] transition-colors",
             collapsed && "justify-center px-0"
           )}
         >
@@ -250,7 +250,7 @@ export default function Sidebar() {
               type="button"
               aria-label={t("nav.closeMenu")}
               onClick={() => setMobileOpen(false)}
-              className="absolute right-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-md text-gray-500 hover:text-white"
+              className="absolute right-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-md text-gray-500 hover:text-[#ffffff]"
             >
               <X className="h-4 w-4" />
             </button>
@@ -269,7 +269,7 @@ export default function Sidebar() {
         {/* Collapse toggle */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="absolute -right-3 top-3 z-20 flex h-6 w-6 items-center justify-center rounded-full bg-[#111113] border border-white/10 text-gray-500 hover:text-white transition-colors"
+          className="absolute -right-3 top-3 z-20 flex h-6 w-6 items-center justify-center rounded-full bg-[#111113] border border-[#ffffff1a] text-gray-500 hover:text-[#ffffff] transition-colors"
         >
           {collapsed ? (
             <ChevronRight className="h-3 w-3" />

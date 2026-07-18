@@ -58,6 +58,10 @@ const YEAR_TICKS = NATIONAL.filter(
   (p) => !p.period.includes("Q") || p.period.startsWith("1Q"),
 ).map((p) => p.period)
 
+// Inline styles can carry theme vars (SVG attributes cannot) — swap the ink
+// hex for its variable so legend chips and tooltip dots follow dark mode.
+const displayColor = (c: string) => (c === "#0f172a" ? "var(--chart-ink)" : c)
+
 const yearOf = (period: string) => period.slice(-4)
 
 const latest = NATIONAL[NATIONAL.length - 1]
@@ -89,7 +93,7 @@ function ChartTooltip({
           <div key={r.name} className="flex items-center gap-2 text-xs">
             <span
               className="inline-block h-2 w-2 rounded-full"
-              style={{ backgroundColor: r.color }}
+              style={{ backgroundColor: displayColor(r.color) }}
             />
             <span className="text-slate-500">{r.name}</span>
             <span className="ml-auto font-medium tabular-nums text-slate-900">
@@ -422,7 +426,7 @@ function Legend({
           >
             <span
               className="inline-block h-2 w-2 rounded-full"
-              style={{ backgroundColor: off ? "#cbd5e1" : it.color }}
+              style={{ backgroundColor: off ? "var(--chart-muted)" : displayColor(it.color) }}
             />
             {it.label}
           </button>

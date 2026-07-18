@@ -24,10 +24,108 @@
     --input: 214 32% 91%;
     --ring: 160 84% 39%;
     --radius: 0.625rem;
+
+    /* Palette as RGB triplets. tailwind.config.ts maps the slate/white (and
+       badge-tint) scales onto these, so the whole app re-themes by swapping
+       the variables in `.dark` — no per-component dark: classes needed. */
+    --page: 241 242 244;
+    --white: 255 255 255;
+    --slate-50: 248 250 252; --slate-100: 241 245 249; --slate-200: 226 232 240;
+    --slate-300: 203 213 225; --slate-400: 148 163 184; --slate-500: 100 116 139;
+    --slate-600: 71 85 105; --slate-700: 51 65 85; --slate-800: 30 41 59;
+    --slate-900: 15 23 42; --slate-950: 2 6 23;
+    --emerald-50: 236 253 245; --emerald-100: 209 250 229; --emerald-200: 167 243 208;
+    --emerald-300: 110 231 183; --emerald-400: 52 211 153; --emerald-500: 16 185 129;
+    --emerald-600: 5 150 105; --emerald-700: 4 120 87; --emerald-800: 6 95 70;
+    --emerald-900: 6 78 59; --emerald-950: 2 44 34;
+    --red-50: 254 242 242; --red-100: 254 226 226; --red-200: 254 202 202;
+    --red-300: 252 165 165; --red-400: 248 113 113; --red-500: 239 68 68;
+    --red-600: 220 38 38; --red-700: 185 28 28; --red-800: 153 27 27;
+    --red-900: 127 29 29; --red-950: 69 10 10;
+    --rose-50: 255 241 242; --rose-100: 255 228 230; --rose-200: 254 205 211;
+    --rose-300: 253 164 175; --rose-400: 251 113 133; --rose-500: 244 63 94;
+    --rose-600: 225 29 72; --rose-700: 190 18 60; --rose-800: 159 18 57;
+    --rose-900: 136 19 55; --rose-950: 76 5 25;
+    --amber-50: 255 251 235; --amber-100: 254 243 199; --amber-200: 253 230 138;
+    --amber-300: 252 211 77; --amber-400: 251 191 36; --amber-500: 245 158 11;
+    --amber-600: 217 119 6; --amber-700: 180 83 9; --amber-800: 146 64 14;
+    --amber-900: 120 53 15; --amber-950: 69 26 3;
+    --blue-50: 239 246 255; --blue-100: 219 234 254; --blue-200: 191 219 254;
+    --blue-300: 147 197 253; --blue-400: 96 165 250; --blue-500: 59 130 246;
+    --blue-600: 37 99 235; --blue-700: 29 78 216; --blue-800: 30 64 175;
+    --blue-900: 30 58 138; --blue-950: 23 37 84;
+    --sky-50: 240 249 255; --sky-100: 224 242 254; --sky-200: 186 230 253;
+    --sky-300: 125 211 252; --sky-400: 56 189 248; --sky-500: 14 165 233;
+    --sky-600: 2 132 199; --sky-700: 3 105 161; --sky-800: 7 89 133;
+    --sky-900: 12 74 110; --sky-950: 8 47 73;
+  }
+
+  .dark {
+    --background: 222 47% 7%;
+    --foreground: 210 40% 96%;
+    --card: 222 47% 10%;
+    --card-foreground: 210 40% 96%;
+    --popover: 222 47% 10%;
+    --popover-foreground: 210 40% 96%;
+    --secondary: 217 33% 16%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 217 33% 16%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 16%;
+    --accent-foreground: 210 40% 96%;
+    --border: 217 33% 22%;
+    --input: 217 33% 22%;
+
+    /* Surfaces: page darkest, cards (--white) one step lighter. The text
+       scale mirrors around slate-400: slate-900 becomes near-white,
+       slate-500 brightens. Badge tints flip to deep shades so emerald/red
+       chips keep their hue on dark cards. */
+    --page: 7 12 24;
+    --white: 15 23 42;
+    --slate-50: 30 41 59; --slate-100: 30 41 59; --slate-200: 51 65 85;
+    --slate-300: 71 85 105; --slate-500: 148 163 184; --slate-600: 203 213 225;
+    --slate-700: 226 232 240; --slate-800: 241 245 249; --slate-900: 248 250 252;
+    --slate-950: 255 255 255;
+    --emerald-50: 2 44 34; --emerald-100: 6 78 59; --emerald-200: 6 95 70;
+    --emerald-600: 52 211 153; --emerald-700: 110 231 183; --emerald-800: 167 243 208;
+    --red-50: 69 10 10; --red-100: 127 29 29; --red-200: 153 27 27;
+    --red-600: 248 113 113; --red-700: 252 165 165; --red-800: 254 202 202;
+    --rose-50: 76 5 25; --rose-100: 136 19 55; --rose-200: 159 18 57;
+    --rose-600: 251 113 133; --rose-700: 253 164 175;
+    --amber-50: 69 26 3; --amber-100: 120 53 15; --amber-200: 146 64 14;
+    --amber-600: 251 191 36; --amber-700: 252 211 77; --amber-800: 253 230 138;
+    --blue-50: 23 37 84; --blue-100: 30 58 138; --blue-200: 30 64 175;
+    --blue-600: 96 165 250; --blue-700: 147 197 253;
+    --sky-600: 56 189 248;
+  }
+
+  :root {
+    /* For chart code that must put a themed color into an inline style
+       (legend chips, tooltip dots) — var() resolves there, unlike in SVG
+       presentation attributes. */
+    --chart-ink: #0f172a;
+    --chart-muted: #cbd5e1;
+  }
+  .dark {
+    --chart-ink: #f8fafc;
+    --chart-muted: #475569;
   }
 
   * {
     @apply border-border;
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+
+  /* Form controls default to the UA's white; make them sit on whatever
+     surface they're placed on so dark mode needs no per-input classes. */
+  input,
+  select,
+  textarea {
+    background-color: transparent;
+    color: inherit;
   }
 
   body {
@@ -41,6 +139,24 @@
     text-wrap: balance;
   }
 }
+
+/* Dark-mode retargeting of recharts' hardcoded neutral colors. Recharts sets
+   fill/stroke as SVG presentation attributes, which any CSS rule outranks —
+   so these attribute selectors re-theme every chart without touching chart
+   code. Series hues (emerald/amber/…) read fine on dark and stay as-is. */
+.dark [stroke="#0f172a"] { stroke: #f8fafc; }
+.dark [fill="#0f172a"] { fill: #f8fafc; }
+.dark [stop-color="#0f172a"] { stop-color: #f8fafc; }
+.dark [stroke="#f1f5f9"] { stroke: #1e293b; }
+.dark [stroke="#e2e8f0"] { stroke: #334155; }
+.dark [fill="#e2e8f0"] { fill: #334155; }
+.dark [stroke="#64748b"] { stroke: #94a3b8; }
+.dark [fill="#64748b"] { fill: #94a3b8; }
+.dark [stroke="#cbd5e1"] { stroke: #475569; }
+.dark [fill="#cbd5e1"] { fill: #475569; }
+.dark [stroke="#fff"],
+.dark [stroke="#ffffff"],
+.dark [stroke="white"] { stroke: #0f172a; }
 
 /* Entrance for hero content: fade + lift, staggered via inline
    animation-delay. Deliberately CSS, not framer-motion: CSS animation clocks

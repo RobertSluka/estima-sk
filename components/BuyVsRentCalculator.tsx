@@ -24,6 +24,8 @@ import {
 
 const BUYER_COLOR = "#10b981" // emerald-500
 const RENTER_COLOR = "#0f172a" // slate-900
+// Same ink, but as a CSS var for HTML chips so they follow dark mode.
+const RENTER_CHIP = "var(--chart-ink)"
 
 const DEFAULTS: BuyVsRentInputs = {
   propertyPrice: 250000,
@@ -67,7 +69,7 @@ const CustomTooltip = ({
         <p key={p.dataKey} className="text-sm font-bold text-slate-900">
           <span
             className="inline-block w-2.5 h-2.5 rounded-sm mr-1.5"
-            style={{ backgroundColor: p.dataKey === "buyer" ? BUYER_COLOR : RENTER_COLOR }}
+            style={{ backgroundColor: p.dataKey === "buyer" ? BUYER_COLOR : RENTER_CHIP }}
           />
           {p.dataKey === "buyer" ? buyerLabel : renterLabel}: {formatEUR(p.value)}
         </p>
@@ -168,7 +170,7 @@ export default function BuyVsRentCalculator() {
             <p className="mt-1 text-sm text-slate-700">
               <span
                 className="mr-1.5 inline-block h-2.5 w-2.5 rounded-sm"
-                style={{ backgroundColor: RENTER_COLOR }}
+                style={{ backgroundColor: RENTER_CHIP }}
               />
               {t("buyRent.renter")}:{" "}
               <span className="font-bold text-slate-900">{formatEUR(result.renterFinal)}</span>
@@ -254,7 +256,7 @@ export default function BuyVsRentCalculator() {
           <div className="mt-3 flex flex-wrap justify-center gap-4">
             {[
               { label: t("buyRent.buyer"), color: BUYER_COLOR },
-              { label: t("buyRent.renter"), color: RENTER_COLOR },
+              { label: t("buyRent.renter"), color: RENTER_CHIP },
             ].map((item) => (
               <div key={item.label} className="flex items-center gap-1.5">
                 <div
