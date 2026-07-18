@@ -3,12 +3,15 @@
 // /mapa-cien — the Slovak market at a glance. A full-height okres heat map
 // with switchable layers (median €/m², supply, price drops, fresh listings)
 // plus a ranking rail that re-orders okresy by the active layer's metric.
+// Selecting an okres (map circle or rail row) swaps the rail for a drill-down
+// list of that okres's listings, each linking to /inzeraty/{id}.
 // All layers are computed client-side from /listings and /price-drops — the
 // dataset is small enough to hold in memory (see lib/api.ts).
 
 import { useEffect, useMemo, useState } from "react"
 import dynamic from "next/dynamic"
-import { Map as MapIcon } from "lucide-react"
+import Link from "next/link"
+import { ArrowLeft, Home, Map as MapIcon } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   fetchAllListings,
@@ -18,7 +21,7 @@ import {
 } from "@/lib/api"
 import type { DistrictHeatRow } from "@/components/PriceHeatMap"
 import { useI18n } from "@/lib/i18n"
-import { cn, formatNumber } from "@/lib/utils"
+import { cn, formatEUR, formatNumber } from "@/lib/utils"
 
 const PriceHeatMap = dynamic(() => import("@/components/PriceHeatMap"), {
   ssr: false,
@@ -92,6 +95,9 @@ export default function PriceMapPage() {
     let alive = true
     setLoading(true)
     setError(null)
+    // A sale-district selection means nothing in the rent dataset (and vice
+    // versa) — drop it rather than showing an empty drill-down.
+    setSelected(null)
     // Price drops enrich the "drops" layer but must not sink the page.
     Promise.all([
       fetchAllListings({ dealType }),
@@ -137,6 +143,17 @@ export default function PriceMapPage() {
     () => Math.max(1e-9, ...rows.map((r) => r.value ?? 0)),
     [rows],
   )
+
+  // Drill-down: every listing in the selected okres (coords not required),
+  // newest first so fresh supply surfaces on top.
+  const selectedMembers = useMemo(() => {
+    if (!selected) return []
+    const ts = (l: Listing) =>
+      l.firstSeenAt ? new Date(l.firstSeenAt).getTime() : 0
+    return listings
+      .filter((l) => l.district === selected)
+      .sort((a, b) => ts(b) - ts(a))
+  }, [listings, selected])
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-8">
@@ -209,9 +226,97 @@ export default function PriceMapPage() {
             )}
           </div>
 
-          {/* Okres ranking rail */}
+          {/* Okres ranking rail / listing drill-down */}
           <div className="w-full lg:w-[32%]">
             <Card className="lg:sticky lg:top-4">
+              {selected ? (
+                <CardContent className="p-0">
+                  <div className="border-b border-slate-100 px-5 py-3">
+                    <button
+                      type="button"
+                      onClick={() => setSelected(null)}
+                      className="flex items-center gap-1 text-xs font-medium text-slate-400 transition-colors hover:text-slate-600"
+                    >
+                      <ArrowLeft className="h-3 w-3" />
+                      {t("heat.backToRanking")}
+                    </button>
+                    <h2 className="mt-1 text-sm font-semibold text-slate-900">
+                      {selected}
+                      <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">
+                        {formatNumber(selectedMembers.length)}
+                      </span>
+                    </h2>
+                    <p className="mt-0.5 text-xs text-slate-400">
+                      {t("heat.panelHint")}
+                    </p>
+                  </div>
+                  {selectedMembers.length === 0 ? (
+                    <p className="px-5 py-8 text-center text-sm text-slate-400">
+                      {t("heat.noListings")}
+                    </p>
+                  ) : (
+                    <ul className="divide-y divide-slate-50 lg:max-h-[calc(100vh-16rem)] lg:overflow-y-auto">
+                      {selectedMembers.map((l) => (
+                        <li key={l.id}>
+                          <Link
+                            href={`/inzeraty/${encodeURIComponent(l.id)}`}
+                            className="flex items-center gap-3 px-5 py-2.5 transition-colors hover:bg-slate-50"
+                          >
+                            <div className="h-10 w-14 shrink-0 overflow-hidden rounded bg-slate-100">
+                              {l.imageUrl ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={l.imageUrl}
+                                  alt=""
+                                  className="h-full w-full object-cover"
+                                  loading="lazy"
+                                />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center">
+                                  <Home className="h-4 w-4 text-slate-300" />
+                                </div>
+                              )}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-xs font-medium text-slate-700">
+                                {l.name ?? t("listings.untitled")}
+                              </p>
+                              <p className="mt-0.5 truncate text-[10px] text-slate-400">
+                                {[
+                                  l.locality,
+                                  l.layout,
+                                  l.floorArea != null
+                                    ? `${formatNumber(l.floorArea)} m²`
+                                    : null,
+                                ]
+                                  .filter(Boolean)
+                                  .join(" · ")}
+                              </p>
+                            </div>
+                            <div className="shrink-0 text-right">
+                              <p className="text-xs font-semibold tabular-nums text-slate-900">
+                                {l.price != null
+                                  ? formatEUR(l.price)
+                                  : t("listings.priceNa")}
+                                {l.price != null && l.dealType === "rent" && (
+                                  <span className="font-normal text-slate-400">
+                                    {t("listings.perMonth")}
+                                  </span>
+                                )}
+                              </p>
+                              {l.pricePerSqm != null && (
+                                <p className="text-[10px] tabular-nums text-slate-400">
+                                  {formatEUR(l.pricePerSqm)}/m²
+                                </p>
+                              )}
+                            </div>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </CardContent>
+              ) : (
               <CardContent className="p-0">
                 <div className="border-b border-slate-100 px-5 py-3">
                   <h2 className="text-sm font-semibold text-slate-900">
@@ -271,6 +376,7 @@ export default function PriceMapPage() {
                   </ul>
                 )}
               </CardContent>
+              )}
             </Card>
           </div>
         </div>

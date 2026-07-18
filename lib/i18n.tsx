@@ -657,6 +657,10 @@ const dict: Record<Lang, Record<string, string>> = {
     "heat.districtsHint":
       "Zoradené podľa aktívnej vrstvy; posledný stĺpec je počet inzerátov.",
     "heat.noDistricts": "Žiadne okresy s dátami.",
+    "heat.backToRanking": "Späť na rebríček",
+    "heat.panelHint":
+      "Inzeráty v okrese, od najnovších. Kliknutím otvoríte detail.",
+    "heat.noListings": "Žiadne inzeráty v tomto okrese.",
   },
   en: {
     // chrome
@@ -1300,6 +1304,10 @@ const dict: Record<Lang, Record<string, string>> = {
     "heat.districtsHint":
       "Ordered by the active layer; the last column is the listing count.",
     "heat.noDistricts": "No districts with data.",
+    "heat.backToRanking": "Back to ranking",
+    "heat.panelHint":
+      "Listings in this district, newest first. Click to open the detail.",
+    "heat.noListings": "No listings in this district.",
   },
 }
 
