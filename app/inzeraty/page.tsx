@@ -42,13 +42,18 @@ const sortOptions: { id: SortKey; labelKey: string }[] = [
   { id: "areaDesc", labelKey: "sort.areaDesc" },
 ]
 
+// Sale and rent live on different price scales (hundreds of thousands vs
+// hundreds of € per month), so each deal type keeps its own price range; the
+// price filter is inactive in the "all" mode where the scales would mix.
 const initialFilters = {
   q: "",
   deal: "all" as DealId | "all",
   layouts: [] as string[],
   region: "all",
-  priceMin: "",
-  priceMax: "",
+  priceSaleMin: "",
+  priceSaleMax: "",
+  priceRentMin: "",
+  priceRentMax: "",
   areaMin: "",
   areaMax: "",
   sort: "newest" as SortKey,
@@ -64,10 +69,12 @@ export default function ListingsPage() {
   const [filters, setFilters] = useState(initialFilters)
   const [page, setPage] = useState(0)
 
-  // Map state
+  // Map state. "Search as I move the map" is ON by default so panning to a
+  // region immediately narrows the list to what's in view (opt-out via the
+  // checkbox on the map).
   const [showMap, setShowMap] = useState(true)
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [searchInView, setSearchInView] = useState(false)
+  const [searchInView, setSearchInView] = useState(true)
   const [bounds, setBounds] = useState<MapBounds | null>(null)
 
   async function load() {
@@ -108,8 +115,19 @@ export default function ListingsPage() {
   // Apply filters + sort (map pins follow this same set).
   const filtered = useMemo(() => {
     const q = filters.q.trim().toLowerCase()
-    const pMin = filters.priceMin ? Number(filters.priceMin) : null
-    const pMax = filters.priceMax ? Number(filters.priceMax) : null
+    // Price bounds of the selected deal type; none while browsing "all".
+    const pMin =
+      filters.deal === "sale" && filters.priceSaleMin
+        ? Number(filters.priceSaleMin)
+        : filters.deal === "rent" && filters.priceRentMin
+        ? Number(filters.priceRentMin)
+        : null
+    const pMax =
+      filters.deal === "sale" && filters.priceSaleMax
+        ? Number(filters.priceSaleMax)
+        : filters.deal === "rent" && filters.priceRentMax
+        ? Number(filters.priceRentMax)
+        : null
     const aMin = filters.areaMin ? Number(filters.areaMin) : null
     const aMax = filters.areaMax ? Number(filters.areaMax) : null
 
@@ -188,12 +206,19 @@ export default function ListingsPage() {
         : [...f.layouts, l],
     }))
 
+  const priceActive =
+    filters.deal === "sale"
+      ? Boolean(filters.priceSaleMin || filters.priceSaleMax)
+      : filters.deal === "rent"
+      ? Boolean(filters.priceRentMin || filters.priceRentMax)
+      : false
+
   const activeCount =
     (filters.q ? 1 : 0) +
     (filters.deal !== "all" ? 1 : 0) +
     filters.layouts.length +
     (filters.region !== "all" ? 1 : 0) +
-    (filters.priceMin || filters.priceMax ? 1 : 0) +
+    (priceActive ? 1 : 0) +
     (filters.areaMin || filters.areaMax ? 1 : 0)
 
   const resetFilters = () => setFilters(initialFilters)
@@ -332,24 +357,41 @@ export default function ListingsPage() {
             <div className="p-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-2">
-                  {t("listings.price")}
+                  {filters.deal === "rent" ? t("listings.priceMonthly") : t("listings.price")}
                 </p>
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
-                    value={filters.priceMin}
-                    onChange={(e) => set("priceMin", e.target.value)}
+                    disabled={filters.deal === "all"}
+                    value={filters.deal === "rent" ? filters.priceRentMin : filters.priceSaleMin}
+                    onChange={(e) =>
+                      set(
+                        filters.deal === "rent" ? "priceRentMin" : "priceSaleMin",
+                        e.target.value,
+                      )
+                    }
                     placeholder={t("common.from")}
-                    className="w-full text-xs border border-slate-200 rounded-md py-1.5 px-2.5 text-slate-700 placeholder:text-slate-300"
+                    className="w-full text-xs border border-slate-200 rounded-md py-1.5 px-2.5 text-slate-700 placeholder:text-slate-300 disabled:bg-slate-50 disabled:opacity-60"
                   />
                   <input
                     type="number"
-                    value={filters.priceMax}
-                    onChange={(e) => set("priceMax", e.target.value)}
+                    disabled={filters.deal === "all"}
+                    value={filters.deal === "rent" ? filters.priceRentMax : filters.priceSaleMax}
+                    onChange={(e) =>
+                      set(
+                        filters.deal === "rent" ? "priceRentMax" : "priceSaleMax",
+                        e.target.value,
+                      )
+                    }
                     placeholder={t("common.to")}
-                    className="w-full text-xs border border-slate-200 rounded-md py-1.5 px-2.5 text-slate-700 placeholder:text-slate-300"
+                    className="w-full text-xs border border-slate-200 rounded-md py-1.5 px-2.5 text-slate-700 placeholder:text-slate-300 disabled:bg-slate-50 disabled:opacity-60"
                   />
                 </div>
+                {filters.deal === "all" && (
+                  <p className="mt-1.5 text-[10px] text-slate-400">
+                    {t("listings.priceChooseDeal")}
+                  </p>
+                )}
               </div>
               <div>
                 <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-2">

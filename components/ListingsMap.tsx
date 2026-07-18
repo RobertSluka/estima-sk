@@ -223,6 +223,11 @@ function ClusterLayer({
 // "search as I move the map" list narrowing).
 function BoundsReporter({ onBoundsChange }: { onBoundsChange: (b: MapBounds) => void }) {
   const emit = (map: L.Map) => {
+    // A zero-sized container (hidden panel, layout not settled) yields
+    // degenerate bounds that would filter the list down to nothing — with
+    // "search in view" on by default that would blank the page on load.
+    const size = map.getSize()
+    if (size.x === 0 || size.y === 0) return
     const b = map.getBounds()
     onBoundsChange({
       north: b.getNorth(),
@@ -234,6 +239,8 @@ function BoundsReporter({ onBoundsChange }: { onBoundsChange: (b: MapBounds) => 
   const map = useMapEvents({
     moveend: () => emit(map),
     zoomend: () => emit(map),
+    // First valid emit once a hidden/zero-sized container gains real size.
+    resize: () => emit(map),
   })
   useEffect(() => {
     emit(map)
