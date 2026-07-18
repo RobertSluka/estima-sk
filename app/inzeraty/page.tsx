@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react"
 import dynamic from "next/dynamic"
 import {
+  BookmarkCheck,
+  BookmarkPlus,
   Home,
   Map as MapIcon,
   RefreshCw,
@@ -15,6 +17,15 @@ import { Button } from "@/components/ui/button"
 import ListingCard from "@/components/ListingCard"
 import type { MapBounds } from "@/components/ListingsMap"
 import { fetchAllListings, layoutRank, type Listing, type DealId } from "@/lib/api"
+import {
+  saveSearch,
+  removeSearch,
+  findSearchByFilters,
+  queryToFilters,
+  onMonitoringChange,
+  type SavedSearch,
+  type SearchFilters,
+} from "@/lib/monitoring"
 import { formatNumber, cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n"
 
@@ -68,6 +79,25 @@ export default function ListingsPage() {
 
   const [filters, setFilters] = useState(initialFilters)
   const [page, setPage] = useState(0)
+
+  // Deep links from saved searches (/inzeraty?deal=sale&…) — applied after
+  // mount so server and client render the same default markup.
+  useEffect(() => {
+    if (!window.location.search) return
+    const f = queryToFilters(window.location.search, initialFilters as SearchFilters)
+    if (!sortOptions.some((o) => o.id === f.sort)) f.sort = "newest"
+    setFilters(f as typeof initialFilters)
+  }, [])
+
+  // The Save-search button reflects whether the current filter set is
+  // already monitored (saved elsewhere counts too, via the change event).
+  const [currentSaved, setCurrentSaved] = useState<SavedSearch | null>(null)
+  useEffect(() => {
+    const sync = () =>
+      setCurrentSaved(findSearchByFilters(filters as SearchFilters))
+    sync()
+    return onMonitoringChange(sync)
+  }, [filters])
 
   // Map state. "Search as I move the map" is ON by default so panning to a
   // region immediately narrows the list to what's in view (opt-out via the
@@ -266,6 +296,23 @@ export default function ListingsPage() {
               >
                 <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
                 {t("listings.refresh")}
+              </Button>
+              <Button
+                variant={currentSaved ? "outline" : "default"}
+                size="sm"
+                className="gap-1.5"
+                onClick={() =>
+                  currentSaved
+                    ? removeSearch(currentSaved.id)
+                    : saveSearch(filters as SearchFilters)
+                }
+              >
+                {currentSaved ? (
+                  <BookmarkCheck className="h-4 w-4" />
+                ) : (
+                  <BookmarkPlus className="h-4 w-4" />
+                )}
+                {currentSaved ? t("listings.searchSaved") : t("listings.saveSearch")}
               </Button>
             </div>
           </div>

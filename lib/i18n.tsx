@@ -159,7 +159,7 @@ const dict: Record<Lang, Record<string, string>> = {
     "nav.buyRent": "Kúpa vs nájom",
     "nav.market": "Trh",
     "nav.valuations": "Ocenenia",
-    "nav.dashboard": "Dashboard",
+    "nav.monitoring": "Monitoring",
     "nav.priceMap": "Mapa cien",
     "nav.barometer": "Barometer",
     "nav.opportunities": "Príležitosti",
@@ -188,23 +188,44 @@ const dict: Record<Lang, Record<string, string>> = {
     "drops.emptyHint":
       "Zmeny cien sa objavia po viacerých denných zberoch dát — pipeline porovnáva cenu každého inzerátu medzi dňami.",
 
-    // dashboard
-    "dash.title": "Dashboard",
-    "dash.subtitle": "Prehľad slovenského trhu zo živých dát.",
-    "dash.kpiTotal": "Inzerátov spolu",
-    "dash.kpiSale": "Na predaj",
-    "dash.kpiRent": "Na prenájom",
-    "dash.kpiPpsm": "Medián €/m² (predaj)",
-    "dash.kpiTowns": "Miest a obcí",
-    "dash.krajTitle": "Medián ceny za m² podľa kraja",
-    "dash.krajSub": "Predajné inzeráty s uvedenou plochou.",
-    "dash.tooltipMedian": "medián",
-    "dash.catTitle": "Rozdelenie podľa typu",
-    "dash.cat.apartments": "Byty",
-    "dash.cat.houses": "Domy",
-    "dash.cat.land": "Pozemky",
-    "dash.cat.commercial": "Komerčné",
-    "dash.cat.other": "Ostatné",
+    // monitoring
+    "monitor.title": "Monitoring",
+    "monitor.subtitle":
+      "Uložené vyhľadávania, sledované inzeráty a aktivita na jednom mieste.",
+    "monitor.tabSearches": "Vyhľadávania",
+    "monitor.tabWatched": "Sledované",
+    "monitor.tabActivity": "Aktivita",
+    "monitor.tabSettings": "Nastavenia",
+    "monitor.searchesEmpty": "Žiadne uložené vyhľadávania",
+    "monitor.searchesEmptyHint1": "Otvorte vyhľadávanie, nastavte filtre a kliknite na",
+    "monitor.searchesEmptyCta": "Uložiť vyhľadávanie",
+    "monitor.searchesEmptyHint2":
+      "Estima potom stráži nové inzeráty zodpovedajúce vášmu filtru.",
+    "monitor.goToSearch": "Prejsť na vyhľadávanie",
+    "monitor.savedOn": "Uložené {date}",
+    "monitor.openSearch": "Otvoriť",
+    "monitor.deleteSearch": "Odstrániť vyhľadávanie",
+    "monitor.allListings": "Všetky inzeráty",
+    "monitor.from": "od",
+    "monitor.upTo": "do",
+    "monitor.watchedEmpty": "Žiadne sledované inzeráty",
+    "monitor.watchedEmptyHint":
+      "Uložte si inzerát srdiečkom a nájdete ho tu — vrátane zmien ceny v záložke Aktivita.",
+    "monitor.goToListings": "Prejsť na inzeráty",
+    "monitor.activityEmpty": "Zatiaľ žiadna aktivita",
+    "monitor.activityEmptyHint":
+      "Keď pri niektorom zo sledovaných inzerátov klesne cena, objaví sa to tu.",
+    "monitor.activityDisabledHint":
+      "Sledovanie zliav je vypnuté v Nastaveniach.",
+    "monitor.eventPriceDrop": "Zľava z ceny",
+    "monitor.setPriceDrops": "Zľavy pri sledovaných inzerátoch",
+    "monitor.setPriceDropsHint":
+      "Zobrazovať poklesy cien sledovaných inzerátov v záložke Aktivita.",
+    "monitor.setNewListings": "Nové inzeráty pre uložené vyhľadávania",
+    "monitor.setNewListingsHint":
+      "Pripravujeme — upozornenia na nové inzeráty zodpovedajúce vašim filtrom.",
+    "monitor.emailNote":
+      "E-mailové upozornenia budú dostupné po prihlásení do účtu.",
 
     // opportunities (prilezitosti)
     "opps.title": "Príležitosti",
@@ -386,6 +407,8 @@ const dict: Record<Lang, Record<string, string>> = {
     "listings.fromDb": "{n} inzerátov v databáze",
     "listings.matchCount": "{n} z {total} inzerátov",
     "listings.refresh": "Obnoviť",
+    "listings.saveSearch": "Uložiť vyhľadávanie",
+    "listings.searchSaved": "Vyhľadávanie uložené",
     "listings.searchPlaceholder": "Hľadať podľa názvu alebo mesta…",
     "listings.dealAll": "Všetko",
     "listings.dealSale": "Predaj",
@@ -822,7 +845,7 @@ const dict: Record<Lang, Record<string, string>> = {
     "nav.buyRent": "Buy vs Rent",
     "nav.market": "Market",
     "nav.valuations": "Valuations",
-    "nav.dashboard": "Dashboard",
+    "nav.monitoring": "Monitoring",
     "nav.priceMap": "Price map",
     "nav.barometer": "Barometer",
     "nav.opportunities": "Opportunities",
@@ -851,23 +874,44 @@ const dict: Record<Lang, Record<string, string>> = {
     "drops.emptyHint":
       "Price changes appear after multiple daily data collections — the pipeline compares each listing's price between days.",
 
-    // dashboard
-    "dash.title": "Dashboard",
-    "dash.subtitle": "Slovak market overview from live data.",
-    "dash.kpiTotal": "Total listings",
-    "dash.kpiSale": "For sale",
-    "dash.kpiRent": "For rent",
-    "dash.kpiPpsm": "Median €/m² (sale)",
-    "dash.kpiTowns": "Towns covered",
-    "dash.krajTitle": "Median price per m² by region",
-    "dash.krajSub": "Sale listings with a known area.",
-    "dash.tooltipMedian": "median",
-    "dash.catTitle": "Breakdown by type",
-    "dash.cat.apartments": "Apartments",
-    "dash.cat.houses": "Houses",
-    "dash.cat.land": "Land",
-    "dash.cat.commercial": "Commercial",
-    "dash.cat.other": "Other",
+    // monitoring
+    "monitor.title": "Monitoring",
+    "monitor.subtitle":
+      "Track saved searches, watched listings and activity in one place.",
+    "monitor.tabSearches": "Searches",
+    "monitor.tabWatched": "Watched",
+    "monitor.tabActivity": "Activity",
+    "monitor.tabSettings": "Settings",
+    "monitor.searchesEmpty": "No saved searches",
+    "monitor.searchesEmptyHint1": "Open the search, set filters and click",
+    "monitor.searchesEmptyCta": "Save search",
+    "monitor.searchesEmptyHint2":
+      "Estima will then monitor for new listings matching your filter.",
+    "monitor.goToSearch": "Go to search",
+    "monitor.savedOn": "Saved {date}",
+    "monitor.openSearch": "Open",
+    "monitor.deleteSearch": "Delete search",
+    "monitor.allListings": "All listings",
+    "monitor.from": "from",
+    "monitor.upTo": "up to",
+    "monitor.watchedEmpty": "No watched listings",
+    "monitor.watchedEmptyHint":
+      "Save a listing with the heart and it appears here — including its price changes in the Activity tab.",
+    "monitor.goToListings": "Go to listings",
+    "monitor.activityEmpty": "No activity yet",
+    "monitor.activityEmptyHint":
+      "When the price of a watched listing drops, it shows up here.",
+    "monitor.activityDisabledHint":
+      "Price-drop tracking is turned off in Settings.",
+    "monitor.eventPriceDrop": "Price drop",
+    "monitor.setPriceDrops": "Price drops on watched listings",
+    "monitor.setPriceDropsHint":
+      "Show price reductions of watched listings in the Activity tab.",
+    "monitor.setNewListings": "New listings for saved searches",
+    "monitor.setNewListingsHint":
+      "Coming soon — alerts for new listings matching your filters.",
+    "monitor.emailNote":
+      "Email notifications will be available after signing in.",
 
     // opportunities (prilezitosti)
     "opps.title": "Opportunities",
@@ -1048,6 +1092,8 @@ const dict: Record<Lang, Record<string, string>> = {
     "listings.fromDb": "{n} listings in the database",
     "listings.matchCount": "{n} of {total} listings",
     "listings.refresh": "Refresh",
+    "listings.saveSearch": "Save search",
+    "listings.searchSaved": "Search saved",
     "listings.searchPlaceholder": "Search by title or town…",
     "listings.dealAll": "All",
     "listings.dealSale": "For sale",
