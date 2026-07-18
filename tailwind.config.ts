@@ -29,6 +29,15 @@ const config: Config = {
         // becomes the card surface in dark mode.
         white: "rgb(var(--white) / <alpha-value>)",
         page: "rgb(var(--page) / <alpha-value>)",
+        // Shell + accent tokens (globals.css). `sidebar` is dark in both
+        // themes; `steel` is the interactive accent — selected states use
+        // bg-steel/15 + border-steel/35 rather than bright white fills.
+        sidebar: "rgb(var(--bg-sidebar) / <alpha-value>)",
+        header: "rgb(var(--bg-header) / <alpha-value>)",
+        steel: {
+          DEFAULT: "rgb(var(--steel) / <alpha-value>)",
+          strong: "rgb(var(--steel-strong) / <alpha-value>)",
+        },
         slate: varScale("slate"),
         emerald: varScale("emerald"),
         red: varScale("red"),

@@ -9,8 +9,9 @@ import { ThemeProvider } from "@/lib/theme"
 
 const inter = Inter({ subsets: ["latin", "latin-ext"], variable: "--font-inter" })
 
-// Runs before paint so a saved dark preference never flashes light first.
-const themeInitScript = `try{if(localStorage.getItem("estima-sk.theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}`
+// Runs before paint so the theme never flashes wrong first. Dark is the
+// brand default; an explicit saved "light" preference still wins.
+const themeInitScript = `try{if(localStorage.getItem("estima-sk.theme")!=="light")document.documentElement.classList.add("dark")}catch(e){document.documentElement.classList.add("dark")}`
 
 export const metadata: Metadata = {
   title: "Estima — realitná inteligencia pre slovenský trh",
@@ -22,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="sk" className={inter.variable} suppressHydrationWarning>
       {/* App shell: dark sidebar on the left, navbar on top, scrollable main. */}
-      <body className="h-screen overflow-hidden flex font-sans bg-[#111113]">
+      <body className="h-screen overflow-hidden flex font-sans bg-sidebar">
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <ThemeProvider>
           <LanguageProvider>
