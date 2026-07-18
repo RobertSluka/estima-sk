@@ -24,8 +24,10 @@ export interface Listing {
   landArea: number | null
   price: number | null // EUR
   pricePerSqm: number | null // EUR/m²
-  lat: number | null // town centroid — same-town listings stack; cluster on maps
+  lat: number | null // street-level when geoPrecision is "street", else town centroid
   lon: number | null
+  street: string | null // extracted from the listing text; null when none found
+  geoPrecision: "street" | "town"
   imageUrl: string | null
   images: string[]
   url: string | null

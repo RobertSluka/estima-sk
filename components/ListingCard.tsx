@@ -81,6 +81,7 @@ export default function ListingCard({ listing: l }: { listing: Listing }) {
           <div className="flex items-center gap-1 mt-1 text-xs text-slate-400">
             <MapPin className="h-3 w-3 shrink-0" />
             <span className="truncate">
+              {l.street ? `${l.street} · ` : ""}
               {l.locality ?? "—"}
               {l.region ? ` · ${l.region} kraj` : ""}
             </span>
