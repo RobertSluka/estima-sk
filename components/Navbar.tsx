@@ -103,9 +103,13 @@ export default function Navbar() {
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-[11px] font-semibold text-white select-none">
                 {session.user.name[0]}
               </span>
-              <span className="rounded-full border border-steel/35 bg-steel/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-steel">
-                {t("navbar.roleAdmin")}
-              </span>
+              {(session.user.role === "admin" || session.user.plan === "pro") && (
+                <span className="rounded-full border border-steel/35 bg-steel/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-steel">
+                  {session.user.role === "admin"
+                    ? t("navbar.roleAdmin")
+                    : t("navbar.rolePro")}
+                </span>
+              )}
             </span>
             <button
               type="button"

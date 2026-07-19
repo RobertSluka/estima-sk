@@ -28,6 +28,8 @@ const dict: Record<Lang, Record<string, string>> = {
     "navbar.account": "Účet",
     "navbar.signOut": "Odhlásiť sa",
     "navbar.roleAdmin": "Admin",
+    "navbar.rolePro": "Pro",
+    "navbar.roleUser": "Účet",
 
     // engine hero (valuation showcase cards)
     "hero.priceLabel": "Odhadovaná trhová cena",
@@ -167,12 +169,34 @@ const dict: Record<Lang, Record<string, string>> = {
     "nav.portfolio": "Portfólio",
     "nav.analyses": "Analýzy",
     "nav.priceDrops": "Zľavy z cien",
+    "nav.users": "Používatelia",
     "nav.saved": "Uložené",
     "nav.menu": "Otvoriť menu",
     "nav.closeMenu": "Zavrieť menu",
     "nav.upgrade": "Prejsť na PRO",
     "nav.planBasic": "Plán Basic",
     "nav.planPro": "Plán Pro",
+
+    // users (admin — pouzivatelia)
+    "users.title": "Používatelia",
+    "users.subtitle":
+      "Spravujte prístup používateľov — prémiové funkcie a rolu administrátora.",
+    "users.search": "Hľadať podľa mena alebo e-mailu…",
+    "users.count": "Zobrazených {shown} z {total}",
+    "users.colUser": "Používateľ",
+    "users.colPlan": "Plán",
+    "users.colPro": "Pro prístup",
+    "users.colAdmin": "Admin",
+    "users.colJoined": "Registrácia",
+    "users.planPro": "Pro",
+    "users.planBasic": "Basic",
+    "users.you": "vy",
+    "users.empty": "Žiadni používatelia.",
+    "users.loadMore": "Načítať ďalších",
+    "users.notAuthorized": "Táto stránka je prístupná iba administrátorom.",
+    "users.notConfigured":
+      "Používateľské účty nie sú nakonfigurované na tomto nasadení.",
+    "users.backHome": "Späť na inzeráty",
 
     // saved (ulozene)
     "saved.title": "Uložené",
@@ -721,6 +745,8 @@ const dict: Record<Lang, Record<string, string>> = {
     "navbar.account": "Account",
     "navbar.signOut": "Sign out",
     "navbar.roleAdmin": "Admin",
+    "navbar.rolePro": "Pro",
+    "navbar.roleUser": "Account",
 
     // engine hero (valuation showcase cards)
     "hero.priceLabel": "Estimated market price",
@@ -860,12 +886,32 @@ const dict: Record<Lang, Record<string, string>> = {
     "nav.portfolio": "Portfolio",
     "nav.analyses": "Analyses",
     "nav.priceDrops": "Price drops",
+    "nav.users": "Users",
     "nav.saved": "Saved",
     "nav.menu": "Open menu",
     "nav.closeMenu": "Close menu",
     "nav.upgrade": "Upgrade to PRO",
     "nav.planBasic": "Basic plan",
     "nav.planPro": "Pro plan",
+
+    // users (admin — pouzivatelia)
+    "users.title": "Users",
+    "users.subtitle": "Manage user access — premium features and the admin role.",
+    "users.search": "Search by name or e-mail…",
+    "users.count": "Showing {shown} of {total}",
+    "users.colUser": "User",
+    "users.colPlan": "Plan",
+    "users.colPro": "Pro access",
+    "users.colAdmin": "Admin",
+    "users.colJoined": "Joined",
+    "users.planPro": "Pro",
+    "users.planBasic": "Basic",
+    "users.you": "you",
+    "users.empty": "No users.",
+    "users.loadMore": "Load more",
+    "users.notAuthorized": "This page is available to administrators only.",
+    "users.notConfigured": "User accounts are not configured on this deployment.",
+    "users.backHome": "Back to listings",
 
     // saved (ulozene)
     "saved.title": "Saved",

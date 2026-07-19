@@ -38,8 +38,31 @@ export interface BackendUser {
   name: string | null
   picture_url: string | null
   has_google: boolean
+  role: "user" | "admin"
+  pro_override: boolean
   plan: "basic" | "pro"
   subscription: BackendSubscription | null
+}
+
+/** A row in the admin user directory (lighter than BackendUser). */
+export interface BackendUserRow {
+  id: number
+  email: string
+  name: string | null
+  picture_url: string | null
+  has_google: boolean
+  role: "user" | "admin"
+  pro_override: boolean
+  plan: "basic" | "pro"
+  sub_status: string | null
+  created_at: string | null
+}
+
+export interface BackendUserList {
+  users: BackendUserRow[]
+  total: number
+  limit: number
+  offset: number
 }
 
 interface InternalResult<T> {
@@ -95,6 +118,26 @@ export async function googleSignIn(claims: {
 
 export async function getUser(id: number): Promise<InternalResult<{ user: BackendUser }>> {
   return call(`/internal/auth/users/${id}`)
+}
+
+export async function listUsers(query: {
+  limit?: number
+  offset?: number
+  q?: string
+}): Promise<InternalResult<BackendUserList>> {
+  const params = new URLSearchParams()
+  if (query.limit != null) params.set("limit", String(query.limit))
+  if (query.offset != null) params.set("offset", String(query.offset))
+  if (query.q) params.set("q", query.q)
+  const qs = params.toString()
+  return call(`/internal/users${qs ? `?${qs}` : ""}`)
+}
+
+export async function setUserAccess(
+  id: number,
+  access: { role?: "user" | "admin"; pro_override?: boolean },
+): Promise<InternalResult<{ user: BackendUser }>> {
+  return call(`/internal/users/${id}`, { method: "PATCH", body: access })
 }
 
 export async function updateSubscription(update: {

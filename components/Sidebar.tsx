@@ -14,6 +14,7 @@ import {
   Briefcase,
   LineChart,
   TrendingDown,
+  Users,
   Lock,
   LogIn,
   ChevronLeft,
@@ -24,19 +25,22 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/lib/i18n"
-import { useSession } from "@/lib/user"
+import { useSession, isPro, isAdmin } from "@/lib/user"
 
 type NavItem = {
   href: string
   icon: LucideIcon
   key: string
   badge?: string
+  // Pro feature — locked until the session is entitled (paid or admin-granted).
   locked?: boolean
+  // Admin-only surface — hidden entirely from non-admins.
+  adminOnly?: boolean
 }
 
-// Mirrors the CZ (byteval) sidebar — same items in the same order. Locked
-// items are gated for the public site; an authenticated admin session
-// unlocks all of them (the pages exist and work).
+// Mirrors the CZ (byteval) sidebar order. Locked items are gated for the
+// public site; an authenticated admin session unlocks all of them (the pages
+// exist and work).
 const navItems: NavItem[] = [
   { href: "/inzeraty", icon: Search, key: "nav.search" },
   { href: "/ulozene", icon: Heart, key: "nav.saved", locked: true },
@@ -48,6 +52,7 @@ const navItems: NavItem[] = [
   { href: "/portfolio", icon: Briefcase, key: "nav.portfolio", locked: true },
   { href: "/analyzy", icon: LineChart, key: "nav.analyses", locked: true },
   { href: "/zlavy", icon: TrendingDown, key: "nav.priceDrops", locked: true },
+  { href: "/pouzivatelia", icon: Users, key: "nav.users", adminOnly: true },
 ]
 
 // Marketing links — shown inline in the navbar on desktop; folded into the
@@ -77,6 +82,8 @@ function SidebarBody({
   const pathname = usePathname()
   const { t } = useI18n()
   const session = useSession()
+  const entitled = isPro(session)
+  const admin = isAdmin(session)
 
   return (
     <>
@@ -103,8 +110,11 @@ function SidebarBody({
       {/* Nav items — active: subtle steel fill + hairline ring, no bright block */}
       <nav className="flex-1 py-1.5 overflow-y-auto">
         {navItems.map((item) => {
+          if (item.adminOnly && !admin) return null
           const Icon = item.icon
-          const locked = Boolean(item.locked) && !session.authenticated
+          // Pro features stay locked until the session is entitled (paid or
+          // admin-granted); admins pass through everything.
+          const locked = Boolean(item.locked) && !entitled
           const active = pathname === item.href
           return (
             <Link
@@ -188,7 +198,11 @@ function SidebarBody({
                 {session.user.name}
               </p>
               <p className="text-[8px] uppercase tracking-wider text-steel-strong">
-                {t("navbar.roleAdmin")}
+                {session.user.role === "admin"
+                  ? t("navbar.roleAdmin")
+                  : session.user.plan === "pro"
+                  ? t("navbar.rolePro")
+                  : t("navbar.roleUser")}
               </p>
             </div>
           )}

@@ -72,9 +72,14 @@ export function useSession(): Session {
   return state
 }
 
-/** True when the session has paid (or admin) access to Pro features. */
+/** True when the session has paid (or admin-granted) access to Pro features. */
 export function isPro(session: Session): boolean {
   return session.authenticated && session.user?.plan === "pro"
+}
+
+/** True when the signed-in user is an administrator. */
+export function isAdmin(session: Session): boolean {
+  return session.authenticated && session.user?.role === "admin"
 }
 
 /** Sign in; resolves to null on success or an error code on failure. */

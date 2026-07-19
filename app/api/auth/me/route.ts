@@ -23,13 +23,15 @@ export async function GET() {
     }
     if (res.status === 200 && res.data?.user) {
       const u = res.data.user
+      // Role comes from the backend so an admin-granted promotion (or a
+      // demotion) takes effect on the next request without re-login.
       return NextResponse.json({
         authenticated: true,
         user: {
           id: u.id,
           email: u.email,
           name: u.name ?? u.email,
-          role: "user",
+          role: u.role === "admin" ? "admin" : "user",
           picture: u.picture_url,
           plan: u.plan,
           subscription: u.subscription,
