@@ -38,6 +38,7 @@ export interface BackendUser {
   name: string | null
   picture_url: string | null
   has_google: boolean
+  has_password: boolean
   role: "user" | "admin"
   pro_override: boolean
   plan: "basic" | "pro"
@@ -118,6 +119,20 @@ export async function googleSignIn(claims: {
 
 export async function getUser(id: number): Promise<InternalResult<{ user: BackendUser }>> {
   return call(`/internal/auth/users/${id}`)
+}
+
+export async function updateUserProfile(
+  id: number,
+  profile: { name?: string },
+): Promise<InternalResult<{ user: BackendUser }>> {
+  return call(`/internal/auth/users/${id}/profile`, { method: "PATCH", body: profile })
+}
+
+export async function changeUserPassword(
+  id: number,
+  body: { new_password: string; current_password?: string },
+): Promise<InternalResult<{ user: BackendUser }>> {
+  return call(`/internal/auth/users/${id}/password`, { body })
 }
 
 export async function listUsers(query: {

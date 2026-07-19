@@ -99,10 +99,24 @@ export default function Navbar() {
 
         {session.authenticated && session.user ? (
           <div className="flex items-center gap-2">
-            <span className="hidden sm:flex items-center gap-1.5">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-[11px] font-semibold text-white select-none">
-                {session.user.name[0]}
-              </span>
+            <Link
+              href="/profil"
+              title={t("profile.navProfile")}
+              className="hidden sm:flex items-center gap-1.5 rounded-full transition-opacity hover:opacity-80"
+            >
+              {session.user.picture ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={session.user.picture}
+                  alt=""
+                  className="h-7 w-7 rounded-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-[11px] font-semibold text-white select-none">
+                  {session.user.name[0]}
+                </span>
+              )}
               {(session.user.role === "admin" || session.user.plan === "pro") && (
                 <span className="rounded-full border border-steel/35 bg-steel/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-steel">
                   {session.user.role === "admin"
@@ -110,7 +124,7 @@ export default function Navbar() {
                     : t("navbar.rolePro")}
                 </span>
               )}
-            </span>
+            </Link>
             <button
               type="button"
               onClick={() => logout()}

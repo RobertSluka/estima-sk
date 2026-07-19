@@ -35,6 +35,8 @@ export async function GET() {
           picture: u.picture_url,
           plan: u.plan,
           subscription: u.subscription,
+          has_google: u.has_google,
+          has_password: u.has_password,
         },
       })
     }

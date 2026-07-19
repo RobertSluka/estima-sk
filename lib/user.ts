@@ -23,6 +23,8 @@ export interface SessionUser {
   picture?: string | null
   plan?: "basic" | "pro"
   subscription?: SessionSubscription | null
+  has_google?: boolean
+  has_password?: boolean
 }
 
 export interface Session {
@@ -133,6 +135,45 @@ export async function fetchAuthProviders(): Promise<AuthProviders> {
   } catch {
     return { password: true, registration: false, google: false, billing: false }
   }
+}
+
+/** Update the signed-in user's display name; null on success or an error code. */
+export async function updateProfile(name: string): Promise<string | null> {
+  const res = await fetch("/api/auth/profile", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name }),
+  })
+  if (res.ok) {
+    cached = null
+    notify()
+    return null
+  }
+  const data = await res.json().catch(() => ({}))
+  return data.error ?? "update_failed"
+}
+
+/**
+ * Change (or, for a Google-only account, set) the password.
+ * `currentPassword` may be omitted when the account has no password yet.
+ * Returns null on success or an error code.
+ */
+export async function changePassword(
+  newPassword: string,
+  currentPassword?: string,
+): Promise<string | null> {
+  const res = await fetch("/api/auth/password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ new_password: newPassword, current_password: currentPassword }),
+  })
+  if (res.ok) {
+    cached = null
+    notify()
+    return null
+  }
+  const data = await res.json().catch(() => ({}))
+  return data.error ?? "change_failed"
 }
 
 export async function logout(): Promise<void> {
