@@ -48,6 +48,17 @@ export default function Navbar() {
           >
             {t("navbar.buyRent")}
           </Link>
+          {/* Estima Academy is served by the report-service (api.estima.sk),
+              which already respects DEFAULT_LANGUAGE=sk. External page, so a
+              plain anchor opening in a new tab rather than a Next route. */}
+          <a
+            href="https://api.estima.sk/academy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+          >
+            {t("navbar.academy")}
+          </a>
           <Link
             href="/kontakt"
             className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
