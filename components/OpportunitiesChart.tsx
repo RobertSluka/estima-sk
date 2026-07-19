@@ -213,7 +213,21 @@ export default function OpportunitiesChart({
     return xs.length % 2 ? xs[mid] : (xs[mid - 1] + xs[mid]) / 2
   }, [points, region])
 
-  if (opportunities.length === 0) return null
+  // The domain must cover the kraj median line too — with x = listing price,
+  // every discounted dot sits left of the median, which would otherwise fall
+  // outside the axis and recharts would silently drop the reference line.
+  const xDomain = useMemo<[number, number] | null>(() => {
+    if (points.length === 0) return null
+    const xs = points.map((p) => p.x)
+    const lo = Math.min(...xs)
+    const hi = Math.max(...xs, regionMedian ?? 0)
+    return [
+      Math.max(0, Math.floor((lo - 150) / 250) * 250),
+      Math.ceil((hi + 150) / 250) * 250,
+    ]
+  }, [points, regionMedian])
+
+  if (opportunities.length === 0 || points.length === 0 || xDomain == null) return null
 
   const yMin = Math.min(-20, Math.floor((Math.min(...points.map((p) => p.y)) - 4) / 10) * 10)
 
@@ -253,10 +267,7 @@ export default function OpportunitiesChart({
               <XAxis
                 type="number"
                 dataKey="x"
-                domain={[
-                  (min: number) => Math.max(0, Math.floor((min - 150) / 250) * 250),
-                  (max: number) => Math.ceil((max + 150) / 250) * 250,
-                ]}
+                domain={xDomain}
                 tick={{ fontSize: 11, fill: "#94a3b8" }}
                 tickLine={false}
                 axisLine={{ stroke: "#e2e8f0" }}
