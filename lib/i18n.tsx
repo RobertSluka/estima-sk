@@ -216,7 +216,7 @@ const dict: Record<Lang, Record<string, string>> = {
     // monitoring
     "monitor.title": "Monitoring",
     "monitor.subtitle":
-      "Uložené vyhľadávania, sledované inzeráty a aktivita na jednom mieste.",
+      "Nechajte Estimu sledovať trh za vás — upozornenia na zníženie ceny pri sledovaných inzerátoch a nové zhody pre vaše uložené vyhľadávania.",
     "monitor.tabSearches": "Vyhľadávania",
     "monitor.tabWatched": "Sledované",
     "monitor.tabActivity": "Aktivita",
@@ -959,7 +959,7 @@ const dict: Record<Lang, Record<string, string>> = {
     // monitoring
     "monitor.title": "Monitoring",
     "monitor.subtitle":
-      "Track saved searches, watched listings and activity in one place.",
+      "Let Estima watch the market for you — price-drop alerts on listings you follow and new matches for your saved searches.",
     "monitor.tabSearches": "Searches",
     "monitor.tabWatched": "Watched",
     "monitor.tabActivity": "Activity",
