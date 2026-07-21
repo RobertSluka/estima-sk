@@ -218,7 +218,7 @@ export default function HeroValuationShowcase({
   const rise = (i: number) => ({ animationDelay: `${(0.15 + i * 0.09).toFixed(2)}s` })
 
   return (
-    <section className="relative overflow-hidden bg-[#f5f6f8]">
+    <section className="relative overflow-hidden bg-page">
       {/* ambient wash */}
       <div
         aria-hidden
