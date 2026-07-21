@@ -9,13 +9,11 @@ const nextConfig = {
   reactStrictMode: false,
   // react-leaflet / @react-leaflet/core ship ESM only — let Next transpile them.
   transpilePackages: ["react-leaflet", "@react-leaflet/core"],
-  // Estima Academy is rendered by the report-service (api.estima.sk). Proxy it
-  // under this origin so it lives at estima.sk/academy — the page's own navbar
-  // uses relative links, so serving it cross-origin trapped users on the api
-  // subdomain with no way back. The URL bar stays on estima.sk.
+  // The Academy landing + article pages are now native Next routes (app/academy).
+  // Only the PDF export stays on the report-service, proxied so the download
+  // link can live under estima.sk without exposing the api subdomain.
   async rewrites() {
     return [
-      { source: "/academy", destination: "https://api.estima.sk/academy" },
       { source: "/academy/download", destination: "https://api.estima.sk/academy/download" },
     ]
   },
