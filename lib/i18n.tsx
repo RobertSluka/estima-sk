@@ -745,7 +745,7 @@ const dict: Record<Lang, Record<string, string>> = {
     // price heat map (mapa-cien)
     "heat.title": "Mapa cien",
     "heat.subtitle":
-      "Celý trh na jednej mape — okresy zafarbené podľa zvolenej vrstvy a rebríček, ktorý sa preraďuje podľa aktívnej metriky.",
+      "Kde sa na Slovensku predáva draho, kde je najväčší výber a kde ceny klesajú. Okresy sú zafarbené podľa toho, čo si zvolíte — medián ceny za m², počet inzerátov v ponuke, podiel zliav za 30 dní alebo nové inzeráty za týždeň. Kliknutím na okres zobrazíte jeho inzeráty a pozíciu v rebríčku.",
     "heat.layer.ppsm": "€/m²",
     "heat.layer.supply": "Ponuka",
     "heat.layer.drops": "Zľavy",
@@ -1487,7 +1487,7 @@ const dict: Record<Lang, Record<string, string>> = {
     // price heat map (mapa-cien)
     "heat.title": "Price map",
     "heat.subtitle":
-      "The whole market on one map — districts coloured by the selected layer, with a ranking that re-orders by the active metric.",
+      "Where Slovakia sells high, where supply is deepest and where prices are dropping. Districts are coloured by the view you pick — median price per m², listings on offer, share of price cuts over 30 days, or new listings this week. Click a district to see its listings and where it ranks.",
     "heat.layer.ppsm": "€/m²",
     "heat.layer.supply": "Supply",
     "heat.layer.drops": "Cuts",
