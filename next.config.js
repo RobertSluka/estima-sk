@@ -17,6 +17,11 @@ const nextConfig = {
       { source: "/academy/download", destination: "https://api.estima.sk/academy/download" },
     ]
   },
+  // Estima Engine is now the landing page at "/" (app/page.tsx). Keep the old
+  // /engine URL working for existing links and bookmarks.
+  async redirects() {
+    return [{ source: "/engine", destination: "/", permanent: true }]
+  },
 }
 
 module.exports = nextConfig

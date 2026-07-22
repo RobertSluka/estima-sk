@@ -58,7 +58,7 @@ const navItems: NavItem[] = [
 // Marketing links — shown inline in the navbar on desktop; folded into the
 // mobile drawer so small screens can still reach them.
 const marketingItems: { href: string; key: string }[] = [
-  { href: "/engine", key: "navbar.engine" },
+  { href: "/", key: "navbar.engine" },
   { href: "/trh", key: "navbar.market" },
   { href: "/cennik", key: "navbar.pricing" },
   { href: "/kupa-alebo-prenajom", key: "navbar.buyRent" },
