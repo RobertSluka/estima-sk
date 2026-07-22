@@ -25,7 +25,7 @@ export default function Navbar() {
             On mobile they move into the sidebar drawer. */}
         <nav className="hidden md:flex items-center gap-5">
           <Link
-            href="/"
+            href="/engine"
             className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
           >
             {t("navbar.engine")}
