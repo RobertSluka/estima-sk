@@ -59,6 +59,17 @@ export default function ArticleBody({
                 ))}
               </ArticleCallout>
             )
+          case "figure":
+            return (
+              <figure key={i} className="my-7">
+                <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+                  <img src={block.src} alt={block.alt} className="block w-full" loading="lazy" />
+                </div>
+                <figcaption className="mt-2.5 text-[13px] leading-relaxed text-slate-500">
+                  {block.caption}
+                </figcaption>
+              </figure>
+            )
           default:
             return null
         }

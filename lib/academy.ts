@@ -13,6 +13,7 @@ export type ArticleBlock =
   | { type: "h3"; text: string }
   | { type: "ul"; items: string[] }
   | { type: "callout"; variant: CalloutVariant; heading: string; paragraphs: string[] }
+  | { type: "figure"; src: string; alt: string; caption: string }
 
 export interface AcademyCategory {
   slug: string
@@ -140,6 +141,12 @@ export const ACADEMY_ARTICLES: AcademyArticle[] = [
           "Estima zoradí potenciálne porovnateľné inzeráty podľa podobnosti a umožní maklérovi rozhodnúť, ktoré nehnuteľnosti sa dostanú do finálneho reportu.",
           "To skracuje čas strávený manuálnym vyhľadávaním a konečné rozhodnutie necháva v rukách makléra."
         ]
+      },
+      {
+        "type": "figure",
+        "src": "/images/academy/report-porovnatelne.jpg",
+        "alt": "Tabuľka porovnateľných inzerátov v oceňovacom reporte Estima",
+        "caption": "Porovnateľné inzeráty v reporte Estima — každý kandidát má rozdiel voči oceňovanej nehnuteľnosti a skóre podobnosti, takže finálny výber zostáva kontrolovateľným rozhodnutím."
       }
     ],
     "cta": {
@@ -236,6 +243,12 @@ export const ACADEMY_ARTICLES: AcademyArticle[] = [
           "Report Estima dáva predávajúcemu vizuálne vysvetlenie cenového rozpätia, porovnateľných nehnuteľností a relevantných trhových podmienok.",
           "Cenový rozhovor sa tak mení z osobného sporu na profesionálnu diskusiu podloženú dôkazmi."
         ]
+      },
+      {
+        "type": "figure",
+        "src": "/images/academy/odhad-rozpatie.jpg",
+        "alt": "Orientačný odhad ceny v Estime s cenovým rozpätím",
+        "caption": "Estima prezentuje ocenenie ako rozpätie ukotvené v cene za m² — tri cenové pozície možno prediskutovať priamo nad ním."
       }
     ],
     "cta": {
@@ -615,6 +628,12 @@ export const ACADEMY_ARTICLES: AcademyArticle[] = [
         "paragraphs": [
           "Estima spája analýzu na úrovni nehnuteľnosti s informáciami o miestnom trhu a pomáha maklérovi zasadiť nehnuteľnosť do jej skutočného konkurenčného prostredia."
         ]
+      },
+      {
+        "type": "figure",
+        "src": "/images/academy/mapa-cien.jpg",
+        "alt": "Mapa cien Estima so slovenskými okresmi",
+        "caption": "Mapa cien Estima — okresy zafarbené podľa mediánu €/m², ponuky, nedávnych zliav či nových inzerátov, s rebríčkom okresov vedľa mapy."
       }
     ],
     "cta": {
@@ -699,6 +718,12 @@ export const ACADEMY_ARTICLES: AcademyArticle[] = [
         "paragraphs": [
           "Estima umožňuje maklérovi aktualizovať analýzu podľa aktuálnych inzerátov a trhových informácií namiesto spoliehania sa na pôvodné ocenenie počas celého predaja."
         ]
+      },
+      {
+        "type": "figure",
+        "src": "/images/academy/trh-vyvoj.jpg",
+        "alt": "Trhový prehľad Estima s dlhodobým vývojom cien",
+        "caption": "Trhový prehľad Estima sleduje vývoj €/m² z oficiálnych štatistík NBS — referenčný bod, keď ocenenie potrebuje revíziu pri zmene trhu."
       }
     ],
     "cta": {
