@@ -604,7 +604,15 @@ const dict: Record<Lang, Record<string, string>> = {
     "footer.tagline": "Realitná inteligencia pre slovenský trh.",
     "footer.contact": "Kontakt",
     "footer.disclaimer":
-      "Odhady sú orientačné a nie sú znaleckým posudkom ani ponukou.",
+      "Odhady sú orientačné a nie sú znaleckým posudkom ani ponukou. Estima neposkytuje investičné, daňové ani právne poradenstvo.",
+    "footer.colPlatform": "Platforma",
+    "footer.colData": "Dáta a prehľady",
+    "footer.colCompany": "Spoločnosť",
+    "footer.terms": "Obchodné podmienky",
+    "footer.privacy": "Ochrana osobných údajov",
+    // No trailing period — the company name ends in "s. r. o." and supplies one.
+    "footer.operatedBy": "Estima je služba spoločnosti {company}",
+    "footer.rights": "© {year} Estima. Všetky práva vyhradené.",
 
     // landing
     "landing.heroTitle": "Koľko stojí vaša nehnuteľnosť?",
@@ -1346,7 +1354,15 @@ const dict: Record<Lang, Record<string, string>> = {
     "footer.tagline": "Property intelligence for the Slovak market.",
     "footer.contact": "Contact",
     "footer.disclaimer":
-      "Estimates are indicative and are not an expert appraisal or an offer.",
+      "Estimates are indicative and are not an expert appraisal or an offer. Estima does not provide investment, tax or legal advice.",
+    "footer.colPlatform": "Platform",
+    "footer.colData": "Data & insights",
+    "footer.colCompany": "Company",
+    "footer.terms": "Terms of Service",
+    "footer.privacy": "Privacy Policy",
+    // No trailing period — the company name ends in "s. r. o." and supplies one.
+    "footer.operatedBy": "Estima is a service operated by {company}",
+    "footer.rights": "© {year} Estima. All rights reserved.",
 
     // landing
     "landing.heroTitle": "What is your property worth?",
