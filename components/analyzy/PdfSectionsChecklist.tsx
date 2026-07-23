@@ -11,6 +11,7 @@ const SECTIONS = [
   "valuation",
   "market",
   "comparables",
+  "buyVsRent",
   "location",
   "photo",
   "methodology",

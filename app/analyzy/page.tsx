@@ -156,6 +156,23 @@ export default function AnalysesPage() {
     return buildMarket(selected, listings, label)
   }, [selected, listings, t])
 
+  // District rent median (€/m²/month) — feeds the buy-vs-rent projection so
+  // the preview mirrors the PDF's rent estimate.
+  const rentMedianPerSqm = useMemo(
+    () =>
+      selected
+        ? medianPerSqm(
+            listings,
+            selected,
+            (l) =>
+              l.dealType === "rent" &&
+              l.district != null &&
+              l.district === selected.district,
+          )
+        : null,
+    [selected, listings],
+  )
+
   // ── Comparables: real listings, auto-picked with manual add/remove ─────────
   const byId = useMemo(() => {
     const m: Record<string, Listing> = {}
@@ -297,6 +314,7 @@ export default function AnalysesPage() {
                 listing={selected}
                 analysis={analysis}
                 market={market}
+                rentMedianPerSqm={rentMedianPerSqm}
                 comparables={comparables}
                 onRemoveComparable={removeComparable}
                 generating={generating}

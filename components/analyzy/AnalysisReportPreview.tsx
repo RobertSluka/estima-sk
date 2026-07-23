@@ -26,12 +26,15 @@ import ComparableListingsTable from "./ComparableListingsTable"
 import PhotoConditionPanel from "./PhotoConditionPanel"
 import LocationSummaryCard from "./LocationSummaryCard"
 import PdfSectionsChecklist from "./PdfSectionsChecklist"
+import BuyVsRentCard from "./BuyVsRentCard"
 
 interface Props {
   listing: Listing
   analysis: ListingAnalysis
   /** Real market context (live medians + NBS) computed by the page. */
   market: MarketComparison
+  /** District rent median (€/m²/month) for the buy-vs-rent projection. */
+  rentMedianPerSqm: number | null
   comparables: ComparableRow[]
   onRemoveComparable: (id: string) => void
   generating: boolean
@@ -50,6 +53,7 @@ export default function AnalysisReportPreview({
   listing,
   analysis,
   market,
+  rentMedianPerSqm,
   comparables,
   onRemoveComparable,
   generating,
@@ -199,6 +203,10 @@ export default function AnalysisReportPreview({
 
       {/* D */}
       <ComparableListingsTable rows={comparables} onRemove={onRemoveComparable} />
+
+      {/* D2 — buy-vs-rent projection; mirrors the PDF's section, renders only
+          for sale listings with a district rent estimate. */}
+      <BuyVsRentCard listing={listing} rentMedianPerSqm={rentMedianPerSqm} />
 
       {/* E + F */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">

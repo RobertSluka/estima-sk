@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useI18n } from "@/lib/i18n"
 import { HORIZON_YEARS } from "@/lib/buyVsRent"
@@ -23,16 +22,6 @@ export default function KupaAleboPrenajomPage() {
       </div>
 
       <BuyVsRentCalculator />
-
-      {/* Methodology */}
-      <Card className="mt-5">
-        <CardContent className="p-5">
-          <p className="text-sm font-semibold text-slate-900">{t("buyRent.methodTitle")}</p>
-          <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
-            {t("buyRent.methodBody")}
-          </p>
-        </CardContent>
-      </Card>
 
       {/* Cross-promo to the estimate */}
       <div className="mt-10 text-center">

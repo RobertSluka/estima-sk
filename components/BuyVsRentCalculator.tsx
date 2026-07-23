@@ -14,10 +14,19 @@ import { Home, PiggyBank, TrendingUp } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useI18n } from "@/lib/i18n"
 import { formatEUR } from "@/lib/utils"
 import {
   HORIZON_YEARS,
+  REGION_GROWTH,
+  YIELD_PRESETS,
   simulateBuyVsRent,
   type BuyVsRentInputs,
 } from "@/lib/buyVsRent"
@@ -28,13 +37,18 @@ const RENTER_COLOR = "#0f172a" // slate-900
 const RENTER_CHIP = "var(--chart-ink)"
 
 const DEFAULTS: BuyVsRentInputs = {
+  mode: "occupier",
   propertyPrice: 250000,
+  propertyGrowthPct: 7, // matches REGION_GROWTH "sk" (NBS 2002–2025 average)
   monthlyRent: 900,
   mortgageRatePct: 4.0,
   ltvPct: 80,
   termYears: 30,
   inflationPct: 2.5,
   investmentReturnPct: 5.0,
+  vacancyPct: 8, // ≈ one month a year empty
+  costsPct: 10,
+  rentalTaxPct: 19, // SK base rate; the €500 exemption can lower the effective rate
 }
 
 interface FieldDef {
@@ -81,10 +95,25 @@ const CustomTooltip = ({
 export default function BuyVsRentCalculator() {
   const { t } = useI18n()
   const [inputs, setInputs] = useState<BuyVsRentInputs>(DEFAULTS)
+  // "custom" when the growth field was edited by hand and no longer matches a region.
+  const [region, setRegion] = useState<string>("sk")
+  const landlord = inputs.mode === "landlord"
 
+  const landlordFields: FieldDef[] = [
+    { key: "vacancyPct", labelKey: "buyRent.vacancy", suffix: "%", step: 1 },
+    { key: "costsPct", labelKey: "buyRent.costs", suffix: "%", step: 1 },
+    { key: "rentalTaxPct", labelKey: "buyRent.rentalTax", suffix: "%", step: 1 },
+  ]
   const fields: FieldDef[] = [
     { key: "propertyPrice", labelKey: "buyRent.propertyPrice", suffix: "€", step: 5000 },
-    { key: "monthlyRent", labelKey: "buyRent.monthlyRent", suffix: "€", step: 50 },
+    { key: "propertyGrowthPct", labelKey: "buyRent.propertyGrowth", suffix: "%", step: 0.1 },
+    {
+      key: "monthlyRent",
+      labelKey: landlord ? "buyRent.monthlyRentIncome" : "buyRent.monthlyRent",
+      suffix: "€",
+      step: 50,
+    },
+    ...(landlord ? landlordFields : []),
     { key: "mortgageRatePct", labelKey: "buyRent.mortgageRate", suffix: "%", step: 0.1 },
     { key: "ltvPct", labelKey: "buyRent.ltv", suffix: "%", step: 5 },
     { key: "termYears", labelKey: "buyRent.termYears", suffix: t("buyRent.years"), step: 1 },
@@ -95,10 +124,19 @@ export default function BuyVsRentCalculator() {
   const result = useMemo(() => simulateBuyVsRent(inputs), [inputs])
   const buyWins = result.buyerFinal >= result.renterFinal
   const margin = Math.abs(result.buyerFinal - result.renterFinal)
+  const buyerLabel = t(landlord ? "buyRent.buyerLandlord" : "buyRent.buyer")
+  const renterLabel = t(landlord ? "buyRent.renterLandlord" : "buyRent.renter")
 
   function setField(key: keyof BuyVsRentInputs, raw: string) {
     const value = parseFloat(raw)
+    if (key === "propertyGrowthPct") setRegion("custom")
     setInputs((prev) => ({ ...prev, [key]: Number.isFinite(value) ? value : 0 }))
+  }
+
+  function pickRegion(key: string) {
+    setRegion(key)
+    const match = REGION_GROWTH.find((r) => r.key === key)
+    if (match) setInputs((prev) => ({ ...prev, propertyGrowthPct: match.growthPct }))
   }
 
   return (
@@ -106,10 +144,53 @@ export default function BuyVsRentCalculator() {
       {/* Inputs */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm">{t("buyRent.inputsTitle")}</CardTitle>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <CardTitle className="text-sm">{t("buyRent.inputsTitle")}</CardTitle>
+            <div className="inline-flex rounded-lg border border-slate-200 p-0.5">
+              {(["occupier", "landlord"] as const).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setInputs((prev) => ({ ...prev, mode: m }))}
+                  className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                    inputs.mode === m
+                      ? "bg-slate-900 text-white"
+                      : "text-slate-600 hover:bg-slate-50"
+                  }`}
+                >
+                  {t(`buyRent.mode.${m}`)}
+                </button>
+              ))}
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-7">
+          <div
+            className={`grid grid-cols-2 gap-4 sm:grid-cols-3 ${
+              landlord ? "lg:grid-cols-6" : "lg:grid-cols-5"
+            }`}
+          >
+            {/* Region pre-fills the property-growth field from NBS averages */}
+            <div className="space-y-1.5">
+              <Label htmlFor="region" className="text-xs text-slate-500">
+                {t("buyRent.region")}
+              </Label>
+              <Select value={region} onValueChange={pickRegion}>
+                <SelectTrigger id="region">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {REGION_GROWTH.map((r) => (
+                    <SelectItem key={r.key} value={r.key}>
+                      {t(`buyRent.region.${r.key}`)} · {r.growthPct} %
+                    </SelectItem>
+                  ))}
+                  {region === "custom" && (
+                    <SelectItem value="custom">{t("buyRent.region.custom")}</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
             {fields.map((f) => (
               <div key={f.key} className="space-y-1.5">
                 <Label htmlFor={f.key} className="text-xs text-slate-500">
@@ -133,6 +214,33 @@ export default function BuyVsRentCalculator() {
               </div>
             ))}
           </div>
+
+          {/* Benchmark presets for the investment-return input */}
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <span className="text-xs text-slate-500">{t("buyRent.presetsLabel")}</span>
+            {YIELD_PRESETS.map((p) => {
+              const active = inputs.investmentReturnPct === p.returnPct
+              return (
+                <button
+                  key={p.key}
+                  type="button"
+                  onClick={() =>
+                    setInputs((prev) => ({ ...prev, investmentReturnPct: p.returnPct }))
+                  }
+                  className={`rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
+                    active
+                      ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                      : "border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+                  }`}
+                >
+                  {t(`buyRent.preset.${p.key}`)} · {p.returnPct} %
+                </button>
+              )
+            })}
+          </div>
+          <p className="mt-2 text-xs leading-relaxed text-slate-400">
+            {t("buyRent.presetsDisclaimer")}
+          </p>
         </CardContent>
       </Card>
 
@@ -150,6 +258,11 @@ export default function BuyVsRentCalculator() {
             <p className="mt-1 text-xs text-slate-400">
               {t("buyRent.downPayment")}: {formatEUR(result.downPayment)}
             </p>
+            {landlord && (
+              <p className="mt-1 text-xs text-slate-400">
+                {t("buyRent.netRent")}: {formatEUR(result.initialNetRent)}
+              </p>
+            )}
           </CardContent>
         </Card>
 
@@ -164,7 +277,7 @@ export default function BuyVsRentCalculator() {
                 className="mr-1.5 inline-block h-2.5 w-2.5 rounded-sm"
                 style={{ backgroundColor: BUYER_COLOR }}
               />
-              {t("buyRent.buyer")}:{" "}
+              {buyerLabel}:{" "}
               <span className="font-bold text-slate-900">{formatEUR(result.buyerFinal)}</span>
             </p>
             <p className="mt-1 text-sm text-slate-700">
@@ -172,7 +285,7 @@ export default function BuyVsRentCalculator() {
                 className="mr-1.5 inline-block h-2.5 w-2.5 rounded-sm"
                 style={{ backgroundColor: RENTER_CHIP }}
               />
-              {t("buyRent.renter")}:{" "}
+              {renterLabel}:{" "}
               <span className="font-bold text-slate-900">{formatEUR(result.renterFinal)}</span>
             </p>
           </CardContent>
@@ -185,7 +298,9 @@ export default function BuyVsRentCalculator() {
               {t("buyRent.verdictTitle")}
             </div>
             <p className="mt-1.5 text-sm font-bold text-slate-900">
-              {buyWins ? t("buyRent.verdictBuy") : t("buyRent.verdictRent")}
+              {buyWins
+                ? t(landlord ? "buyRent.verdictBuyLandlord" : "buyRent.verdictBuy")
+                : t(landlord ? "buyRent.verdictRentLandlord" : "buyRent.verdictRent")}
             </p>
             <p className="mt-1 text-xs text-slate-500">
               {t("buyRent.verdictBy", { amount: formatEUR(margin), years: HORIZON_YEARS })}
@@ -203,7 +318,9 @@ export default function BuyVsRentCalculator() {
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm">{t("buyRent.chartTitle", { years: HORIZON_YEARS })}</CardTitle>
-          <p className="text-xs text-slate-400">{t("buyRent.chartSubtitle")}</p>
+          <p className="text-xs text-slate-400">
+            {t(landlord ? "buyRent.chartSubtitleLandlord" : "buyRent.chartSubtitle")}
+          </p>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={280}>
@@ -220,15 +337,19 @@ export default function BuyVsRentCalculator() {
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(v: number) =>
-                  Math.abs(v) >= 1_000_000 ? `${(v / 1_000_000).toFixed(1)}M` : `${Math.round(v / 1000)}k`
+                  Math.abs(v) >= 1_000_000_000
+                    ? `${(v / 1_000_000_000).toFixed(1)}B`
+                    : Math.abs(v) >= 1_000_000
+                      ? `${(v / 1_000_000).toFixed(1)}M`
+                      : `${Math.round(v / 1000)}k`
                 }
                 width={44}
               />
               <Tooltip
                 content={
                   <CustomTooltip
-                    buyerLabel={t("buyRent.buyer")}
-                    renterLabel={t("buyRent.renter")}
+                    buyerLabel={buyerLabel}
+                    renterLabel={renterLabel}
                     yearLabel={t("buyRent.year")}
                   />
                 }
@@ -255,8 +376,8 @@ export default function BuyVsRentCalculator() {
 
           <div className="mt-3 flex flex-wrap justify-center gap-4">
             {[
-              { label: t("buyRent.buyer"), color: BUYER_COLOR },
-              { label: t("buyRent.renter"), color: RENTER_CHIP },
+              { label: buyerLabel, color: BUYER_COLOR },
+              { label: renterLabel, color: RENTER_CHIP },
             ].map((item) => (
               <div key={item.label} className="flex items-center gap-1.5">
                 <div
@@ -267,6 +388,16 @@ export default function BuyVsRentCalculator() {
               </div>
             ))}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Methodology — switches with the mode, so it lives here, not the page */}
+      <Card>
+        <CardContent className="p-5">
+          <p className="text-sm font-semibold text-slate-900">{t("buyRent.methodTitle")}</p>
+          <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
+            {t(landlord ? "buyRent.methodBodyLandlord" : "buyRent.methodBody")}
+          </p>
         </CardContent>
       </Card>
     </div>
